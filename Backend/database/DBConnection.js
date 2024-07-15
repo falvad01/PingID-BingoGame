@@ -1,7 +1,9 @@
 const { Sequelize } = require('sequelize');
 
-// Option 2: Passing parameters separately (sqlite)
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: 'path/to/database.sqlite'
-  });
+// Configurar la conexión a la base de datos
+const sequelize = new Sequelize('db', 'user', 'password', {
+  host: '127.0.0.1',
+  dialect: 'mysql'
+});
+
+module.exports = sequelize;
