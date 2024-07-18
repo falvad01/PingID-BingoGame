@@ -1,19 +1,13 @@
 // Importar módulos necesarios
-const http = require("http");
 const express = require("express");
 const app = express();
 const sequelize = require("./database/DBConnection");
+require('dotenv').config()
 
-// Definir el servidor
-const server = http.createServer((req, res) => {
-  // Manejar las peticiones
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/plain");
-  res.end("¡Hola, mundo!\n");
-});
+
 
 // Especificar el puerto y la dirección en la que escuchar
-const port = 3000;
+const port = process.env.PORT || 4000;
 const hostname = "127.0.0.1";
 
 // Importar las rutas
@@ -35,7 +29,7 @@ sequelize
     return sequelize.sync();
   })
   .then(() => {
-    server.listen(port, hostname, () => {
+    app.listen(port, hostname, () => {
       console.log(
         `El servidor se está ejecutando en http://${hostname}:${port}/`
       );

@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../database"); // assuming your database connection is in database.js
+const sequelize = require("../DBConnection"); // assuming your database connection is in database.js
 const User = require("./user");
 
 const Number = sequelize.define(
@@ -21,14 +21,13 @@ const Number = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    created_at: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
+
   },
   {
     tableName: "number",
-    timestamps: false,
+    createdAt: true,
+    createdAt: "created_at",
+    updatedAt: false,
   }
 );
 

@@ -1,0 +1,7 @@
+{
+  "name": "PingID Bingo",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
