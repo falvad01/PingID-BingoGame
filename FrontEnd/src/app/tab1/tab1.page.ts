@@ -1,5 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
-import { IonDatetime } from '@ionic/angular';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-tab1',
@@ -8,15 +7,6 @@ import { IonDatetime } from '@ionic/angular';
 })
 export class Tab1Page {
 
-  @ViewChild(IonDatetime, { static: true }) datetime: IonDatetime;
-
-  startDate = '';
-
   constructor() {}
-
-  formatDate(value: string) {
-    //return format(parseISO(value), 'MMM dd yyyy');
-    return value;
-  }
 
 }

@@ -1,29 +1,17 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Calendario
+      Tab 1
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="component-content">
+<ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Tab 1</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <ion-list [inset]="true">
-    <ion-item>
-      <ion-input placeholder="Selected day"></ion-input>
-    </ion-item>
-    <ion-item lines="full">
-      <ion-input placeholder="Selected day bet"></ion-input>
-    </ion-item>
-  </ion-list>
-
-  <ion-list [inset]="true">
-    <ion-datetime slot="content"></ion-datetime>
-  </ion-list>
-
+  <app-explore-container name="Tab 1 page"></app-explore-container>
 </ion-content>
