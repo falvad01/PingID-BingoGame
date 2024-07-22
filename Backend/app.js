@@ -3,8 +3,9 @@ const express = require("express");
 const app = express();
 const sequelize = require("./database/DBConnection");
 require('dotenv').config()
+var cors = require('cors')
 
-
+app.use(cors()) 
 
 // Especificar el puerto y la dirección en la que escuchar
 const port = process.env.PORT || 4000;
