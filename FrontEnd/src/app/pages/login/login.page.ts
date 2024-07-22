@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/services/auth.service';
+import lottie from 'lottie-web';
+
+
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage {
+export class LoginPage implements OnInit {
 
   loading = false;
   showErrorUser = false
@@ -16,6 +19,7 @@ export class LoginPage {
 
   user: string = '';
   pass: string = '';
+
 
   constructor(private router: Router, private authService: AuthService) {
 
@@ -38,6 +42,17 @@ export class LoginPage {
     });
   }
 
+  ngOnInit() {
+
+    lottie.loadAnimation({
+      container: document.getElementById('lottie') as HTMLElement,
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: '../../../assets/dice_animation.json' // Ruta al archivo Lottie
+    });
+  }
+  
   login() {
 
     if (this.user === '') {
