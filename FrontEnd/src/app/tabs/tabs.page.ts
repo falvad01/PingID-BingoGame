@@ -11,16 +11,11 @@ export class TabsPage {
 
   constructor(private router: Router, private tokenService: TokenService) {
 
-
-
     if (!tokenService.isLogged()) {
 
       this.router.navigate(['/login']);
 
-
     }
-
-
 
   }
 

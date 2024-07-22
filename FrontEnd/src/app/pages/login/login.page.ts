@@ -32,7 +32,7 @@ export class LoginPage implements OnInit {
     // Subscribe to login status
     this.authService.logedObservable$.subscribe((data: boolean) => {
       if (data == true) {
-        this.router.navigate(['/tabs/tab1']);
+        this.router.navigate(['/tabs/number']);
       } else {
         this.errorText = "Credential are incorrect"
         this.showErrorUser = true;
