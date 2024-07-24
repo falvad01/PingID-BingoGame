@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { TokenService } from './token.service';
+import { TokenService } from '../token/token.service';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -30,8 +30,8 @@ export class LoginService {
 
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-  
-      console.log("user %s password %s  %s body", user, password)
+
+      console.log("User %s", user)
 
       this.http.post(environment.API_PATH + 'user/login', {
         "username": user,

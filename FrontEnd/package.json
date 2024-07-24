@@ -25,6 +25,7 @@
     "@ionic-native/lottie-splash-screen": "^5.36.0",
     "@ionic/angular": "^8.0.0",
     "@lottiefiles/lottie-player": "^2.0.4",
+    "@teamhive/lottie-player": "^1.0.0",
     "admin-lte": "^4.0.0-beta1",
     "cordova-plugin-lottie-splashscreen": "^0.10.0",
     "ionicons": "^7.0.0",

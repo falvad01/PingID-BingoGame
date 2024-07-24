@@ -4,9 +4,8 @@ async function verifyToken(req, res, next) {
   //
   // Try to decode token from headers
   let token = req.headers["x-access-token"] || req.headers["authorization"];
-
   if (!token) {
-    console.error("Auth: No token provided.");
+    console.error("Auth: No token provided %s.", token);
     return res.status(403).send({ auth: false, message: "No token provided." });
   }
 

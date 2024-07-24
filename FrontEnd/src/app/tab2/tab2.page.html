@@ -1,46 +1,46 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title> Today number </ion-title>
+    <ion-title> Fecha y Número </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="component-content">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <ion-alert
+    [isOpen]="isAlertOpen"
+    trigger="open-custom-dialog"
+    header="{{header}}"
+    subHeader="{{subheader}}"
+    message="{{message}}"
+    (didDismiss)="setOpen(false)"
+    [buttons]="alertButtons"
+  >
+    <lottie-player
+      slot="message"
+      autoplay
+      loop
+      src="https://lottie.host/8d919346-51be-45d1-b223-71f900f2b7ae/6pWG678qWj.json"
+    ></lottie-player>
+  </ion-alert>
 
-  <ion-list [inset]="true">
-    <ion-grid>
-      <ion-row>
-        <ion-item>
-        <ion-col size="auto">
-        </ion-col>
-        <ion-col>
-         <ion-item class="dateTitle">
-          <ion-label> {{todayDate}}</ion-label>
-            <ion-icon name="calendar-outline" slot="start"></ion-icon>
-          </ion-item>
-        </ion-col>
-        </ion-item>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-item>
-            <ion-input
-              [clearInput]="true"
-              inputmode="numeric"
-              type="number"
-              labelPlacement="floating"
-              label="Today number"
-              placeholder="Enter a number btween 1 and 99"
-            />
-          </ion-item>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-
-    <ion-button expand="block" fill="outline">Guardar</ion-button>
-  </ion-list>
+  <div style="text-align: center">
+    <h3>{{ todayDate }}</h3>
+    <ion-item>
+      <ion-input
+        [clearInput]="true"
+        inputmode="numeric"
+        type="number"
+        labelPlacement="floating"
+        label="Numero de hoy"
+        placeholder="Introduce un numero entre 1 y 99"
+        [(ngModel)]="inputNumber"
+      />
+    </ion-item>
+    <ion-button
+      id="open-custom-dialog"
+      [disabled]="!inputNumber"
+      expand="full"
+      (click)="sendNumber()"
+      >Enviar</ion-button
+    >
+  </div>
 </ion-content>

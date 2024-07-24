@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
-import { tap, delay, startWith, debounceTime } from 'rxjs/operators';
-import { LoginService } from './login.service';
-import { ToastrService } from 'ngx-toastr';
+import { startWith } from 'rxjs/operators';
+import { LoginService } from '../login/login.service';
 
 
 @Injectable({
@@ -27,7 +26,7 @@ export class AuthService {
   /**
    * Constructor
    */
-  constructor(private loginService: LoginService, private toast: ToastrService) {
+  constructor(private loginService: LoginService) {
     //
     // Create an observable to detect login/logout events
     this.logginInInternal$ = this.logginInSubject.asObservable().pipe(startWith(false));
@@ -52,7 +51,7 @@ export class AuthService {
     //
     // Request API login
     this.loginService.requestLogin(userName, password).then((response: any) => {
-     
+
       // User has access. Set user as logged
       localStorage.setItem('isUserLoggedIn', "true");
       //
