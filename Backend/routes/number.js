@@ -50,6 +50,7 @@ router.post("/add/", tokenUtils.verifyToken, async (req, res) => {
 
 router.get("/getUserNumbers", tokenUtils.verifyToken, (req, res) => {
   try {
+    let token = req.headers["x-access-token"] || req.headers["authorization"];
     var tokenDecrypted = tokenUtils.parseJwt(token);
     numberModel
       .findAll({
@@ -61,8 +62,8 @@ router.get("/getUserNumbers", tokenUtils.verifyToken, (req, res) => {
       .then((data) => {
         res.status(200).send(data);
       });
-  } catch {
-    res.status(500).send({});
+  } catch (errror){
+    res.status(500).send(errror);
   }
 });
 

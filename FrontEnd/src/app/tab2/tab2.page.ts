@@ -1,8 +1,5 @@
 import { Component } from '@angular/core';
 import { NumberService } from 'src/services/number/number.service';
-import { AlertController } from '@ionic/angular';
-
-
 
 @Component({
   selector: 'app-tab2',
@@ -11,14 +8,10 @@ import { AlertController } from '@ionic/angular';
 
 })
 
-
-
 export class Tab2Page {
 
   alertButtons = ['Close'];
-
   todayDate: string = ""
-
   inputNumber: any
   dialogMessage: any;
   gifUrl: any;
@@ -27,14 +20,12 @@ export class Tab2Page {
   message: any;
   isAlertOpen: any;
 
-  constructor(private numberService: NumberService, private alertController: AlertController) {
+  constructor(private numberService: NumberService) {
 
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = today.getFullYear();
-
-
 
     var monthText;
 

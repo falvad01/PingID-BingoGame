@@ -1,0 +1,155 @@
+ion-grid {
+  text-align: center;
+}
+
+ion-row {
+  flex-wrap: wrap;
+}
+
+ion-col.cell {
+  border: 1px solid #ccc;
+  padding: 12px;
+  font-size: 18px;
+  /* Increase the font size as needed */
+  font-weight: bold;
+  /* Optional: make the numbers bold */
+  height: 56px;
+  /* Set the height of each cell */
+  display: flex;
+  flex-direction: column;
+  /* Stack content vertically */
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  color: #333;
+  /* Set the text color for table cells */
+
+}
+
+.tiny-text {
+  font-size: 10px;
+  /* Smaller font size for tiny text */
+  margin-top: 5px;
+  /* Add some space above the tiny text */
+  text-align: center;
+  /* Center the tiny text */
+}
+
+
+ion-col.cell.highlight-green {
+  background-color: green;
+  /* Change this color as needed */
+  color: white;
+  /* Set text color for green highlighted cells */
+
+}
+
+ion-col.cell.highlight-blue {
+  background-color: blue;
+  /* Change this color as needed */
+  color: white;
+  /* Set text color for green highlighted cells */
+
+}
+
+.legend {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.color-box.highlight-green {
+  background-color: green;
+}
+
+.color-box.highlight-blue {
+  background-color: blue;
+}
+
+
+/* classification-table.page.scss */
+ion-grid {
+  padding: 16px;
+}
+
+ion-row {
+  background-color: #ffffff;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+ion-col {
+  padding: 16px;
+}
+
+ion-col strong {
+  font-size: 14px;
+  color: #333;
+}
+
+ion-row:nth-of-type(even) {
+  background-color: #f9f9f9;
+}
+
+ion-row:hover {
+  background-color: #e0e0e0;
+}
+
+ion-header {
+  background: #007bff;
+  color: white;
+}
+
+ion-toolbar {
+  padding: 8px 16px;
+}
+
+ion-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+ion-grid,
+ion-row,
+ion-col {
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+ion-col {
+  text-align: center;
+  border-right: 1px solid #ddd;
+
+  &:last-of-type {
+    border-right: none;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  ion-col {
+    font-size: 12px;
+  }
+
+  ion-title {
+    font-size: 18px;
+  }
+}

@@ -13,15 +13,8 @@
     message="{{message}}"
     (didDismiss)="setOpen(false)"
     [buttons]="alertButtons"
-  >
-    <lottie-player
-      slot="message"
-      autoplay
-      loop
-      src="https://lottie.host/8d919346-51be-45d1-b223-71f900f2b7ae/6pWG678qWj.json"
-    ></lottie-player>
-  </ion-alert>
-
+  />
+  
   <div style="text-align: center">
     <h3>{{ todayDate }}</h3>
     <ion-item>
