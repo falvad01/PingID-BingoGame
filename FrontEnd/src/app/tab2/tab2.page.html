@@ -7,7 +7,6 @@
 <ion-content class="ion-padding">
   <ion-alert
     [isOpen]="isAlertOpen"
-    trigger="open-custom-dialog"
     header="{{header}}"
     subHeader="{{subheader}}"
     message="{{message}}"
@@ -29,7 +28,6 @@
       />
     </ion-item>
     <ion-button
-      id="open-custom-dialog"
       [disabled]="!inputNumber"
       expand="full"
       (click)="sendNumber()"

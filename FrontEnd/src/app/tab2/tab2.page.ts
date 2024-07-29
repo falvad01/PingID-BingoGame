@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { NumberService } from 'src/services/number/number.service';
+import { TokenService } from 'src/services/token/token.service';
 
 @Component({
   selector: 'app-tab2',
@@ -20,7 +22,7 @@ export class Tab2Page {
   message: any;
   isAlertOpen: any;
 
-  constructor(private numberService: NumberService) {
+  constructor(private numberService: NumberService,private router: Router, private tokenService: TokenService) {
 
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -72,6 +74,14 @@ export class Tab2Page {
     }
 
     this.todayDate = dd + ' de ' + monthText + ' de ' + yyyy;
+  }
+
+  ionViewWillEnter() {
+
+    console.log("Checking loggin status")
+    if (!this.tokenService.isLogged()) {
+      this.router.navigate(['/login']);
+    }
   }
 
   /**

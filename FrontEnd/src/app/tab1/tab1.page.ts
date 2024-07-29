@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { NumberService } from 'src/services/number/number.service';
+import { TokenService } from 'src/services/token/token.service';
 
 @Component({
   selector: 'app-tab1',
@@ -20,12 +22,19 @@ export class Tab1Page {
   alertButtons = ['Close'];
 
 
-  constructor(private numberService: NumberService) {
+  constructor(private numberService: NumberService, private router: Router, private tokenService: TokenService) {
+
+    
     this.numbers = Array.from({ length: 99 }, (_, i) => i + 1);
 
   }
 
   ionViewWillEnter() {
+
+    console.log("Checking loggin status")
+    if (!this.tokenService.isLogged()) {
+      this.router.navigate(['/login']);
+    }
 
     this.fetchHighlightedNumbers();
   }
