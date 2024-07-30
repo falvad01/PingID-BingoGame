@@ -16,5 +16,6 @@ import { ToastrModule } from 'ngx-toastr';
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule,],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
+  exports:[IonicModule]
 })
 export class AppModule { }

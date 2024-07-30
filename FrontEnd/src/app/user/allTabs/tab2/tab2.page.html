@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title> Fecha y Número </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-alert
+    [isOpen]="isAlertOpen"
+    header="{{header}}"
+    subHeader="{{subheader}}"
+    message="{{message}}"
+    (didDismiss)="setOpen(false)"
+    [buttons]="alertButtons"
+  />
+
+  <ion-alert
+    trigger="confirm-dialog"
+    header="{{header}}"
+    subHeader="{{subheader}}"
+    message="{{message}}"
+    [buttons]="confrimationButtons"
+  ></ion-alert>
+
+  <div style="text-align: center">
+    <h3>{{ todayDate }}</h3>
+    <ion-item>
+      <ion-input
+        [clearInput]="true"
+        inputmode="numeric"
+        type="number"
+        labelPlacement="floating"
+        label="Numero de hoy"
+        placeholder="Introduce un numero entre 1 y 99"
+        [(ngModel)]="inputNumber"
+      />
+    </ion-item>
+    <ion-button
+      id="confirm-dialog"
+      [disabled]="!inputNumber"
+      expand="full"
+      (click)="openDialog()"
+      >Enviar</ion-button
+    >
+  </div>
+</ion-content>
