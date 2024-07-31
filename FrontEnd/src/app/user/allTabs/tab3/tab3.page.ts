@@ -16,11 +16,6 @@ export class Tab3Page {
 
   ionViewWillEnter() {
     this.getUsersQualy();
-
-    console.log("Checking loggin status")
-    if (!this.tokenService.isLogged()) {
-      this.router.navigate(['/login']);
-    }
   }
 
   /**

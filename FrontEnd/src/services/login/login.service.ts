@@ -50,6 +50,40 @@ export class LoginService {
     });
   }
 
+    /**
+   * Request API user login
+   * @param user
+   * @param password
+   * @returns
+   */
+    requestLoginAdmin(user: string, password: string) {
+      //
+      // Clear error message
+      this.ErrorMessage = '';
+  
+  
+      return new Promise((resolve, reject) => {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  
+        console.log("User %s", user)
+  
+        this.http.post(environment.API_PATH + 'user/login/admin', {
+          "username": user,
+          "password": password
+        }, { headers }).subscribe({
+          next: (data: any) => {
+            this.token.updateToken(data.token);
+            resolve(true);
+          },
+          error: error => {
+            this.ErrorMessage = error.error ? error.error.error : error.message;
+            console.log(this.ErrorMessage);
+            reject(false);
+          }
+        });
+      });
+    }
+
   /**
    * Request API user logout
    */

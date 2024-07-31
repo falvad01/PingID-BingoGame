@@ -15,6 +15,10 @@ const validateLogin = [
   body("password").isString().notEmpty().trim(),
 ];
 
+/**
+ * Login for normal user, this methos check if the users exist, if icxist,
+ * check the hassed password and created a token to allow the login in the rest of endpoints
+ */
 router.post("/login", validateLogin, async (request, response) => {
   try {
     // Check validation results
@@ -38,33 +42,111 @@ router.post("/login", validateLogin, async (request, response) => {
 
     console.log(`User ${user.username} found`);
 
-    // Compare the hashed password
-    bcrypt.compare(password, String(user.password).trim(), function (err, result) {
-      if (result == false) {
-        console.log("Autentication failed, 401");
-        response.status(401).json({ error: "Authentication failed" });
-        return;
-      }
-      // Generate JWT token
-      const token = jwt.sign(
-        {
-          userId: user.id,
-          username: user.username,
-        },
-        process.env.JWT_SECRET_KEY,
-        {
-          expiresIn: "1h",
+    if (user.administrator == 0) {
+      // Compare the hashed password
+      bcrypt.compare(
+        password,
+        String(user.password).trim(),
+        function (err, result) {
+          if (result == false) {
+            console.log("Autentication failed, 401");
+            response.status(401).json({ error: "Authentication failed" });
+            return;
+          }
+          // Generate JWT token
+          const token = jwt.sign(
+            {
+              userId: user.id,
+              username: user.username,
+            },
+            process.env.JWT_SECRET_KEY,
+            {
+              expiresIn: "1h",
+            }
+          );
+          console.log("Autentication suscess, 200");
+          response.status(200).json({ token });
+          return;
         }
       );
-      console.log("Autentication suscess, 201");
-      response.status(200).json({ token });
-    });
+    } else {
+      console.log("Autentication failed, 402");
+      response.status(401).json({ error: "Authentication failed" });
+    }
   } catch (error) {
     console.error("Error during login process:", error);
     response.status(500).json({ error: "Internal server error" });
   }
 });
 
+/**
+ * Exclusive login for administrators, this methos check if the users exist, if icxist,
+ * check the hassed password and created a token to allow the login in the rest of the admin endpoints
+ */
+router.post("/login/admin", validateLogin, async (request, response) => {
+  try {
+    // Check validation results
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
+      return response.status(400).json({ errors: errors.array() });
+    }
+
+    var { username, password } = request.body;
+
+    console.log(`User admin ${username} starts the login process`);
+
+    // Find user by username
+    const user = await userModel.findOne({ where: { username: username } });
+
+    // If user does not exist, return 400
+    if (!user) {
+      console.log(`User ${username} does not exist`);
+      return response.status(400).json({ msg: "User does not exist" });
+    }
+
+    console.log(`User ${user.username} found`);
+
+    if (user.administrator == 1) {
+      // Compare the hashed password
+      bcrypt.compare(
+        password,
+        String(user.password).trim(),
+        function (err, result) {
+          if (result == false) {
+            console.log("Autentication failed, 401");
+            response.status(401).json({ error: "Authentication failed" });
+            return;
+          }
+          // Generate JWT token
+          const token = jwt.sign(
+            {
+              userId: user.id,
+              username: user.username,
+              admin: true,
+            },
+            process.env.JWT_SECRET_KEY_ADMIN, // Exclusive key for admins
+            {
+              expiresIn: "1h",
+            }
+          );
+          console.log("Autentication suscess, 200");
+          response.status(200).json({ token });
+          return;
+        }
+      );
+    } else {
+      console.log("Autentication failed, 402");
+      response.status(401).json({ error: "Authentication failed" });
+    }
+  } catch (error) {
+    console.error("Error during login process:", error);
+    response.status(500).json({ error: "Internal server error" });
+  }
+});
+
+/**
+ * Get the clasification of the users, dependending the number of numbers and repeated umbers of each users
+ */
 router.get(
   "/getUsersQualify",
   tokenUtils.verifyToken,

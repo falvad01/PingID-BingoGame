@@ -21,6 +21,10 @@ const User = sequelize.define(
       type: DataTypes.STRING(255),
       allowNull: false,
     },
+    administrator: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+    },
   },
   {
     tableName: "users",

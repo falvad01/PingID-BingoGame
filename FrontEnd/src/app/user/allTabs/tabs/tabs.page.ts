@@ -9,13 +9,6 @@ import { TokenService } from 'src/services/token/token.service';
 })
 export class TabsPage {
 
-  constructor(private router: Router, private tokenService: TokenService) {
-
-    console.log("Checking loggin status")
-    if (!this.tokenService.isLogged()) {
-      this.router.navigate(['/login']);
-    }
-
-  }
+  constructor() { }
 
 }

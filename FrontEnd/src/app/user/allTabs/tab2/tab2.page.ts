@@ -92,14 +92,6 @@ export class Tab2Page {
     this.todayDate = dd + ' de ' + monthText + ' de ' + yyyy;
   }
 
-  ionViewWillEnter() {
-
-    console.log("Checking loggin status")
-    if (!this.tokenService.isLogged()) {
-      this.router.navigate(['/login']);
-    }
-  }
-
   /**
    * Set the text to the dialog when a user wants to send a number
    */

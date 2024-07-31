@@ -29,10 +29,7 @@ export class Tab1Page {
    * It checks the login status and fetches the marked numbers if the user is logged in.
    */
   ionViewWillEnter() {
-    console.log("Checking login status");
-    if (!this.tokenService.isLogged()) {
-      this.router.navigate(['/login']);
-    }
+  
     this.obtainMarkedNumbers();
   }
 

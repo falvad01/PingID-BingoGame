@@ -32,7 +32,7 @@ export class AdminLoginPage implements OnInit {
     // Subscribe to login status
     this.authService.logedObservable$.subscribe((data: boolean) => {
       if (data == true) {
-        this.router.navigate(['/tabs/number']);
+        this.router.navigate(['/admin/main']);
       } else {
         this.errorText = "Credential are incorrect"
         this.showErrorUser = true;
@@ -42,6 +42,9 @@ export class AdminLoginPage implements OnInit {
     });
   }
 
+  /**
+   * Load after all the page itms are loadded
+   */
   ngOnInit() {
 
     lottie.loadAnimation({
@@ -52,7 +55,7 @@ export class AdminLoginPage implements OnInit {
       path: '../../../assets/admin_animation.json' // Ruta al archivo Lottie
     });
   }
-  
+
   login() {
 
     if (this.user === '') {
@@ -72,9 +75,8 @@ export class AdminLoginPage implements OnInit {
     }
 
     if (!this.showErrorPass && !this.showErrorUser) {
-      this.authService.login(this.user, this.pass);
+      this.authService.loginAdmin(this.user, this.pass);
     }
-
 
   }
 }

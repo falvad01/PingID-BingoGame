@@ -38,6 +38,7 @@ export class AuthService {
     //
     this.logedSubject.next(this.isLoggedIn());
   }
+
   /**
    * User login
    * @param userName
@@ -51,6 +52,34 @@ export class AuthService {
     //
     // Request API login
     this.loginService.requestLogin(userName, password).then((response: any) => {
+
+      // User has access. Set user as logged
+      localStorage.setItem('isUserLoggedIn', "true");
+      //
+      // Set user as logged and status to not logging-in
+      this.logginInSubject.next(false);
+      this.logedSubject.next(true);
+    }).catch((error: any) => {
+      //
+      // An error has ocurred. Set user as not logged and status to not logging-in
+      this.logginInSubject.next(false);
+      this.logedSubject.next(false);
+    });
+  }
+
+  /**
+   * User login
+   * @param userName
+   * @param password
+   */
+  loginAdmin(userName: string, password: string) {
+    //
+    // Set user as not logged and status to logging-in
+    this.logedSubject.next(false);
+    this.logginInSubject.next(true);
+    //
+    // Request API login
+    this.loginService.requestLoginAdmin(userName, password).then((response: any) => {
 
       // User has access. Set user as logged
       localStorage.setItem('isUserLoggedIn', "true");

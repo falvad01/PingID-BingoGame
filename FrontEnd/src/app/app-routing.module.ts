@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AdminMainPage } from './admin/admin-main/admin-main.page';
 import { IonicAppPage } from './user/ionic-app/ionic-app.page';
+import { AuthGuard } from './auth.guard';
+import { AuthGuardAdmin } from './auth-admin.guard';
 
 
 const routes: Routes = [
@@ -17,12 +19,13 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    component :IonicAppPage,
+    component: IonicAppPage,
     loadChildren: () => import('./user/login/login.module').then(m => m.LoginPageModule)
   },
   {
     path: '',
-    component :IonicAppPage,
+    component: IonicAppPage,
+    canActivate: [AuthGuard],
     loadChildren: () => import('./user/allTabs/tabs/tabs.module').then(m => m.TabsPageModule)
   },
   {
@@ -32,14 +35,15 @@ const routes: Routes = [
   {
     path: 'admin',
     component: AdminMainPage,
+    canActivate: [AuthGuardAdmin], // Ensure only admins access this route
     loadChildren: () => import('./admin/admin-main/admin-main.module').then(m => m.AdminMainPageModule)
   },
   {
     path: 'ionic-app',
-    loadChildren: () => import('./user/ionic-app/ionic-app.module').then( m => m.IonicAppPageModule)
+    loadChildren: () => import('./user/ionic-app/ionic-app.module').then(m => m.IonicAppPageModule)
   },
-
 ];
+
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
