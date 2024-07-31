@@ -4,6 +4,8 @@ const userModel = require("../database/models/user");
 const jwt = require("jsonwebtoken");
 const numberModel = require("../database/models/number");
 const tokenUtils = require("../utils/TokenUtils");
+const adminTokenUtils = require("../utils/AdminTokenUtils");
+
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 
@@ -159,22 +161,24 @@ router.get(
       // Map to store user data
       const userData = {};
 
+      // Initialize user data
+      users.forEach((user) => {
+        const userDataValues = user.get({ plain: true });
+        const { password, ...userWithoutPassword } = userDataValues;
+        userData[user.id] = {
+          ...userWithoutPassword, // Spread all user properties except password
+          numbers: [], // Initialize empty numbers array
+          numberCount: 0, // Initialize count of unique numbers
+          repeatedCount: 0, // Initialize repeated count
+        };
+      });
+
       // Organize numbers by user
       numbers.forEach((numberObj) => {
         const userId = numberObj.user_id;
-        if (!userData[userId]) {
-          const user = users.find((user) => user.id === parseInt(userId));
-          // Remove the password field from the user object and extract data values
-          const userDataValues = user.get({ plain: true });
-          const { password, ...userWithoutPassword } = userDataValues;
-          userData[userId] = {
-            user: userWithoutPassword,
-            numbers: [],
-            numberCount: 0, // This will be the count of unique numbers
-            repeatedCount: 0,
-          };
+        if (userData[userId]) {
+          userData[userId].numbers.push(numberObj.number);
         }
-        userData[userId].numbers.push(numberObj.number);
       });
 
       // Calculate counts and repeated numbers
@@ -197,21 +201,78 @@ router.get(
         data.repeatedCount = repeatedCount;
       });
 
-      // Convert userData to an array for sorting
-      const sortedUsers = Object.values(userData)
-        .map((data) => ({
-          user: data.user, // Ensure user object does not contain password
-          numbers: data.numbers, // Include all numbers (with repeats)
-          numberCount: data.numberCount,
-          repeatedCount: data.repeatedCount,
-        }))
-        .sort((a, b) => {
-          // Sort by number count first, then by repeated count
-          if (b.numberCount !== a.numberCount) {
-            return b.numberCount - a.numberCount;
-          }
-          return b.repeatedCount - a.repeatedCount;
+      // Convert userData to an array, maintaining the order by user id
+      const sortedUsers = Object.values(userData).map((data) => {
+        // Return desired output format without the numbers array
+        const { numbers, ...userWithoutNumbers } = data;
+        return userWithoutNumbers;
+      });
+
+      // Respond with sorted user data
+      response.status(200).json(sortedUsers);
+    } catch (error) {
+      response.status(500).send(error.message);
+    }
+  }
+);
+
+router.get(
+  "/getAllUsers",
+  adminTokenUtils.verifyToken,
+  async (request, response) => {
+    try {
+      // Fetch all users and numbers from the database
+      const users = await userModel.findAll();
+      const numbers = await numberModel.findAll();
+
+      // Map to store user data
+      const userData = {};
+
+      // Initialize user data
+      users.forEach((user) => {
+        const userDataValues = user.get({ plain: true });
+        const { password, ...userWithoutPassword } = userDataValues;
+        userData[user.id] = {
+          ...userWithoutPassword, // Spread all user properties except password
+          numberCount: 0, // Initialize count of unique numbers
+          repeatedCount: 0, // Initialize repeated count
+        };
+      });
+
+      // Organize numbers by user
+      numbers.forEach((numberObj) => {
+        const userId = numberObj.user_id;
+        if (userData[userId]) {
+          userData[userId].numbers.push(numberObj.number);
+        }
+      });
+
+      // Calculate counts and repeated numbers
+      Object.values(userData).forEach((data) => {
+        // Use a Set to get unique numbers
+        const uniqueNumbers = new Set(data.numbers);
+        data.numberCount = uniqueNumbers.size; // Count of unique numbers
+
+        const numberFrequency = {};
+        let repeatedCount = 0;
+
+        data.numbers.forEach((num) => {
+          numberFrequency[num] = (numberFrequency[num] || 0) + 1;
         });
+
+        repeatedCount = Object.values(numberFrequency).filter(
+          (count) => count > 1
+        ).length;
+
+        data.repeatedCount = repeatedCount;
+      });
+
+      // Convert userData to an array, maintaining the order by user id
+      const sortedUsers = Object.values(userData).map((data) => {
+        // Return desired output format without the numbers array
+        const { numbers, ...userWithoutNumbers } = data;
+        return userWithoutNumbers;
+      });
 
       // Respond with sorted user data
       response.status(200).json(sortedUsers);

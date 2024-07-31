@@ -13,7 +13,7 @@ export class TokenService {
   private userPicture: string = '';
   private hasAccess: boolean = false;
   private createdAt: Date | undefined;
-  private userRole: string = '';
+  private administrator: boolean = false;
   /**
    * Constructor
    */
@@ -69,7 +69,7 @@ export class TokenService {
       this.userPicture = decoded.pictureUrl;
       this.hasAccess = decoded.allow;
       this.createdAt = decoded.createdAt;
-      this.userRole = decoded.role;
+      this.administrator = decoded.admin;
     } catch(error) {
       this.closeSession();
       return;
@@ -121,26 +121,9 @@ export class TokenService {
   getUserPicture(){
     return this.userPicture;
   }
-  /**
-   * Check if the user has access
-   * @returns 
-   */
-  userHasAccess(){
-    return this.hasAccess;
-  }
-  /**
-   * Get when the user was created
-   * @returns 
-   */
-  getUserCreatedAt(){
-    return this.createdAt;
-  }
-  /**
-   * Get the user role from the token
-   * @returns 
-   */
-  getRole(){
-    return this.userRole;
+ 
+  isAdmin(){
+    return this.administrator;
   }
   //
   // Close session. Clear local storage data
@@ -152,7 +135,7 @@ export class TokenService {
     this.userEmail = '';
     this.userPicture = '';
     this.hasAccess = false;
-    this.userRole = '';
+    this.administrator = false;
     this.createdAt = new Date("0");
   }
 }

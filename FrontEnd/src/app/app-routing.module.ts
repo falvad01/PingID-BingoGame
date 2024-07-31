@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AdminMainPage } from './admin/admin-main/admin-main.page';
 import { IonicAppPage } from './user/ionic-app/ionic-app.page';
-import { AuthGuard } from './auth.guard';
-import { AuthGuardAdmin } from './auth-admin.guard';
+import { AuthGuard } from '../guard/user/auth.guard';
+import { AuthGuardAdmin } from '../guard/admin/auth-admin.guard';
 
 
 const routes: Routes = [

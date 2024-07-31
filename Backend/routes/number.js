@@ -11,7 +11,7 @@ router.get("/", (req, res) => {
   res.send("Number endpoint");
 });
 
-router.post("/add/", tokenUtils.verifyToken, async (req, res) => {
+router.post("/add", tokenUtils.verifyToken, async (req, res) => {
   // Obtener la fecha de hoy en formato adecuado para comparación en Sequelize
   const startOfDay = new Date(today.setHours(0, 0, 0, 0));
   const endOfDay = new Date(today.setHours(23, 59, 59, 999));

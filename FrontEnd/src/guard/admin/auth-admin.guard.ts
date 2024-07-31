@@ -10,7 +10,7 @@ export class AuthGuardAdmin implements CanActivate {
   constructor(private tokenService: TokenService, private router: Router) { }
 
   canActivate(): boolean {
-    if (this.tokenService.isLogged()) {
+    if (this.tokenService.isLogged() && this.tokenService.isAdmin()) {
       // User is logged in, allow access
       return true;
     } else {
