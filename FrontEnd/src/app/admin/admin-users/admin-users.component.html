@@ -4,36 +4,76 @@
       <div class="card-body">
         <div class="row">
           <div class="col-1">
-            <button id="addButton" type="button" class="btn btn-block btn-primary">Add User</button>
+            <button id="addButton" type="button" class="btn btn-block btn-primary" data-toggle="modal"
+              data-target="#exampleModalCenter">
+              Add User
+            </button>
           </div>
         </div>
 
-        <table id="example2" class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Name & Surname</th>
-              <th>UserName</th>
-              <th>Total Numbers</th>
-              <th>Repeated Numbers</th>
-              <th>Admin</th>
-              <th>Edit</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-          <tfoot>
-            <tr>
-              <th>Id</th>
-              <th>Name & Surname</th>
-              <th>UserName</th>
-              <th>Total Numbers</th>
-              <th>Repeated Numbers</th>
-              <th>Admin</th>
-              <th>Edit</th>
-            </tr>
-          </tfoot>
-        </table>
+        <div class="card-body">
+          <div id="jsGrid"></div>
+        </div>
       </div>
+
+
+      <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalCenterTitle">Create New User</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">&#64;</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Username" [(ngModel)]="userName">
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fa fa-user"></i></span>
+                </div>
+                <input type="email" class="form-control" placeholder="Nombre y apellido" [(ngModel)]="nameSurname">
+              </div>
+
+
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                </div>
+                <input type="password" class="form-control" placeholder="Contraseña" [(ngModel)]="password">
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                </div>
+                <input type="password" class="form-control" placeholder="Confirma contraseña"
+                  [(ngModel)]="passwordConfirmation">
+              </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary"  (click)="saveUser()">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <!--/. container-fluid -->
     </div>
     <!--/. container-fluid -->
   </section>

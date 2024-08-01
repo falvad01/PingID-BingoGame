@@ -1,6 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -11,23 +11,32 @@ import { AdminHeaderComponent } from '../admin-header/admin-header.component';
 import { AdminMenuComponent } from '../admin-menu/admin-menu.component';
 import { AdminFooterComponent } from '../admin-footer/admin-footer.component';
 import { AdminDashboardComponent } from '../admin-dashboard/admin-dashboard.component';
+import { AdminUsersComponent } from '../admin-users/admin-users.component';
 
 
 
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
     IonicModule,
     AdminMainPageRoutingModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   declarations: [
     AdminMainPage,
     AdminHeaderComponent,
     AdminMenuComponent,
     AdminFooterComponent,
-    AdminDashboardComponent
-   
+    AdminDashboardComponent,
+    AdminUsersComponent
+
+  ],
+  exports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
+
 export class AdminMainPageModule { }

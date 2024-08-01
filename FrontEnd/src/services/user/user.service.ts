@@ -42,5 +42,32 @@ export class UserService {
     });
   }
 
+  registerNewUser(userName: String, nameSurname: String, password: string, admin: boolean) {
+
+
+    return new Promise((resolve, reject) => {
+      const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+      console.log("Registering %s", userName)
+
+      this.http.post(environment.API_PATH + 'user/register', {
+        "username": userName,
+        "nameSurname": nameSurname,
+        "password": password,
+        "admin": admin
+      }, { headers }).subscribe({
+        next: (data: any) => {
+          console.log(data)
+          resolve(data);
+        },
+        error: error => {
+          this.ErrorMessage = error.error ? error.error.error : error.message;
+          console.log(this.ErrorMessage);
+          reject(false);
+        }
+      });
+    });
+  }
+
 
 }

@@ -147,6 +147,42 @@ router.post("/login/admin", validateLogin, async (request, response) => {
 });
 
 /**
+ * Register a new User
+ */
+router.post(
+  "/register",
+  adminTokenUtils.verifyToken,
+  async (request, response) => {
+    try {
+      var { username, nameSurname, password, admin } = request.body;
+      var encrytedPass;
+
+      await bcrypt.hash(password, 10, async function (err, hash) {
+        encrytedPass = hash;
+
+        const [user, created] = await userModel.findOrCreate({
+          where: { username: username },
+          defaults: {
+            name_surname: nameSurname,
+            password: encrytedPass,
+            administrator: admin == true ? 1 : 0,
+          },
+        });
+        
+        if (created) {
+          response.status(200).json({ messaege: "User created correctly" });
+        } else {
+          response.status(400).json({ messaege: "User already exists" });
+        }
+      });
+    } catch (error) {
+      console.error("Error during login process:", error);
+      response.status(500).json({ error: "Internal server error" });
+    }
+  }
+);
+
+/**
  * Get the clasification of the users, dependending the number of numbers and repeated umbers of each users
  */
 router.get(
@@ -234,6 +270,7 @@ router.get(
         const { password, ...userWithoutPassword } = userDataValues;
         userData[user.id] = {
           ...userWithoutPassword, // Spread all user properties except password
+          numbers: [], // Initialize empty numbers array
           numberCount: 0, // Initialize count of unique numbers
           repeatedCount: 0, // Initialize repeated count
         };

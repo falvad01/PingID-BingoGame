@@ -36,7 +36,9 @@
               "src/theme/variables.scss",
               "src/css/adminlte.min.css",
               "src/assets/plugins/fontawesome-free/css/all.min.css",
-              "src/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css"
+              "src/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css",
+              "node_modules/jsgrid/dist/jsgrid.min.css",
+              "node_modules/jsgrid/dist/jsgrid-theme.min.css"
             ],
             "scripts": [
               "/node_modules/jquery/dist/jquery.min.js",
@@ -46,7 +48,8 @@
               "src/assets/plugins/jquery-mapael/jquery.mapael.min.js",
               "src/assets/plugins/jquery-mapael/maps/usa_states.min.js",
               "src/assets/plugins/bootstrap/js/bootstrap.bundle.min.js",
-              "src/assets/dist/js/adminlte.js"
+              "src/assets/dist/js/adminlte.js",
+              "node_modules/jsgrid/dist/jsgrid.min.js"
             ]
           },
           "configurations": {

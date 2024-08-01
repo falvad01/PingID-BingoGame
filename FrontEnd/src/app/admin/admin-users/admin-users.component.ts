@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/services/user/user.service';
 
+declare var jsGrid: any;
+declare var $: any; // jQuery
+declare var jsGrid: any; // jsGrid
+
 interface User {
   id: number;
   username: string;
@@ -11,97 +15,112 @@ interface User {
   repeatedCount: number;
 }
 
-
 @Component({
   selector: 'app-admin-users',
   templateUrl: './admin-users.component.html',
   styleUrls: ['./admin-users.component.scss'],
 })
-export class AdminUsersComponent {
+export class AdminUsersComponent implements OnInit {
+
+
+  userName: any;
+  nameSurname: any;
+  password: any;
+  passwordConfirmation: any;
+  errorText: string | undefined;
 
   constructor(private userService: UserService) {
-    this.getAllUsers()
+
+  }
+
+  ngOnInit() {
+    this.getAllUsers();
   }
 
   getAllUsers() {
-
     this.userService.getAllUSers().then((data: any) => {
-
-      this.populateTable(data);
-
+      this.initializeJsGrid(data);
     }).catch((error: any) => {
-
-    })
-
-
-
+      console.error('Error fetching users:', error);
+    });
   }
 
-  // Method to populate the table
-  populateTable(data: User[]): void {
-    const tbody = document.querySelector('#example2 tbody');
-    if (tbody) {
-      tbody.innerHTML = ''; // Clear existing rows
+  initializeJsGrid(data: User[]) {
+    $('#jsGrid').jsGrid({
+      controller: {
+        loadData: $.noop,
+        insertItem: $.noop,
+        updateItem: $.noop,
+        deleteItem: $.noop
+      },
 
-      data.forEach(user => {
-        const newRow = document.createElement('tr');
+      width: "100%",
+      height: "auto",
+      inserting: false,
+      editing: false,
+      sorting: true,
+      paging: true,
+      data: data,
+      heading: true,
+      
 
-        // Create new cells and append them to the row
-        const idCell = document.createElement('td');
-        idCell.textContent = user.id.toString();
-        newRow.appendChild(idCell);
+      fields: [
+        { name: "id", type: "number", width: 30, title: "ID" },
+        { name: "name_surname", type: "text", width: 150, title: "Name & Surname" },
+        { name: "username", type: "text", width: 150, title: "UserName" },
+        { name: "numberCount", type: "number", width: 80, title: "Total Numbers" },
+        { name: "repeatedCount", type: "number", width: 80, title: "Repeated Numbers" },
+        {
+          name: "administrator",
+          type: "checkbox",
+          title: "Admin",
+          width: 40,
+          itemTemplate: (value: any) => {
+            return value === 1 ? '<ion-icon name="checkmark-done-outline"></ion-icon>' : '';
+          }
+        },
+        {
+          title: "Edit",
+          align: "center",
+          width: 40,
+          itemTemplate: (_: any, item: any) => {
+            const $editButton = $('<button>')
+              .addClass('btn btn-info')
+              .text('Edit')
+              .on('click', () => this.editUser(item.id));
+            return $editButton;
+          }
+        }
+      ]
+    });
+  }
 
-        const nameSurnameCell = document.createElement('td');
-        nameSurnameCell.textContent = user.name_surname;
-        newRow.appendChild(nameSurnameCell);
+  /**
+   * Save the user
+   */
+  saveUser() {
 
-        const usernameCell = document.createElement('td');
-        usernameCell.textContent = user.username;
-        newRow.appendChild(usernameCell);
+    if (this.userName == "" || this.nameSurname == "" || this.password == "" || this.passwordConfirmation == "") {
+      this.errorText = "Todos los campos son olbigatorios"
+    } else {
 
-        const totalNumbersCell = document.createElement('td');
-        totalNumbersCell.textContent = user.numberCount.toString();
-        newRow.appendChild(totalNumbersCell);
-
-        const repeatedNumbersCell = document.createElement('td');
-        repeatedNumbersCell.textContent = user.repeatedCount.toString();
-        newRow.appendChild(repeatedNumbersCell);
-
-        // Admin checkbox cell
-        // TypeScript code to create the table rows
-        const adminCell = document.createElement('td');
-        adminCell.className = 'admin-cell';
-
-        const adminIcon = document.createElement('ion-icon');
-        adminIcon.name = user.administrator === 1 ? 'checkmark-done-outline' : ''; // Set the icon based on admin status
-        adminIcon.className = 'admin-icon'; // Apply the styling class
-
-        adminCell.appendChild(adminIcon);
-        newRow.appendChild(adminCell);
+      if (this.password != this.passwordConfirmation) {
+        this.errorText = "Las constraseñas no coinciden"
+      } else {
 
 
 
-        // Edit button cell
-        const editCell = document.createElement('td');
-        const editButton = document.createElement('button');
-        editButton.textContent = 'Edit';
-        editButton.className = 'btn btn-info'; // Bootstrap class for styling
-        editButton.addEventListener('click', () => this.editUser(user.id));
-        editCell.appendChild(editButton);
-        newRow.appendChild(editCell);
 
-        // Append the new row to the tbody
-        tbody.appendChild(newRow);
+      }
 
-        // Append the new row to the tbody
-        tbody.appendChild(newRow);
-      });
     }
 
   }
-  // Method to handle user editing
+
   editUser(userId: number): void {
     console.log('Edit user with ID:', userId);
     // Add your logic to handle user editing here
   }
+
+
 }
