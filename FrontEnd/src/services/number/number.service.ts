@@ -74,6 +74,33 @@ export class NumberService {
     });
   }
 
+   /**
+   * Get all the numbers for the logged user
+   * @returns the numbers or an error
+   */
+   retrieveAllNumbers() {
+
+    return new Promise((resolve, reject) => {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': this.token.getToken()
+      });
+
+      console.log("Getting all user numbers")
+
+      this.http.get(environment.API_PATH + 'number/getAllNumbers', { headers: headers }).subscribe({
+        next: (data: any) => {
+          console.log("Peticion correct %s", data)
+          resolve(data);
+        },
+        error: error => {
+          this.ErrorMessage = error.error ? error.error.error : error.message;
+          reject(error);
+        }
+      });
+    });
+  }
+
   getUserCLasification() {
 
     return new Promise((resolve, reject) => {

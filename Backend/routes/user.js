@@ -172,7 +172,7 @@ router.post(
         if (created) {
           response.status(200).json({ messaege: "User created correctly" });
         } else {
-          response.status(400).json({ messaege: "User already exists" });
+          response.status(416).json({ messaege: "User already exists" });
         }
       });
     } catch (error) {
@@ -237,12 +237,21 @@ router.get(
         data.repeatedCount = repeatedCount;
       });
 
-      // Convert userData to an array, maintaining the order by user id
-      const sortedUsers = Object.values(userData).map((data) => {
-        // Return desired output format without the numbers array
-        const { numbers, ...userWithoutNumbers } = data;
-        return userWithoutNumbers;
-      });
+      // Convert userData to an array and sort by numberCount and repeatedCount
+      const sortedUsers = Object.values(userData)
+        .map((data) => {
+          // Return desired output format without the numbers array
+          const { numbers, ...userWithoutNumbers } = data;
+          return userWithoutNumbers;
+        })
+        .sort((a, b) => {
+          // Sort by numberCount descending
+          if (b.numberCount !== a.numberCount) {
+            return b.numberCount - a.numberCount;
+          }
+          // If numberCount is the same, sort by repeatedCount descending
+          return b.repeatedCount - a.repeatedCount;
+        });
 
       // Respond with sorted user data
       response.status(200).json(sortedUsers);
@@ -251,6 +260,7 @@ router.get(
     }
   }
 );
+
 
 router.get(
   "/getAllUsers",

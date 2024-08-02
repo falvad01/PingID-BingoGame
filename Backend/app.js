@@ -9,7 +9,7 @@ app.use(cors())
 
 // Especificar el puerto y la dirección en la que escuchar
 const port = process.env.PORT || 4000;
-const hostname = "127.0.0.1";
+const hostname = "15.20.140.94";
 
 // Importar las rutas
 const userRoutes = require("./routes/user");

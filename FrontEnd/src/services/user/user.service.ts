@@ -46,7 +46,10 @@ export class UserService {
 
 
     return new Promise((resolve, reject) => {
-      const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': this.token.getToken()
+      });
 
       console.log("Registering %s", userName)
 

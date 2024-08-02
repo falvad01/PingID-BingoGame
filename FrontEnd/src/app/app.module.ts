@@ -17,6 +17,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, ReactiveFormsModule, FormsModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
-  exports: [IonicModule, FormsModule,ReactiveFormsModule]
+  exports: [IonicModule, FormsModule, ReactiveFormsModule]
 })
 export class AppModule { }

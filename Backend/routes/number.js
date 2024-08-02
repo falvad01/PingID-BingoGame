@@ -6,6 +6,7 @@ require("dotenv").config();
 const { Op, literal } = require("sequelize");
 const today = new Date();
 const tokenUtils = require("../utils/TokenUtils");
+const adminTokenUtils = require("../utils/AdminTokenUtils");
 
 router.get("/", (req, res) => {
   res.send("Number endpoint");
@@ -62,7 +63,21 @@ router.get("/getUserNumbers", tokenUtils.verifyToken, (req, res) => {
       .then((data) => {
         res.status(200).send(data);
       });
-  } catch (errror){
+  } catch (errror) {
+    res.status(500).send(errror);
+  }
+});
+
+router.get("/getAllNumbers", adminTokenUtils.verifyToken, (req, res) => {
+  try {
+    numberModel
+      .findAll({
+        attributes: ["number", "created_at"],
+      })
+      .then((data) => {
+        res.status(200).send(data);
+      });
+  } catch (errror) {
     res.status(500).send(errror);
   }
 });

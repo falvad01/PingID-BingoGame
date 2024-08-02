@@ -24,7 +24,7 @@ export class Tab3Page {
   private async getUsersQualy() {
     try {
       const response: any = await this.numberService.getUserCLasification();
-      console.log('Original response:', response);
+      console.error('Error retrieving user numbers:', response);
       this.processData(response);
     } catch (error) {
       console.error('Error retrieving user numbers:', error);
@@ -37,12 +37,13 @@ export class Tab3Page {
    */
   private processData(data: any) {
     console.log('Processing data...');
+  
     if (Array.isArray(data)) {
       this.tableData = data.map((item: any, index: number) => ({
         position: index + 1,
         number_of_single_numbers: item.numberCount,
         number_of_repeated_numbers: item.repeatedCount,
-        userName: item.user.username
+        userName: item.username
       }));
       console.log('Transformed tableData:', this.tableData);
     } else {

@@ -28,6 +28,7 @@ export class AdminUsersComponent implements OnInit {
   password: any;
   passwordConfirmation: any;
   errorText: string | undefined;
+  admin: boolean = false;
 
   constructor(private userService: UserService) {
 
@@ -62,7 +63,7 @@ export class AdminUsersComponent implements OnInit {
       paging: true,
       data: data,
       heading: true,
-      
+
 
       fields: [
         { name: "id", type: "number", width: 30, title: "ID" },
@@ -108,7 +109,13 @@ export class AdminUsersComponent implements OnInit {
         this.errorText = "Las constraseñas no coinciden"
       } else {
 
+        this.userService.registerNewUser(this.userName, this.nameSurname, this.password, this.admin).then(data => {
 
+          console.log(data)
+
+        }).catch(error => {
+          console.error(error)
+        });
 
 
       }

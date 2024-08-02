@@ -12,6 +12,9 @@ import { AdminMenuComponent } from '../admin-menu/admin-menu.component';
 import { AdminFooterComponent } from '../admin-footer/admin-footer.component';
 import { AdminDashboardComponent } from '../admin-dashboard/admin-dashboard.component';
 import { AdminUsersComponent } from '../admin-users/admin-users.component';
+import { NumberTableComponent } from '../number-table/number-table.component';
+import { NumberBarGraphComponent } from '../number-bar-graph/number-bar-graph.component';
+import { NumberStadisticsComponent } from '../number-stadistics/number-stadistics.component';
 
 
 
@@ -21,7 +24,7 @@ import { AdminUsersComponent } from '../admin-users/admin-users.component';
     IonicModule,
     AdminMainPageRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   declarations: [
     AdminMainPage,
@@ -29,7 +32,10 @@ import { AdminUsersComponent } from '../admin-users/admin-users.component';
     AdminMenuComponent,
     AdminFooterComponent,
     AdminDashboardComponent,
-    AdminUsersComponent
+    AdminUsersComponent,
+    NumberTableComponent,
+    NumberBarGraphComponent,
+    NumberStadisticsComponent
 
   ],
   exports: [
