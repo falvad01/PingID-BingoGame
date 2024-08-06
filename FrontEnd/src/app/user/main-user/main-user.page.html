@@ -1,33 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+<div class="wrapper">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AdminLTE 3 | Dashboard 2</title>
+    <app-main-header></app-main-header>
+    <app-main-menu></app-main-menu>
 
-
-</head>
-
-<body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
-    <div class="wrapper">
-
-        
-
-        <app-main-header></app-main-header>
-        <app-main-menu></app-main-menu>
-
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
-            <section class="content">
-                <div class="container-fluid">
-                    <router-outlet></router-outlet>
-                </div>
-            </section>
-        </div>
-        <app-main-footer></app-main-footer>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <section class="content">
+            <div class="container-fluid">
+                <router-outlet></router-outlet>
+            </div>
+        </section>
     </div>
-</body>
-
-
-</html>
+    <app-main-footer></app-main-footer>
+</div>

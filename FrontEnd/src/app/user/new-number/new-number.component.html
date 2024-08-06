@@ -1,14 +1,22 @@
-<div class="content ion-padding">
-  <div style="text-align: center">
-    <h3>{{ todayDate }}</h3>
-    <div class="input-group">
-      <label for="numero-hoy">Numero de hoy</label>
-      <input id="numero-hoy" type="number" placeholder="Introduce un numero entre 1 y 99" [(ngModel)]="inputNumber" />
+<div class="card">
+  
+  <div class="card-body">
+    <div style="text-align: center; margin-bottom: 16px;">
+      <h3>{{ todayDate }}</h3>
     </div>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fas fa-plus-circle"></i></span>
+      </div>
+      <input type="number" class="form-control" placeholder="Introduce un numero entre 1 y 99"
+        [(ngModel)]="inputNumber">
+    </div>
+
     <button type="button" class="btn btn-primary" [disabled]="!inputNumber" (click)="openDialog()" data-toggle="modal"
       data-target="#confirmationModal">
       Enviar
     </button>
+
   </div>
 </div>
 

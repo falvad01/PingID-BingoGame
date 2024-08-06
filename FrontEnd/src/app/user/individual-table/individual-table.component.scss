@@ -75,11 +75,12 @@
 }
 
 .tiny-text {
+  position: relative;
   font-size: 14px;
   /* Smaller font size for tiny text */
   margin-top: 5px;
   /* Space above the tiny text */
-  text-align: center;
+  left: 40%;
   /* Center the tiny text */
   font-weight: normal;
   /* Normal weight for tiny text */
