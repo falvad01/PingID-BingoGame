@@ -2,6 +2,7 @@
 const express = require("express");
 const app = express();
 const sequelize = require("./database/DBConnection");
+const sec = require("./utils/Securitation")
 require('dotenv').config()
 var cors = require('cors')
 
@@ -19,6 +20,7 @@ const numberRoutes = require("./routes/number");
 app.use(express.json());
 app.use("/user", userRoutes);
 app.use("/number", numberRoutes);
+sec.securize(app,process.env.ALLOWED_IPS)
 
 // Sincronizar con la base de datos y arrancar el servidor
 sequelize

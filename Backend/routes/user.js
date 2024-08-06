@@ -29,6 +29,8 @@ router.post("/login", validateLogin, async (request, response) => {
       return response.status(400).json({ errors: errors.array() });
     }
 
+
+
     var { username, password } = request.body;
 
     console.log(`User ${username} starts the login process`);

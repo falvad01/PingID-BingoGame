@@ -56,13 +56,14 @@ export class TokenService {
    */
   decodeToken( token: string )
   {
+    console.log("Decoding token")
     //
     // check jwt token
     try{
       const helper = new JwtHelperService();
       const decoded = helper.decodeToken( token );
       //
-      this.userName = decoded.userName;
+      this.userName = decoded.username;
       this.userId = decoded.userId;
       this.user = decoded.user;
       this.userEmail = decoded.userEmail;

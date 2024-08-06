@@ -101,6 +101,29 @@ export class NumberService {
     });
   }
 
+  getStadistics() {
+
+    return new Promise((resolve, reject) => {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': this.token.getToken()
+      });
+
+      console.log("Getting all user numbers")
+
+      this.http.get(environment.API_PATH + 'number/getStadistics', { headers: headers }).subscribe({
+        next: (data: any) => {
+          console.log("Peticion correct %s", data)
+          resolve(data);
+        },
+        error: error => {
+          this.ErrorMessage = error.error ? error.error.error : error.message;
+          reject(error);
+        }
+      });
+    });
+  }
+
   getUserCLasification() {
 
     return new Promise((resolve, reject) => {

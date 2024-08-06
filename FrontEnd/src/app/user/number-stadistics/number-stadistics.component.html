@@ -1,0 +1,75 @@
+<!-- Info boxes -->
+<div class="row">
+  <div class="col-12 col-sm-6 col-md-4">
+    <div class="info-box">
+      <span class="info-box-icon bg-info elevation-1"><i class="fas fa-chevron-circle-up"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Número que más ha salido</span>
+        <span class="info-box-number">{{ mostFrequentNumber }}</span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+  <!-- /.col -->
+  <div class="col-12 col-sm-6 col-md-4">
+    <div class="info-box mb-3">
+      <span class="info-box-icon bg-info elevation-1"><i class="fas fa-chevron-circle-down"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Total de números introducidos</span>
+        <span class="info-box-number">{{ allNumbersIntroduced }}</span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+  <!-- /.col -->
+  <div class="col-12 col-sm-6 col-md-4">
+    <div class="info-box mb-3">
+      <span class="info-box-icon bg-info elevation-1"><i class="fas fa-copy"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Cantidad de números totales</span>
+        <span class="info-box-number">{{ totalNumbers }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <!-- /.col -->
+  <div class="col-12 col-sm-6 col-md-4">
+    <div class="info-box mb-3">
+      <span class="info-box-icon bg-info elevation-1"><i class="far fa-copy"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Nº que faltan por salir</span>
+        <span class="info-box-number">{{ missingNumbers }}</span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+  <div class="col-12 col-sm-6 col-md-4">
+    <div class="info-box mb-3">
+      <span class="info-box-icon bg-info elevation-1"><i class="fas fa-money-bill-alt"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Nº que solo han salido una vez</span>
+        <span class="info-box-number">{{ onceAppearedCount }}</span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+  <div class="col-12 col-sm-6 col-md-4">
+    <div class="info-box mb-3">
+      <span class="info-box-icon bg-info elevation-1"><i class="fas fa-money-bill"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Nº que han salido más de una vez</span>
+        <span class="info-box-number">{{ moreThanOnceCount }}</span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+  <!-- /.col -->
+</div>
+<!-- /.row -->
