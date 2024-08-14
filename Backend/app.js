@@ -2,11 +2,11 @@
 const express = require("express");
 const app = express();
 const sequelize = require("./database/DBConnection");
-const sec = require("./utils/Securitation")
-require('dotenv').config()
-var cors = require('cors')
+const sec = require("./utils/Securitation");
+require("dotenv").config();
+var cors = require("cors");
 
-app.use(cors()) 
+app.use(cors());
 
 // Especificar el puerto y la dirección en la que escuchar
 const port = process.env.PORT || 4000;
@@ -17,10 +17,12 @@ const userRoutes = require("./routes/user");
 const numberRoutes = require("./routes/number");
 
 // Usar las rutas
+//app.use(express.static("html/frontend"));
 app.use(express.json());
 app.use("/user", userRoutes);
 app.use("/number", numberRoutes);
-sec.securize(app,process.env.ALLOWED_IPS)
+sec.securize(app, process.env.ALLOWED_IPS);
+
 
 // Sincronizar con la base de datos y arrancar el servidor
 sequelize

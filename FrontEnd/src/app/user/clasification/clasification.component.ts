@@ -1,8 +1,7 @@
 import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { NumberService } from 'src/services/number/number.service';
-import { TokenService } from 'src/services/token/token.service';
+import { UserService } from 'src/services/user/user.service';
 
 @Component({
   selector: 'app-clasification',
@@ -14,22 +13,28 @@ import { TokenService } from 'src/services/token/token.service';
 export class ClasificationComponent {
   tableData: any[] = [];
 
-  constructor(private numberService: NumberService, private router: Router, private tokenService: TokenService) {
+  constructor(private userService: UserService) {
 
     this.getUsersQualy();
   }
 
-
+  /**
+   * Get the user clasification
+   */
   private async getUsersQualy() {
     console.log("Starting collectiong user data")
     try {
-      const response: any = await this.numberService.getUserCLasification();
+      const response: any = await this.userService.getUserCLasification();
       this.processData(response);
     } catch (error) {
       console.error('Error retrieving user numbers:', error);
     }
   }
 
+  /**
+   * Porcess the users data
+   * @param data 
+   */
   private processData(data: any) {
     if (Array.isArray(data)) {
       this.tableData = data.map((item: any, index: number) => ({

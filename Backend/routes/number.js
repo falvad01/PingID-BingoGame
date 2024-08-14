@@ -1,12 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const numberModel = require("../database/models/number");
+const userModel = require("../database/models/user");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { Op, literal } = require("sequelize");
 
 const tokenUtils = require("../utils/TokenUtils");
 const adminTokenUtils = require("../utils/AdminTokenUtils");
+const utils = require("../utils/utils");
 
 router.get("/", (req, res) => {
   res.send("Number endpoint");
@@ -27,28 +29,52 @@ router.post("/add", tokenUtils.verifyToken, async (req, res) => {
   token = token.replace(/^Bearer\s+/, "");
   var tokenDecrypted = tokenUtils.parseJwt(token);
 
-  const [number, created] = await numberModel.findOrCreate({
-    where: {
-      user_id: tokenDecrypted.userId,
-      created_at: {
-        [Op.between]: [startOfDay, endOfDay], // Busca registros con created_at dentro del rango de hoy
-      },
-    },
-    defaults: {
-      number: req.query.number,
-      created_at: new Date(), // Asegura que created_at se establezca con la fecha actual si se crea
-    },
-  });
+  const number = parseInt(req.query.number, 10);
 
-  if (created) {
-    return res.status(201).json({
-      message: "Number added correctly",
-      number: number.number,
+  console.log("Adding number %d", number)
+
+  // Validación para permitir solo números enteros entre 1 y 99
+  if (Number.isInteger(number) && number > 0 && number < 100) {
+    const [number, created] = await numberModel.findOrCreate({
+      where: {
+        user_id: tokenDecrypted.userId,
+        created_at: {
+          [Op.between]: [startOfDay, endOfDay], // Busca registros con created_at dentro del rango de hoy
+        },
+      },
+      defaults: {
+        number: number,
+        created_at: new Date(), // Asegura que created_at se establezca con la fecha actual si se crea
+      },
     });
   } else {
+    console.log(
+      " Fail creating Nmber %s for user %s",
+      number,
+      tokenDecrypted.userId
+    );
+    return res.status(469).json({
+      message: "Fail creating number",
+      number: number,
+    });
+  }
+
+  if (created) {
+    console.log("Number %s created for user %s", number, tokenDecrypted.userId);
+    return res.status(201).json({
+      message: "Number added correctly",
+      number: number,
+    });
+  } else {
+    console.log(
+      "Number %s already created for user %s",
+      number,
+      tokenDecrypted.userId
+    );
+
     return res.status(469).json({
       message: "Number already created",
-      number: number.number,
+      number: number,
     });
   }
 });
@@ -72,11 +98,20 @@ router.get("/getUserNumbers", tokenUtils.verifyToken, (req, res) => {
   }
 });
 
+/**
+ * Get all the stored numbers
+ */
 router.get("/getAllNumbers", tokenUtils.verifyToken, (req, res) => {
   try {
     numberModel
       .findAll({
         attributes: ["number", "created_at"],
+        include: [
+          {
+            model: userModel, // Nombre del modelo asociado
+            attributes: ["username"], // El atributo que deseas obtener de la tabla User
+          },
+        ],
       })
       .then((data) => {
         res.status(200).send(data);
@@ -115,8 +150,7 @@ router.get("/getStadistics", tokenUtils.verifyToken, async (req, res) => {
     let maxCount = 0; // Maximum count for the most frequent number
     let minCount = Infinity; // Minimum count for the least frequent number
 
-
-    allNumbersIntroduced = data.length
+    allNumbersIntroduced = data.length;
 
     // Loop over possible numbers (1-99)
     for (let i = 1; i <= 99; i++) {
@@ -131,7 +165,6 @@ router.get("/getStadistics", tokenUtils.verifyToken, async (req, res) => {
       // Update least frequent number
       if (count < minCount) {
         minCount = count;
-       
       }
 
       // Count unique, missing, single appearance, and multiple appearance numbers
@@ -162,6 +195,35 @@ router.get("/getStadistics", tokenUtils.verifyToken, async (req, res) => {
       onceAppearedCount,
       moreThanOnceCount,
     });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching statistics." });
+  }
+});
+
+/**
+ * Obtain the actual day records
+ */
+router.get("/getTodayNumbers", tokenUtils.verifyToken, async (req, res) => {
+  try {
+    numberModel
+      .findAll({
+        attributes: ["number", "created_at"],
+        where: {
+          created_at: utils.dateToEpoch(new Date()),
+        },
+        include: [
+          {
+            model: userModel, // Nombre del modelo asociado
+            attributes: ["username", "profile_image"], // El atributo que deseas obtener de la tabla User
+          },
+        ],
+      })
+      .then((data) => {
+        res.status(200).send(data);
+      });
   } catch (error) {
     console.error(error);
     res

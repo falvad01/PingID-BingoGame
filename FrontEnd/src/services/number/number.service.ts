@@ -34,7 +34,7 @@ export class NumberService {
 
       this.http.post(environment.API_PATH + 'number/add?number=' + number, null, { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct %s", data)
+          console.log("Peticion correct")
           resolve(true);
         },
         error: error => {
@@ -44,8 +44,6 @@ export class NumberService {
       });
     });
   }
-
-
 
   /**
    * Get all the numbers for the logged user
@@ -63,7 +61,7 @@ export class NumberService {
 
       this.http.get(environment.API_PATH + 'number/getUserNumbers', { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct %s", data)
+          console.log("Peticion correct")
           resolve(data);
         },
         error: error => {
@@ -74,11 +72,11 @@ export class NumberService {
     });
   }
 
-   /**
-   * Get all the numbers for the logged user
-   * @returns the numbers or an error
-   */
-   retrieveAllNumbers() {
+  /**
+  * Get all the numbers for the logged user
+  * @returns the numbers or an error
+  */
+  retrieveAllNumbers() {
 
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders({
@@ -90,7 +88,7 @@ export class NumberService {
 
       this.http.get(environment.API_PATH + 'number/getAllNumbers', { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct %s", data)
+          console.log("Peticion correct")
           resolve(data);
         },
         error: error => {
@@ -101,6 +99,11 @@ export class NumberService {
     });
   }
 
+  /**
+   * Obtain the stadistics from the backend
+   * 
+   * @returns 
+   */
   getStadistics() {
 
     return new Promise((resolve, reject) => {
@@ -113,7 +116,7 @@ export class NumberService {
 
       this.http.get(environment.API_PATH + 'number/getStadistics', { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct %s", data)
+          console.log("Peticion correct")
           resolve(data);
         },
         error: error => {
@@ -124,7 +127,12 @@ export class NumberService {
     });
   }
 
-  getUserCLasification() {
+  /**
+   * Obtain tthe numbers introduced in the actual day
+   * 
+   * @returns  
+   */
+  getDayNumbers() {
 
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders({
@@ -132,11 +140,11 @@ export class NumberService {
         'Authorization': this.token.getToken()
       });
 
-      console.log("Getting all user numbers")
+      console.log("Getting day numbers")
 
-      this.http.get(environment.API_PATH + 'user/getUsersQualify', { headers: headers }).subscribe({
+      this.http.get(environment.API_PATH + 'number/getTodayNumbers', { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct %s", data)
+          console.log("Peticion correct")
           resolve(data);
         },
         error: error => {

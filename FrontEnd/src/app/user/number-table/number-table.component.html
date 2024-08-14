@@ -4,8 +4,9 @@
   </div>
   <div class="card-body">
     <div class="row">
-      <div *ngFor="let num of numbers" class="cell" [ngClass]="getHighlightClass(num)">
-        <div style="top: 35%;">{{ num }}</div>
+      <div *ngFor="let num of numbers" class="cell" [ngClass]="getHighlightClass(num)"
+        pTooltip="{{getTooltipMessage(num)}}" tooltipPosition="top" placeholder="Top">
+        <div class="text">{{ num }}</div>
         <div *ngIf="blueNumbers.includes(num)" class="tiny-text">
           {{ getRepetitionCount(num) }}
         </div>

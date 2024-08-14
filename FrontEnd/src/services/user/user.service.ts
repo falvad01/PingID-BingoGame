@@ -72,5 +72,33 @@ export class UserService {
     });
   }
 
+    /**
+   * Obtain que users clasifications
+   * 
+   * @returns 
+   */
+    getUserCLasification() {
+
+      return new Promise((resolve, reject) => {
+        const headers = new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Authorization': this.token.getToken()
+        });
+  
+        console.log("Getting all user numbers")
+  
+        this.http.get(environment.API_PATH + 'user/getUsersQualify', { headers: headers }).subscribe({
+          next: (data: any) => {
+            console.log("Peticion correct %s", data)
+            resolve(data);
+          },
+          error: error => {
+            this.ErrorMessage = error.error ? error.error.error : error.message;
+            reject(error);
+          }
+        });
+      });
+    }
+
 
 }

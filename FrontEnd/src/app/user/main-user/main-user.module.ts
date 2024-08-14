@@ -13,6 +13,11 @@ import { NumberStadisticsComponent } from '../number-stadistics/number-stadistic
 import { NumberTableComponent } from '../number-table/number-table.component';
 import { MainUserPage } from './main-user.page';
 import { NumberBarGraphComponent } from '../number-bar-graph/number-bar-graph.component';
+import { TooltipModule } from 'primeng/tooltip';
+import { ClasificationDonnutChartComponent } from "../clasification-donnut-chart/clasification-donnut-chart.component";
+import { NumbersTimeLineComponent } from "../numbers-time-line/numbers-time-line.component";
+import { EditProfileComponent } from 'src/app/edit-profile/edit-profile.component';
+
 
 
 @NgModule({
@@ -22,7 +27,10 @@ import { NumberBarGraphComponent } from '../number-bar-graph/number-bar-graph.co
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-  ],
+    TooltipModule,
+    ClasificationDonnutChartComponent,
+    NumbersTimeLineComponent,
+],
   declarations: [
     MainUserPage,
     MainHeaderComponent,
@@ -33,7 +41,8 @@ import { NumberBarGraphComponent } from '../number-bar-graph/number-bar-graph.co
     MainFooterComponent,
     NumberStadisticsComponent,
     NumberTableComponent,
-    NumberBarGraphComponent
+    NumberBarGraphComponent,
+    EditProfileComponent
 
   ],
 

@@ -29,8 +29,6 @@ router.post("/login", validateLogin, async (request, response) => {
       return response.status(400).json({ errors: errors.array() });
     }
 
-
-
     var { username, password } = request.body;
 
     console.log(`User ${username} starts the login process`);
@@ -170,7 +168,7 @@ router.post(
             administrator: admin == true ? 1 : 0,
           },
         });
-        
+
         if (created) {
           response.status(200).json({ messaege: "User created correctly" });
         } else {
@@ -185,7 +183,7 @@ router.post(
 );
 
 /**
- * Get the clasification of the users, dependending the number of numbers and repeated umbers of each users
+ * Get the classification of the users, depending on the number of numbers and repeated numbers of each user
  */
 router.get(
   "/getUsersQualify",
@@ -193,7 +191,9 @@ router.get(
   async (request, response) => {
     try {
       // Fetch all users and numbers from the database
-      const users = await userModel.findAll();
+      const users = await userModel.findAll({
+        attributes: ["id", "username", "name_surname", "profile_image"],
+      });
       const numbers = await numberModel.findAll();
 
       // Map to store user data
@@ -202,8 +202,8 @@ router.get(
       // Initialize user data
       users.forEach((user) => {
         const userDataValues = user.get({ plain: true });
-        const { password, ...userWithoutPassword } = userDataValues;
-        userData[user.id] = {
+        const { password, id, ...userWithoutPassword } = userDataValues;
+        userData[id] = {
           ...userWithoutPassword, // Spread all user properties except password
           numbers: [], // Initialize empty numbers array
           numberCount: 0, // Initialize count of unique numbers
@@ -242,7 +242,7 @@ router.get(
       // Convert userData to an array and sort by numberCount and repeatedCount
       const sortedUsers = Object.values(userData)
         .map((data) => {
-          // Return desired output format without the numbers array
+          // Return desired output format without the numbers array and id
           const { numbers, ...userWithoutNumbers } = data;
           return userWithoutNumbers;
         })

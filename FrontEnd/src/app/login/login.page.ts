@@ -31,8 +31,10 @@ export class LoginPage implements OnInit {
     this.authService.logedObservable$.subscribe((data: boolean) => {
       console.log(data)
       if (data == true) {
+
         this.router.navigate(['/user/dashboard']);
       } else {
+        console.error("Bad crecentials")
         this.errorText = "Credential are incorrect"
         this.showErrorUser = true;
         this.showErrorPass = true;
@@ -51,29 +53,40 @@ export class LoginPage implements OnInit {
       path: '../../../assets/dice_animation.json' // Ruta al archivo Lottie
     });
   }
-  
+
+  /**
+   * Login in the app
+   */
   login() {
 
     if (this.user === '') {
+      console.error("User error")
       this.showErrorUser = true;
       this.errorText = "All fields are mandatory"
     } else {
+      console.log("No User error")
+
       this.showErrorUser = false;
     }
 
     if (this.pass === '') {
+      console.error("Pass error")
+
       this.showErrorPass = true;
       this.errorText = "All fields are mandatory"
 
     } else {
-      this.showErrorPass = false;
+      console.log("No Pass error")
 
+      this.showErrorPass = false;
     }
 
     if (!this.showErrorPass && !this.showErrorUser) {
+      console.log("Continue")
+      this.errorText = ""
+      this.showErrorUser = false;
+      this.showErrorPass = false;
       this.authService.login(this.user, this.pass);
     }
-
-
   }
 }

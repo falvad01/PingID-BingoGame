@@ -27,10 +27,12 @@
     "angular-jwt": "^0.1.11",
     "angular-messages": "^1.8.3",
     "chart.js": "^4.4.3",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "jquery": "^3.7.1",
     "jsgrid": "^1.5.3",
     "lottie-web": "^5.12.2",
     "mdi": "^2.2.43",
+    "primeng": "^17.18.8",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.8"

@@ -12,6 +12,8 @@ export class NumberTableComponent implements OnInit {
   greenNumbers: number[] = []; // Array to store numbers highlighted in green
   blueNumbers: number[] = []; // Array to store numbers highlighted in blue
   repetitionCounts: { [key: number]: number } = {}; // Store repetition counts for blue numbers
+  usernames: { [key: number]: string[] } = {}; // Store usernames associated with each number
+
 
   constructor(private numberService: NumberService) { }
 
@@ -32,32 +34,50 @@ export class NumberTableComponent implements OnInit {
     });
   }
 
-  // Function to process API response
-  processApiResponse(data: { number: number; created_at: string }[]) {
+
+  /**
+   * Function to process API response
+   * 
+   * @param data 
+   */
+  processApiResponse(data: { number: number; created_at: string; User: { username: string } }[]) {
     const numberCounts: { [key: number]: number } = {};
 
-    // Count occurrences of each number
     data.forEach(item => {
-      numberCounts[item.number] = (numberCounts[item.number] || 0) + 1;
+      const num = item.number;
+      const username = item.User.username;
+
+      numberCounts[num] = (numberCounts[num] || 0) + 1;
+
+      if (!this.usernames[num]) {
+        this.usernames[num] = [];
+      }
+
+      this.usernames[num].push(username);
     });
 
-    // Populate greenNumbers and blueNumbers
-    this.numbers = Array.from({ length: 100 }, (_, i) => i); // Numbers from 1 to 99
+    this.numbers = Array.from({ length: 100 }, (_, i) => i);
 
     this.greenNumbers = this.numbers.filter(num => numberCounts[num] > 0);
     this.blueNumbers = this.greenNumbers.filter(num => numberCounts[num] > 1);
 
-    // Store repetition counts for blue numbers
     this.repetitionCounts = this.blueNumbers.reduce((acc, num) => {
       acc[num] = numberCounts[num];
       return acc;
     }, {} as { [key: number]: number });
   }
 
-  // Function to get the highlight class based on the number
+
+
+  /**
+   * Function to get the highlight class based on the number
+   * 
+   * @param num 
+   * @returns 
+   */
   getHighlightClass(num: number): string {
 
-    if(num == 0){
+    if (num == 0) {
       return 'highlight-transparent';
     }
 
@@ -70,9 +90,26 @@ export class NumberTableComponent implements OnInit {
     return '';
   }
 
-  // Function to get the repetition count for a number
+  /**
+   * Function to get the repetition count for a number
+   * 
+   * @param num 
+   * @returns 
+   */
   getRepetitionCount(num: number): number {
     return this.repetitionCounts[num] || 0;
+  }
+
+  /**
+ * Get the tooltip message for a number.
+ * Includes a formatted string with all names to add it to the user
+ * 
+ * @param num - The number to get the tooltip message for.
+ * @returns The tooltip message including all dates.
+ */
+  getTooltipMessage(num: number): string {
+    const usernames = this.usernames[num] || [];
+    return `${usernames.join(', ')}`;
   }
 
 }

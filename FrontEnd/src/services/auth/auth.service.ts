@@ -46,9 +46,7 @@ export class AuthService {
    */
   login(userName: string, password: string) {
     //
-    // Set user as not logged and status to logging-in
-    this.logedSubject.next(false);
-    this.logginInSubject.next(true);
+
     //
     // Request API login
     this.loginService.requestLogin(userName, password).then((response: any) => {

@@ -47,6 +47,11 @@
   /* Add some space between cells */
   color: black;
   /* Ensure text is black by default */
+  position: relative;
+}
+
+.centered-num {
+  margin-top: 20%;
 }
 
 .cell:hover {
@@ -75,17 +80,25 @@
 }
 
 .tiny-text {
-  position: relative;
-  font-size: 14px;
-  /* Smaller font size for tiny text */
-  margin-top: 5px;
-  /* Space above the tiny text */
-  left: 40%;
-  /* Center the tiny text */
+  position: absolute;
+  font-size: 10px;
+  /* left: 40%; */
   font-weight: normal;
-  /* Normal weight for tiny text */
   color: white;
-  /* Ensure tiny text is white */
+  bottom: 0px;
+  left: 0px;
+  right: 4px;
+  text-align: right;
+}
+
+.text{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  text-align: center;
+  align-content: center;
 }
 
 .legend {
@@ -119,3 +132,4 @@
   background-color: #2196f3;
   /* Blue color box */
 }
+

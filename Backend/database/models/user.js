@@ -25,6 +25,10 @@ const User = sequelize.define(
       type: DataTypes.TINYINT,
       allowNull: false,
     },
+    profile_image: {
+      type: DataTypes.BLOB,
+      allowNull: true,
+    },
   },
   {
     tableName: "users",

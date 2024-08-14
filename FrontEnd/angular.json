@@ -30,7 +30,9 @@
               "src/assets/plugins/fontawesome-free/css/all.min.css",
               "src/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css",
               "node_modules/jsgrid/dist/jsgrid.min.css",
-              "node_modules/jsgrid/dist/jsgrid-theme.min.css"
+              "node_modules/jsgrid/dist/jsgrid-theme.min.css",
+              "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+              "node_modules/primeng/resources/primeng.min.css"
             ],
             "scripts": [
               "/node_modules/jquery/dist/jquery.min.js",
@@ -49,8 +51,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "4mb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",

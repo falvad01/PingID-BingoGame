@@ -1,11 +1,12 @@
 <div class="card">
   <div class="card-header">
-    <h5 class="card-title">Tu tabla de numeros</h5>
+    <h5 class="card-title">Tabla de usuarios</h5>
   </div>
   <div class="card-body">
     <div class="row">
-      <div *ngFor="let num of numbers" class="cell" [ngClass]="getHighlightClass(num)">
-        <div>{{ num }}</div>
+      <div *ngFor="let num of numbers" class="cell" [ngClass]="getHighlightClass(num)" 
+           pTooltip="{{getTooltipMessage(num)}}" tooltipPosition="top" placeholder="Top">
+        <div class="text">{{ num }}</div>
         <div *ngIf="blueNumbers.includes(num)" class="tiny-text">
           {{ getRepetitionCount(num) }}
         </div>

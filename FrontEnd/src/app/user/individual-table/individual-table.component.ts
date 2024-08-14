@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { NumberService } from 'src/services/number/number.service';
-import { TokenService } from 'src/services/token/token.service';
 
 @Component({
   selector: 'app-individual-table',
@@ -13,12 +11,11 @@ export class IndividualTableComponent {
   greenNumbers: number[] = [];
   blueNumbers: number[] = [];
   repetitionCounts: { [key: number]: number } = {};
-  tooltipMessages: { [key: number]: string } = {};
   tooltipDates: { [key: number]: string[] } = {}; // Store all dates for tooltips
 
   activeNumber: number | null = null;
 
-  constructor(private numberService: NumberService, private router: Router, private tokenService: TokenService) {
+  constructor(private numberService: NumberService) {
     // Initialize numbers from 1 to 99
     this.numbers = Array.from({ length: 100 }, (_, i) => i);
     this.obtainMarkedNumbers();
@@ -131,9 +128,8 @@ export class IndividualTableComponent {
    * @returns The tooltip message including all dates.
    */
   getTooltipMessage(num: number): string {
-    const message = this.tooltipMessages[num] || '';
     const dates = this.tooltipDates[num] || [];
-    const formattedDates = dates.map(date => new Date(date).toLocaleDateString()).join(', ');
-    return `${message}\nObtenido: ${formattedDates}`;
+    const formattedDates = dates.map(date => new Date(date).toLocaleDateString()).join('\n ');
+    return `${formattedDates}`;
   }
 }
