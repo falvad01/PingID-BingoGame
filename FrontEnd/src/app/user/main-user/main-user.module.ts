@@ -16,7 +16,7 @@ import { NumberBarGraphComponent } from '../number-bar-graph/number-bar-graph.co
 import { TooltipModule } from 'primeng/tooltip';
 import { ClasificationDonnutChartComponent } from "../clasification-donnut-chart/clasification-donnut-chart.component";
 import { NumbersTimeLineComponent } from "../numbers-time-line/numbers-time-line.component";
-import { EditProfileComponent } from 'src/app/edit-profile/edit-profile.component';
+import { EditProfileComponent } from 'src/app/user/edit-profile/edit-profile.component';
 
 
 

@@ -29,12 +29,12 @@ router.post("/add", tokenUtils.verifyToken, async (req, res) => {
   token = token.replace(/^Bearer\s+/, "");
   var tokenDecrypted = tokenUtils.parseJwt(token);
 
-  const number = parseInt(req.query.number, 10);
+  const newNumber = parseInt(req.query.number, 10);
 
-  console.log("Adding number %d", number)
+  console.log("Adding number %d", newNumber);
 
   // Validación para permitir solo números enteros entre 1 y 99
-  if (Number.isInteger(number) && number > 0 && number < 100) {
+  if (Number.isInteger(newNumber) && newNumber > 0 && newNumber < 100) {
     const [number, created] = await numberModel.findOrCreate({
       where: {
         user_id: tokenDecrypted.userId,
@@ -43,10 +43,33 @@ router.post("/add", tokenUtils.verifyToken, async (req, res) => {
         },
       },
       defaults: {
-        number: number,
+        number: newNumber,
         created_at: new Date(), // Asegura que created_at se establezca con la fecha actual si se crea
       },
     });
+
+    if (created) {
+      console.log(
+        "Number %s created for user %s",
+        number,
+        tokenDecrypted.userId
+      );
+      return res.status(201).json({
+        message: "Number added correctly",
+        number: number,
+      });
+    } else {
+      console.log(
+        "Number %s already created for user %s",
+        number,
+        tokenDecrypted.userId
+      );
+
+      return res.status(469).json({
+        message: "Number already created",
+        number: number,
+      });
+    }
   } else {
     console.log(
       " Fail creating Nmber %s for user %s",
@@ -55,25 +78,6 @@ router.post("/add", tokenUtils.verifyToken, async (req, res) => {
     );
     return res.status(469).json({
       message: "Fail creating number",
-      number: number,
-    });
-  }
-
-  if (created) {
-    console.log("Number %s created for user %s", number, tokenDecrypted.userId);
-    return res.status(201).json({
-      message: "Number added correctly",
-      number: number,
-    });
-  } else {
-    console.log(
-      "Number %s already created for user %s",
-      number,
-      tokenDecrypted.userId
-    );
-
-    return res.status(469).json({
-      message: "Number already created",
       number: number,
     });
   }

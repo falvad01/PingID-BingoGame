@@ -32,7 +32,8 @@
               "node_modules/jsgrid/dist/jsgrid.min.css",
               "node_modules/jsgrid/dist/jsgrid-theme.min.css",
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
-              "node_modules/primeng/resources/primeng.min.css"
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/cropperjs/dist/cropper.css"
             ],
             "scripts": [
               "/node_modules/jquery/dist/jquery.min.js",
@@ -43,7 +44,9 @@
               "src/assets/plugins/jquery-mapael/maps/usa_states.min.js",
               "src/assets/plugins/bootstrap/js/bootstrap.bundle.min.js",
               "src/assets/dist/js/adminlte.js",
-              "node_modules/jsgrid/dist/jsgrid.min.js"
+              "node_modules/jsgrid/dist/jsgrid.min.js",
+              "node_modules/cropperjs/dist/cropper.js"
+
             ]
           },
           "configurations": {

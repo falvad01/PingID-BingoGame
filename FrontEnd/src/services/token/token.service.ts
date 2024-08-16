@@ -62,12 +62,13 @@ export class TokenService {
     try{
       const helper = new JwtHelperService();
       const decoded = helper.decodeToken( token );
+      console.log("aa %s", decoded.profile_image)
       //
       this.userName = decoded.username;
       this.userId = decoded.userId;
       this.user = decoded.user;
       this.userEmail = decoded.userEmail;
-      this.userPicture = decoded.pictureUrl;
+      this.userPicture = decoded.profile_image;
       this.hasAccess = decoded.allow;
       this.createdAt = decoded.createdAt;
       this.administrator = decoded.admin;

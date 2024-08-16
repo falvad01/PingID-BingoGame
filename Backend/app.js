@@ -18,7 +18,8 @@ const numberRoutes = require("./routes/number");
 
 // Usar las rutas
 //app.use(express.static("html/frontend"));
-app.use(express.json());
+app.use(express.json({limit: '50mb'}));
+
 app.use("/user", userRoutes);
 app.use("/number", numberRoutes);
 sec.securize(app, process.env.ALLOWED_IPS);

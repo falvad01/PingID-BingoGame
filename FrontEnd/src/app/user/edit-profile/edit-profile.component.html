@@ -1,0 +1,80 @@
+<div class="login-box centered">
+
+    <div class="login-logo">
+        <a href="#"><b>Edición de usuario</b></a>
+    </div>
+
+    <!-- Main content -->
+    <div class="card">
+        <div class="card-body">
+
+            <div class="avatar-container">
+                <div class="image-container" *ngIf="file; else placeholder" [ngClass]="{'box-shadow-avatar': !!file}"
+                    [ngStyle]="{backgroundImage: 'url(' + file + ')'}">
+                </div>
+
+                <ng-template #placeholder>
+                    <div class="image-container avatar-placeholder">
+                    </div>
+                </ng-template>
+
+                <label for="avatar-input-file">
+                    <div class="icon-wrapper">
+                        <input type="file" id="avatar-input-file" accept="image/*" (change)="onFileChange($event)" />
+                        <i class="fas fa-pen"></i>
+                    </div>
+                </label>
+            </div>
+
+            <label for="name">Nombre y apellidos</label>
+
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-signature"></i></span>
+                </div>
+                <input type="email" class="form-control" [(ngModel)]="nameSurname" placeholder="Nombre y apellidos" maxlength="25">
+            </div>
+
+            <label for="username">Username</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                </div>
+                <input type="email" class="form-control" [(ngModel)]="userName" placeholder="Username" maxlength="15">
+            </div>
+
+            <button type="submit" (click)="sendProfileData()" class="btn btn-primary btn-block">Editar datos</button>
+
+
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+
+
+            <label for="password">Contraseña</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+
+
+                </div>
+                <input type="email" class="form-control" placeholder="Contraseña">
+            </div>
+
+            <label for="confirm_password">Confirmar Contraseña</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+
+                </div>
+                <input type="email" class="form-control" placeholder="Confirmar Contraseña">
+            </div>
+
+
+
+            <button type="submit" class="btn btn-primary btn-block">Editar contraseña</button>
+
+
+        </div>

@@ -6,7 +6,7 @@ import { DashboardComponent } from '../dashboard/dashboard.component';
 import { IndividualTableComponent } from '../individual-table/individual-table.component';
 import { NewNumberComponent } from '../new-number/new-number.component';
 import { ClasificationComponent } from '../clasification/clasification.component';
-import { EditProfileComponent } from '../../edit-profile/edit-profile.component'
+import { EditProfileComponent } from '../edit-profile/edit-profile.component'
 
 
 const routes: Routes = [

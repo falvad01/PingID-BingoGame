@@ -4,6 +4,8 @@ const userModel = require("../database/models/user");
 const jwt = require("jsonwebtoken");
 const numberModel = require("../database/models/number");
 const tokenUtils = require("../utils/TokenUtils");
+const utils = require("../utils/utils");
+
 const adminTokenUtils = require("../utils/AdminTokenUtils");
 
 const { body, validationResult } = require("express-validator");
@@ -60,6 +62,7 @@ router.post("/login", validateLogin, async (request, response) => {
             {
               userId: user.id,
               username: user.username,
+              name_surname: user.name_surname,
             },
             process.env.JWT_SECRET_KEY,
             {
@@ -192,7 +195,13 @@ router.get(
     try {
       // Fetch all users and numbers from the database
       const users = await userModel.findAll({
-        attributes: ["id", "username", "name_surname", "profile_image"],
+        attributes: [
+          "id",
+          "username",
+          "name_surname",
+          "profile_image",
+          "administrator",
+        ],
       });
       const numbers = await numberModel.findAll();
 
@@ -201,14 +210,16 @@ router.get(
 
       // Initialize user data
       users.forEach((user) => {
-        const userDataValues = user.get({ plain: true });
-        const { password, id, ...userWithoutPassword } = userDataValues;
-        userData[id] = {
-          ...userWithoutPassword, // Spread all user properties except password
-          numbers: [], // Initialize empty numbers array
-          numberCount: 0, // Initialize count of unique numbers
-          repeatedCount: 0, // Initialize repeated count
-        };
+        if (user.administrator == 0) {
+          const userDataValues = user.get({ plain: true });
+          const { password, id, ...userWithoutPassword } = userDataValues;
+          userData[id] = {
+            ...userWithoutPassword, // Spread all user properties except password
+            numbers: [], // Initialize empty numbers array
+            numberCount: 0, // Initialize count of unique numbers
+            repeatedCount: 0, // Initialize repeated count
+          };
+        }
       });
 
       // Organize numbers by user
@@ -262,7 +273,6 @@ router.get(
     }
   }
 );
-
 
 router.get(
   "/getAllUsers",
@@ -331,4 +341,81 @@ router.get(
   }
 );
 
+/**
+ * Obtain the actual day records
+ */
+router.get("/getProfile", tokenUtils.verifyToken, async (req, res) => {
+  try {
+    // Try to decode token from headers
+    let token = req.headers["x-access-token"] || req.headers["authorization"];
+    // Remove Bearer from string
+    token = token.replace(/^Bearer\s+/, "");
+    var tokenDecrypted = tokenUtils.parseJwt(token);
+    userModel
+      .findOne({
+        attributes: ["username", "name_surname", "profile_image"],
+        where: {
+          id: tokenDecrypted.userId,
+        },
+      })
+      .then((data) => {
+        res.status(200).send(data);
+      });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while obtaining the use rporfile." });
+  }
+});
+
+/**
+ * Obtain the actual day records
+ */
+router.post("/editProfile", tokenUtils.verifyToken, async (req, res) => {
+  try {
+    // Try to decode token from headers
+    let token = req.headers["x-access-token"] || req.headers["authorization"];
+    // Remove Bearer from string
+    token = token.replace(/^Bearer\s+/, "");
+    var tokenDecrypted = tokenUtils.parseJwt(token);
+    var { username, name_surname, profile_image } = req.body;
+
+    if (username.length <= 15 && name_surname.length <= 25 && utils.isBase64Image(profile_image)) {
+
+      utils
+        .compressImage(profile_image, 228, 228)
+        .then((resizedBase64) => {
+          console.log("Imagen redimensionada en base64:", resizedBase64);
+
+          userModel
+            .update(
+              {
+                username: username,
+                name_surname: name_surname,
+                profile_image: resizedBase64,
+              },
+              {
+                where: {
+                  id: tokenDecrypted.userId,
+                },
+              }
+            )
+            .then((data) => {
+              res.status(200).send("User data edited correctly");
+            });
+        })
+        .catch((error) =>
+          console.error("Error al redimensionar la imagen:", error)
+        );
+    } else {
+      res.status(400).send("Error edititng user data");
+    }
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while editting the profile." });
+  }
+});
 module.exports = router;

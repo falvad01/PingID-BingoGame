@@ -42,8 +42,16 @@ export class UserService {
     });
   }
 
+  /**
+   * Register a new user
+   * 
+   * @param userName 
+   * @param nameSurname 
+   * @param password 
+   * @param admin 
+   * @returns 
+   */
   registerNewUser(userName: String, nameSurname: String, password: string, admin: boolean) {
-
 
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders({
@@ -72,12 +80,68 @@ export class UserService {
     });
   }
 
-    /**
+  /*
    * Obtain que users clasifications
    * 
    * @returns 
    */
-    getUserCLasification() {
+  getUserCLasification() {
+
+    return new Promise((resolve, reject) => {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': this.token.getToken()
+      });
+
+      console.log("Getting user clasification")
+
+      this.http.get(environment.API_PATH + 'user/getUsersQualify', { headers: headers }).subscribe({
+        next: (data: any) => {
+          console.log("Peticion correct %s", data)
+          resolve(data);
+        },
+        error: error => {
+          this.ErrorMessage = error.error ? error.error.error : error.message;
+          reject(error);
+        }
+      });
+    });
+  }
+
+  /*
+   * Obtain the user profile
+   * 
+   * @returns 
+   */
+  getProfile() {
+
+    return new Promise((resolve, reject) => {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': this.token.getToken()
+      });
+
+      console.log("Getting user profile")
+
+      this.http.get(environment.API_PATH + 'user/getProfile', { headers: headers }).subscribe({
+        next: (data: any) => {
+          console.log("Peticion correct %s", data)
+          resolve(data);
+        },
+        error: error => {
+          this.ErrorMessage = error.error ? error.error.error : error.message;
+          reject(error);
+        }
+      });
+    });
+  }
+
+    /*
+   * Edir profile
+   * 
+   * @returns 
+   */
+    editProfile(userName: String, nameSurname: String, profileImage: string) {
 
       return new Promise((resolve, reject) => {
         const headers = new HttpHeaders({
@@ -85,20 +149,24 @@ export class UserService {
           'Authorization': this.token.getToken()
         });
   
-        console.log("Getting all user numbers")
+        console.log("Edit profile %s", userName)
   
-        this.http.get(environment.API_PATH + 'user/getUsersQualify', { headers: headers }).subscribe({
+        this.http.post(environment.API_PATH + 'user/editProfile', {
+          "username": userName,
+          "name_surname": nameSurname,
+          "profile_image": profileImage,
+         
+        }, { headers }).subscribe({
           next: (data: any) => {
-            console.log("Peticion correct %s", data)
+            console.log(data)
             resolve(data);
           },
           error: error => {
             this.ErrorMessage = error.error ? error.error.error : error.message;
-            reject(error);
+            console.log(this.ErrorMessage);
+            reject(false);
           }
         });
       });
     }
-
-
 }
