@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TokenService } from 'src/services/token/token.service';
 
 @Component({
   selector: 'app-main-header',
@@ -6,5 +7,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./main-header.component.scss']
 })
 export class MainHeaderComponent {
+
+  constructor(private tokenService: TokenService){
+
+  }
+
+  logOut() {
+
+    this.tokenService.closeSession()
+  }
 
 }

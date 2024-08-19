@@ -10,10 +10,9 @@
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <img src="../../../assets/user.png" class="brand-image img-circle elevation-3"
-                style="opacity: 0.8" />
+            <img  [src]="imagePath" class="img-circle elevation-2" style="margin-left: 12px;"/>
             <div class="info">
-                <div class="d-block">{{userName}}</div>
+                <a href="/user/edit" class="d-block">{{userName}}</a>
             </div>
         </div>
 

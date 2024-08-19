@@ -1,115 +1,101 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NumberService } from 'src/services/number/number.service';
 
 @Component({
   selector: 'app-number-table',
   templateUrl: './number-table.component.html',
-  styleUrls: ['./number-table.component.scss'],
+  styleUrls: ['./number-table.component.scss']
 })
-export class NumberTableComponent implements OnInit {
+export class NumberTableComponent {
+  numbers: { number: number, repetitions: number, users: { username: string, count: number }[] }[] = [];
 
-  numbers: number[] = []; // Array to store numbers to display
-  greenNumbers: number[] = []; // Array to store numbers highlighted in green
-  blueNumbers: number[] = []; // Array to store numbers highlighted in blue
-  repetitionCounts: { [key: number]: number } = {}; // Store repetition counts for blue numbers
-  usernames: { [key: number]: string[] } = {}; // Store usernames associated with each number
+  // Initialize numbers from 1 to 99
+  allNumbers: number[] = Array.from({ length: 99 }, (_, i) => i);
 
-
-  constructor(private numberService: NumberService) { }
-
-  ngOnInit() {
-    this.obtainMarkedNumbers()
+  constructor(private numberService: NumberService) {
+    this.obtainAllNumbers();
   }
 
   /**
-   * Obtain the numbers from the backend service.
-   * Calls the NumberService to retrieve user numbers and then processes the data.
+   * Obtain all numbers from the backend service.
+   * Calls the NumberService to retrieve all numbers and then processes the data.
    */
-  obtainMarkedNumbers() {
+  obtainAllNumbers() {
     this.numberService.retrieveAllNumbers().then((response: any) => {
-      this.processApiResponse(response);
-
+      this.processData(response);
     }).catch((error: any) => {
       console.error('Error fetching data:', error);
     });
   }
 
-
   /**
-   * Function to process API response
+   * Process the data obtained from the backend.
+   * Formats the data to include user information and counts.
    * 
-   * @param data 
+   * @param data - The data array containing number, repetitions, and users fields.
    */
-  processApiResponse(data: { number: number; created_at: string; User: { username: string } }[]) {
-    const numberCounts: { [key: number]: number } = {};
+  processData(data: { number: number, repetitions: number, users: { username: string, count: number }[] }[]) {
+    // Initialize the numbers with empty users array and 0 repetitions
+    const numberData = this.allNumbers.map(num => ({
+      number: num,
+      repetitions: 0,
+      users: []
+    }));
 
+    // Map numbers to their user data
+    const numberMap = new Map<number, { repetitions: number, users: { username: string, count: number }[] }>();
     data.forEach(item => {
-      const num = item.number;
-      const username = item.User.username;
-
-      numberCounts[num] = (numberCounts[num] || 0) + 1;
-
-      if (!this.usernames[num]) {
-        this.usernames[num] = [];
-      }
-
-      this.usernames[num].push(username);
+      numberMap.set(item.number, {
+        repetitions: item.repetitions,
+        users: item.users
+      });
     });
 
-    this.numbers = Array.from({ length: 100 }, (_, i) => i);
+    // Update the numberData array with user data
+    numberData.forEach((numData: any) => {
+      const data = numberMap.get(numData.number);
+      if (data) {
+        numData.repetitions = data.repetitions;
+        numData.users = data.users;
+      }
+    });
 
-    this.greenNumbers = this.numbers.filter(num => numberCounts[num] > 0);
-    this.blueNumbers = this.greenNumbers.filter(num => numberCounts[num] > 1);
-
-    this.repetitionCounts = this.blueNumbers.reduce((acc, num) => {
-      acc[num] = numberCounts[num];
-      return acc;
-    }, {} as { [key: number]: number });
+    this.numbers = numberData;
   }
 
-
-
   /**
-   * Function to get the highlight class based on the number
+   * Depending on the number, return a CSS class for highlighting.
    * 
-   * @param num 
-   * @returns 
+   * @param num - The number to determine the highlight class.
+   * @returns The CSS class name.
    */
-  getHighlightClass(num: number): string {
-
-    if (num == 0) {
+  getHighlightClass(n: number): string {
+    if (n == 0) {
       return 'highlight-transparent';
     }
+    for (var num of this.numbers) {
 
-    if (this.blueNumbers.includes(num)) {
-      return 'highlight-blue';
+      if (num.number == n) {
+
+        if (num.repetitions == 1) {
+          return 'highlight-green';
+        } else if (num.repetitions > 1) {
+          return 'highlight-blue'
+        }
+      }
     }
-    if (this.greenNumbers.includes(num)) {
-      return 'highlight-green';
-    }
-    return '';
+    return ""
   }
 
   /**
-   * Function to get the repetition count for a number
+   * Get the tooltip message for a number.
+   * Includes a formatted string with all users and their counts associated with the number.
    * 
-   * @param num 
-   * @returns 
+   * @param users - The users to get the tooltip message for.
+   * @returns The tooltip message including all users.
    */
-  getRepetitionCount(num: number): number {
-    return this.repetitionCounts[num] || 0;
+  getTooltipMessage(users: { username: string, count: number }[]): string {
+    const formattedUsers = users.map(user => `${user.username}: ${user.count}`).join('\n ');
+    return `${formattedUsers}`;
   }
-
-  /**
- * Get the tooltip message for a number.
- * Includes a formatted string with all names to add it to the user
- * 
- * @param num - The number to get the tooltip message for.
- * @returns The tooltip message including all dates.
- */
-  getTooltipMessage(num: number): string {
-    const usernames = this.usernames[num] || [];
-    return `${usernames.join(', ')}`;
-  }
-
 }

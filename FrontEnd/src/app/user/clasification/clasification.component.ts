@@ -41,10 +41,24 @@ export class ClasificationComponent {
         position: index + 1,
         number_of_single_numbers: item.numberCount,
         number_of_repeated_numbers: item.repeatedCount,
-        userName: item.username
+        userName: item.username,
+        profile_image : this.getImageUrl(item.profile_image)
       }));
     } else {
       console.error('Response is not an array:', data);
+    }
+  }
+
+  /**
+   * 
+   * @param profileImage 
+   * @returns 
+   */
+  getImageUrl(profileImage: string): string {
+    if (profileImage != null) {
+      return profileImage;
+    } else {
+      return '../../../assets/user.png';
     }
   }
 }

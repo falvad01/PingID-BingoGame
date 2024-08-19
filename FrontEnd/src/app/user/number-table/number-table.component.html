@@ -1,23 +1,24 @@
 <div class="card">
   <div class="card-header">
-    <h5 class="card-title">Tabla de usuarios</h5>
+    <h5 class="card-title">Tabla de números</h5>
   </div>
   <div class="card-body">
     <div class="row">
-      <div *ngFor="let num of numbers" class="cell" [ngClass]="getHighlightClass(num)"
-        pTooltip="{{getTooltipMessage(num)}}" tooltipPosition="top" placeholder="Top">
-        <div class="text">{{ num }}</div>
-        <div *ngIf="blueNumbers.includes(num)" class="tiny-text">
-          {{ getRepetitionCount(num) }}
+      <div *ngFor="let num of numbers" class="cell" [ngClass]="getHighlightClass(num.number)"
+           pTooltip="{{getTooltipMessage(num.users)}}" tooltipPosition="top">
+        <div class="text">{{ num.number }}</div>
+        <div *ngIf="num.repetitions > 1" class="tiny-text">
+          {{ num.repetitions }}
         </div>
       </div>
     </div>
     <div class="legend mt-4">
+     
       <div class="legend-item">
-        <div class="color-box highlight-green"></div> Solo ha salido una vez
+        <div class="color-box highlight-green"></div> Ha salido una vez
       </div>
       <div class="legend-item">
-        <div class="color-box highlight-blue"></div> Ha salido multiples veces
+        <div class="color-box highlight-blue"></div> Ha salido más de una vez
       </div>
     </div>
   </div>

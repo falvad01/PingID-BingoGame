@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-body">
-    <table class="table table-bordered">
+    <table class="table ">
       <thead>
         <tr>
           <th>Position</th>
@@ -12,7 +12,7 @@
       <tbody>
         <tr *ngFor="let player of tableData">
           <td>{{player.position}}</td>
-          <td>{{player.userName}}</td>
+          <td>   <img [src]="player.profile_image"  height=30 width=30>  {{player.userName}}</td>
           <td>{{player.number_of_single_numbers}}</td>
           <td>{{player.number_of_repeated_numbers}}</td>
 

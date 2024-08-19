@@ -83,47 +83,104 @@ router.post("/add", tokenUtils.verifyToken, async (req, res) => {
   }
 });
 
-router.get("/getUserNumbers", tokenUtils.verifyToken, (req, res) => {
+/**
+ * Return a list of the numbers 1-99 geting the number
+ * of times that the number is repeated and the date of the number
+ */
+router.get("/getUserNumbers", tokenUtils.verifyToken, async (req, res) => {
   try {
     let token = req.headers["x-access-token"] || req.headers["authorization"];
-    var tokenDecrypted = tokenUtils.parseJwt(token);
-    numberModel
-      .findAll({
-        attributes: ["number", "created_at"],
-        where: {
-          user_id: tokenDecrypted.userId,
-        },
-      })
-      .then((data) => {
-        res.status(200).send(data);
-      });
-  } catch (errror) {
-    res.status(500).send(errror);
-  }
-});
+    const tokenDecrypted = tokenUtils.parseJwt(token);
 
-/**
- * Get all the stored numbers
- */
-router.get("/getAllNumbers", tokenUtils.verifyToken, (req, res) => {
-  try {
-    numberModel
-      .findAll({
-        attributes: ["number", "created_at"],
-        include: [
-          {
-            model: userModel, // Nombre del modelo asociado
-            attributes: ["username"], // El atributo que deseas obtener de la tabla User
-          },
-        ],
-      })
-      .then((data) => {
-        res.status(200).send(data);
-      });
+    // Inicializar un objeto para contar las ocurrencias de cada número y para almacenar las fechas
+    const numberCounts = {};
+    const numberDates = {};
+    for (let i = 1; i <= 99; i++) {
+      numberCounts[i] = 0;
+      numberDates[i] = [];
+    }
+
+    // Obtener los números del usuario
+    const data = await numberModel.findAll({
+      attributes: ["number", "created_at"],
+      where: {
+        user_id: tokenDecrypted.userId,
+      },
+    });
+
+    // Contar las ocurrencias y almacenar las fechas
+    data.forEach((record) => {
+      const num = record.number;
+      numberCounts[num]++;
+      numberDates[num].push(record.created_at);
+    });
+
+    // Convertir el objeto de conteos a un array de objetos
+    const result = Object.keys(numberCounts).map((number) => ({
+      number: parseInt(number, 10),
+      count: numberCounts[number],
+      dates: numberDates[number],
+    }));
+
+    res.status(200).send(result);
   } catch (error) {
     res.status(500).send(error);
   }
 });
+
+router.get("/getAllNumbers", tokenUtils.verifyToken, async (req, res) => {
+  try {
+    // Inicializar un objeto para contar las repeticiones de cada número y almacenar los usuarios
+    const numberData = {};
+
+    // Obtener todos los números almacenados
+    const data = await numberModel.findAll({
+      attributes: ["number"],
+      include: [
+        {
+          model: userModel,
+          attributes: ["username"],
+        },
+      ],
+    });
+
+    // Contar las repeticiones y almacenar los usuarios
+    data.forEach(record => {
+      const num = record.number;
+      const username = record.User.username;
+
+      if (!numberData[num]) {
+        numberData[num] = {
+          number: num,
+          repetitions: 0,
+          users: {}
+        };
+      }
+
+      numberData[num].repetitions++;
+      if (!numberData[num].users[username]) {
+        numberData[num].users[username] = 0;
+      }
+      numberData[num].users[username]++;
+    });
+
+    // Convertir el objeto de usuarios a un array de objetos
+    const result = Object.values(numberData).map(({ number, repetitions, users }) => ({
+      number,
+      repetitions,
+      users: Object.keys(users).map(username => ({
+        username,
+        count: users[username]
+      }))
+    }));
+
+    res.status(200).send(result);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+
 
 /**
  * retunr stadistics
@@ -212,22 +269,44 @@ router.get("/getStadistics", tokenUtils.verifyToken, async (req, res) => {
  */
 router.get("/getTodayNumbers", tokenUtils.verifyToken, async (req, res) => {
   try {
-    numberModel
-      .findAll({
-        attributes: ["number", "created_at"],
-        where: {
-          created_at: utils.dateToEpoch(new Date()),
+    const todayRecords = await numberModel.findAll({
+      attributes: ["number", "created_at"],
+      where: {
+        created_at: utils.dateToEpoch(new Date()), // Filtra por el día actual
+      },
+      include: [
+        {
+          model: userModel,
+          attributes: ["username", "profile_image", "id"], // "id" es el user_id
         },
-        include: [
-          {
-            model: userModel, // Nombre del modelo asociado
-            attributes: ["username", "profile_image"], // El atributo que deseas obtener de la tabla User
+      ],
+    });
+
+    // Añadir campo booleano 'alreadyExists' para cada registro, verificando si el número existe para ese usuario en cualquier otro día
+    const enrichedRecords = await Promise.all(
+      todayRecords.map(async (record) => {
+        const userId = record.User.id;
+        const number = record.number;
+
+        // Verificar si el número ya existe para el usuario en días diferentes
+        const numberExistsForUser = await numberModel.findOne({
+          where: {
+            user_id: userId,
+            number: number,
+            created_at: { [Op.ne]: utils.dateToEpoch(new Date()) }, // Excluir el día actual
           },
-        ],
+        });
+
+        // Añadir el campo 'alreadyExists' al objeto de registro
+        return {
+          ...record.toJSON(),
+          alreadyExists: !!numberExistsForUser, // true si el número ya existe para este usuario en otros días, false si no
+        };
       })
-      .then((data) => {
-        res.status(200).send(data);
-      });
+    );
+
+    // Enviar los registros enriquecidos
+    res.status(200).send(enrichedRecords);
   } catch (error) {
     console.error(error);
     res

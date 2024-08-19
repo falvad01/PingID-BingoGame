@@ -7,13 +7,13 @@ import { UserService } from 'src/services/user/user.service';
 Chart.register(...registerables, ChartDataLabels);
 
 @Component({
-  selector: 'app-clasification-donnut-chart',
+  selector: 'app-clasification-chart',
   standalone: true,
   imports: [],
-  templateUrl: './clasification-donnut-chart.component.html',
-  styleUrls: ['./clasification-donnut-chart.component.scss']
+  templateUrl: './clasification-chart.component.html',
+  styleUrls: ['./clasification-chart.component.scss']
 })
-export class ClasificationDonnutChartComponent {
+export class ClasificationChartComponent {
   private chart: any;
 
   constructor(private userService: UserService) {

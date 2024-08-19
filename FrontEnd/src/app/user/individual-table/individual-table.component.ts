@@ -7,20 +7,12 @@ import { NumberService } from 'src/services/number/number.service';
   styleUrls: ['./individual-table.component.scss']
 })
 export class IndividualTableComponent {
-  numbers: number[] = [];
-  greenNumbers: number[] = [];
-  blueNumbers: number[] = [];
-  repetitionCounts: { [key: number]: number } = {};
-  tooltipDates: { [key: number]: string[] } = {}; // Store all dates for tooltips
-
-  activeNumber: number | null = null;
+  numbers: { number: number, count: number, dates: string[] }[] = [];
 
   constructor(private numberService: NumberService) {
     // Initialize numbers from 1 to 99
-    this.numbers = Array.from({ length: 100 }, (_, i) => i);
     this.obtainMarkedNumbers();
   }
-
 
   /**
    * Obtain the numbers from the backend service.
@@ -36,99 +28,66 @@ export class IndividualTableComponent {
 
   /**
    * Process the data obtained from the backend.
-   * Calculates frequency of each number and determines greenNumbers, blueNumbers, and repetitionCounts.
-   * Also stores all dates associated with each number.
+   * Calculates frequency of each number and stores all dates associated with each number.
    * 
-   * @param data - The data array containing number and created_at fields.
+   * @param data - The data array containing number, count, and dates fields.
    */
-  processData(data: { number: number, created_at: string }[]) {
-    const numberFrequency: { [key: number]: number } = {};
-    const dateMap: { [key: number]: string[] } = {};
+  processData(data: { number: number, count: number, dates: string[] }[]) {
+    const numberMap: { [key: number]: { count: number, dates: string[] } } = {};
 
+    // Initialize all numbers from 1 to 99
+    for (let i = 0; i <= 99; i++) {
+      numberMap[i] = { count: 0, dates: [] };
+    }
+
+    // Populate with data from backend
     data.forEach(item => {
-      const num = item.number;
-      numberFrequency[num] = (numberFrequency[num] || 0) + 1;
-
-      if (!dateMap[num]) {
-        dateMap[num] = [];
-      }
-      dateMap[num].push(item.created_at);
+      numberMap[item.number] = {
+        count: item.count,
+        dates: item.dates
+      };
     });
 
-    this.greenNumbers = [];
-    this.blueNumbers = [];
-    this.repetitionCounts = {};
-    this.tooltipDates = dateMap; // Store all dates for each number
-
-    for (const num in numberFrequency) {
-      const count = numberFrequency[num];
-      if (count > 1) {
-        this.blueNumbers.push(Number(num));
-        this.repetitionCounts[Number(num)] = count;
-      } else {
-        this.greenNumbers.push(Number(num));
-      }
-    }
+    // Convert the map to an array
+    this.numbers = Object.keys(numberMap).map(num => ({
+      number: parseInt(num, 10),
+      count: numberMap[parseInt(num, 10)].count,
+      dates: numberMap[parseInt(num, 10)].dates
+    }));
   }
 
   /**
-   * Count the numbers that are repeated.
+   * Depending on the count, return a CSS class for highlighting.
    * 
-   * @param num - The number to count.
-   * @returns The repetition count of the number.
-   */
-  getRepetitionCount(num: number): number {
-    return this.repetitionCounts[num] || 0;
-  }
-
-  /**
-   * Depending on the number, return a CSS class for highlighting.
-   * 
-   * @param num - The number to determine the highlight class.
+   * @param count - The count of occurrences of the number.
    * @returns The CSS class name.
    */
-  getHighlightClass(num: number): string {
-    if (num == 0) {
+  getHighlightClass(n: number): string {
+    if (n == 0) {
       return 'highlight-transparent';
     }
-    if (this.blueNumbers.includes(num)) {
-      return 'highlight-blue';
-    } else if (this.greenNumbers.includes(num)) {
-      return 'highlight-green';
-    } else {
-      return '';
-    }
-  }
+    for (var num of this.numbers) {
 
-  /**
-   * Handle mouse over event for a cell.
-   * Sets the activeNumber to the number of the cell being hovered over.
-   * 
-   * @param num - The number of the cell being hovered over.
-   */
-  handleMouseOver(num: number) {
-    if (this.greenNumbers.includes(num) || this.blueNumbers.includes(num)) {
-      this.activeNumber = num;
-    }
-  }
+      if (num.number == n) {
 
-  /**
-   * Handle mouse out event for a cell.
-   * Resets the activeNumber to null when the mouse leaves the cell.
-   */
-  handleMouseOut() {
-    this.activeNumber = null;
+        if (num.count == 1) {
+          return 'highlight-green';
+        } else if (num.count > 1) {
+          return 'highlight-blue'
+        }
+      }
+    }
+    return ""
   }
 
   /**
    * Get the tooltip message for a number.
    * Includes a formatted string with all dates associated with the number.
    * 
-   * @param num - The number to get the tooltip message for.
+   * @param dates - The dates to get the tooltip message for.
    * @returns The tooltip message including all dates.
    */
-  getTooltipMessage(num: number): string {
-    const dates = this.tooltipDates[num] || [];
+  getTooltipMessage(dates: string[]): string {
     const formattedDates = dates.map(date => new Date(date).toLocaleDateString()).join('\n ');
     return `${formattedDates}`;
   }

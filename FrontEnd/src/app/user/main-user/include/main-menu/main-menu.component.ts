@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { TokenService } from 'src/services/token/token.service';
+import { UserService } from 'src/services/user/user.service';
 
 @Component({
   selector: 'app-main-menu',
@@ -9,13 +10,26 @@ import { TokenService } from 'src/services/token/token.service';
 export class MainMenuComponent {
 
 
-  userName : String 
+  userName: String
+  imagePath: String = ""
 
 
-    constructor(private tokenService: TokenService){
-      
-      this.userName = this.tokenService.getUserName()
-      console.log("Username: " + this.userName)
-    }
+  constructor(private tokenService: TokenService, private userService: UserService) {
+
+    this.userName = this.tokenService.getUserName()
+    this.getUserProfile()
+  }
+
+
+  private getUserProfile() {
+
+    this.userService.getProfile().then((data: any) => {
+      this.imagePath = data.profile_image;
+
+    }).catch(error => {
+      this.imagePath = '../../../assets/user.png';
+    })
+
+  }
 
 }

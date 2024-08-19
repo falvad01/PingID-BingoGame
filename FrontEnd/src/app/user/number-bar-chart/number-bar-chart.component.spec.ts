@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { NumberBarGraphComponent } from './number-bar-graph.component';
+import { NumberBarChartComponent } from './number-bar-graph.component';
 
 describe('NumberBarGraphComponent', () => {
-  let component: NumberBarGraphComponent;
-  let fixture: ComponentFixture<NumberBarGraphComponent>;
+  let component: NumberBarChartComponent;
+  let fixture: ComponentFixture<NumberBarChartComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NumberBarGraphComponent ],
+      declarations: [ NumberBarChartComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(NumberBarGraphComponent);
+    fixture = TestBed.createComponent(NumberBarChartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

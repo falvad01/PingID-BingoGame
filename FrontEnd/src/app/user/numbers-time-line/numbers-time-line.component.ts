@@ -20,22 +20,43 @@ export class NumbersTimeLineComponent {
    * Obtain the numbers introduced on the current day
    */
   getTodayNumbers() {
-    this.numberService.getDayNumbers().then((data:any) => {
+    this.numberService.getDayNumbers().then((data: any) => {
       // Convertir el array de bytes en una URL para cada imagen de usuario
       this.todayNumbers = data.map((td: any) => ({
         ...td,
-        imageUrl: this.getImageUrl(td.User?.profile_image)
+        imageUrl: this.getImageUrl(td.User?.profile_image),
+        text: this.getText(td.alreadyExists)
       }));
     }).catch(error => {
       console.error('Error fetching today numbers:', error);
     });
   }
 
+  /**
+   * 
+   * @param profileImage 
+   * @returns 
+   */
   getImageUrl(profileImage: string): string {
     if (profileImage != null) {
       return profileImage;
     } else {
       return '../../../assets/user.png';
     }
+  }
+
+  /**
+   * 
+   * @param exits 
+   * @returns 
+   */
+  getText(exits: Boolean): string {
+
+    if (exits) {
+      return "El número es repetido"
+    }
+
+    return "El número es nuevo"
+
   }
 }

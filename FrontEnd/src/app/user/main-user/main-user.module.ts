@@ -12,9 +12,9 @@ import { MainFooterComponent } from './include/main-footer/main-footer.component
 import { NumberStadisticsComponent } from '../number-stadistics/number-stadistics.component';
 import { NumberTableComponent } from '../number-table/number-table.component';
 import { MainUserPage } from './main-user.page';
-import { NumberBarGraphComponent } from '../number-bar-graph/number-bar-graph.component';
+import { NumberBarChartComponent } from '../number-bar-chart/number-bar-graph.component';
 import { TooltipModule } from 'primeng/tooltip';
-import { ClasificationDonnutChartComponent } from "../clasification-donnut-chart/clasification-donnut-chart.component";
+import { ClasificationChartComponent } from "../clasification-chart/clasification-chart.component";
 import { NumbersTimeLineComponent } from "../numbers-time-line/numbers-time-line.component";
 import { EditProfileComponent } from 'src/app/user/edit-profile/edit-profile.component';
 
@@ -28,7 +28,7 @@ import { EditProfileComponent } from 'src/app/user/edit-profile/edit-profile.com
     ReactiveFormsModule,
     RouterModule,
     TooltipModule,
-    ClasificationDonnutChartComponent,
+    ClasificationChartComponent,
     NumbersTimeLineComponent,
 ],
   declarations: [
@@ -41,7 +41,7 @@ import { EditProfileComponent } from 'src/app/user/edit-profile/edit-profile.com
     MainFooterComponent,
     NumberStadisticsComponent,
     NumberTableComponent,
-    NumberBarGraphComponent,
+    NumberBarChartComponent,
     EditProfileComponent
 
   ],

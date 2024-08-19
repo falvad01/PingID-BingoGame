@@ -4,11 +4,11 @@
   </div>
   <div class="card-body">
     <div class="row">
-      <div *ngFor="let num of numbers" class="cell" [ngClass]="getHighlightClass(num)" 
-           pTooltip="{{getTooltipMessage(num)}}" tooltipPosition="top" placeholder="Top">
-        <div class="text">{{ num }}</div>
-        <div *ngIf="blueNumbers.includes(num)" class="tiny-text">
-          {{ getRepetitionCount(num) }}
+      <div *ngFor="let num of numbers" class="cell" [ngClass]="getHighlightClass(num.number)"
+        pTooltip="{{getTooltipMessage(num.dates)}}" tooltipPosition="top" placeholder="Top">
+        <div class="text">{{ num.number }}</div>
+        <div *ngIf="num.count > 1" class="tiny-text">
+          {{ num.count }}
         </div>
       </div>
     </div>

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ClasificationDonnutChartComponent } from './clasification-donnut-chart.component';
+import { ClasificationChartComponent } from './clasification-chart.component';
 
 describe('ClasificationDonnutChartComponent', () => {
-  let component: ClasificationDonnutChartComponent;
-  let fixture: ComponentFixture<ClasificationDonnutChartComponent>;
+  let component: ClasificationChartComponent;
+  let fixture: ComponentFixture<ClasificationChartComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ClasificationDonnutChartComponent]
+      imports: [ClasificationChartComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(ClasificationDonnutChartComponent);
+    fixture = TestBed.createComponent(ClasificationChartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
