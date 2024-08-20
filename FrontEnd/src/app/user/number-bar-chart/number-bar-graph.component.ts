@@ -4,6 +4,7 @@ import { NumberService } from 'src/services/number/number.service';
 
 @Component({
   selector: 'app-number-bar-chart',
+  standalone: true,
   templateUrl: './number-bar-chart.component.html',
   styleUrls: ['./number-bar-chart.component.scss'],
 })

@@ -85,7 +85,7 @@ export class UserService {
    * 
    * @returns 
    */
-  getUserCLasification() {
+  getUserClasification() {
 
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders({

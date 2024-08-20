@@ -22,15 +22,15 @@ export class ClasificationChartComponent {
 
   private async getUsersQualy() {
     console.log("Starting collecting user data");
-    try {
-      const response: any = await this.userService.getUserCLasification();
-      this.processData(response);
-    } catch (error) {
+
+    this.userService.getUserClasification().then(data => {
+      this.processData(data);
+    }).catch(error => {
       console.error('Error retrieving user numbers:', error);
-    }
+    })
   }
 
-  private processData(data: { username: string, numberCount: number }[]) {
+  private processData(data: any) {
     if (Array.isArray(data) && data.length > 0) {
       const usernames = data.map(user => user.username);
       const remainingNumbers = data.map(user => 99 - user.numberCount);

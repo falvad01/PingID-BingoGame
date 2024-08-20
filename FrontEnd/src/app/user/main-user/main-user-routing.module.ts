@@ -7,6 +7,7 @@ import { IndividualTableComponent } from '../individual-table/individual-table.c
 import { NewNumberComponent } from '../new-number/new-number.component';
 import { ClasificationComponent } from '../clasification/clasification.component';
 import { EditProfileComponent } from '../edit-profile/edit-profile.component'
+import { DataComponent } from '../data/data.component';
 
 
 const routes: Routes = [
@@ -19,7 +20,6 @@ const routes: Routes = [
         path: 'dashboard',
         component : DashboardComponent
       },
-    
       {
         path: "number",
         component: NewNumberComponent
@@ -31,6 +31,11 @@ const routes: Routes = [
       {
         path: "edit",
         component: EditProfileComponent
+      }
+      ,
+      {
+        path: "data",
+        component: DataComponent
       }
     ]
 

@@ -218,6 +218,8 @@ router.get(
             numbers: [], // Initialize empty numbers array
             numberCount: 0, // Initialize count of unique numbers
             repeatedCount: 0, // Initialize repeated count
+            lastEntryDate: null, // Initialize last entry date
+            daysSinceLastEntry: null, // Initialize days since last entry
           };
         }
       });
@@ -227,12 +229,16 @@ router.get(
         const userId = numberObj.user_id;
         if (userData[userId]) {
           userData[userId].numbers.push(numberObj.number);
+
+          // Update lastEntryDate if the current number's date is more recent
+          if (!userData[userId].lastEntryDate || new Date(numberObj.created_at) > new Date(userData[userId].lastEntryDate)) {
+            userData[userId].lastEntryDate = numberObj.created_at;
+          }
         }
       });
 
-      // Calculate counts and repeated numbers
+      // Calculate counts, repeated numbers, and days since last entry
       Object.values(userData).forEach((data) => {
-        // Use a Set to get unique numbers
         const uniqueNumbers = new Set(data.numbers);
         data.numberCount = uniqueNumbers.size; // Count of unique numbers
 
@@ -248,6 +254,14 @@ router.get(
         ).length;
 
         data.repeatedCount = repeatedCount;
+
+        // Calculate days since last entry
+        if (data.lastEntryDate) {
+          const currentDate = new Date();
+          const lastEntryDate = new Date(data.lastEntryDate);
+          const diffTime = Math.abs(currentDate - lastEntryDate);
+          data.daysSinceLastEntry = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
       });
 
       // Convert userData to an array and sort by numberCount and repeatedCount
@@ -258,11 +272,9 @@ router.get(
           return userWithoutNumbers;
         })
         .sort((a, b) => {
-          // Sort by numberCount descending
           if (b.numberCount !== a.numberCount) {
             return b.numberCount - a.numberCount;
           }
-          // If numberCount is the same, sort by repeatedCount descending
           return b.repeatedCount - a.repeatedCount;
         });
 
@@ -273,6 +285,7 @@ router.get(
     }
   }
 );
+
 
 router.get(
   "/getAllUsers",

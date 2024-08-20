@@ -17,6 +17,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ClasificationChartComponent } from "../clasification-chart/clasification-chart.component";
 import { NumbersTimeLineComponent } from "../numbers-time-line/numbers-time-line.component";
 import { EditProfileComponent } from 'src/app/user/edit-profile/edit-profile.component';
+import { ClasificationComponent } from "../clasification/clasification.component";
+import { DataComponent } from '../data/data.component';
 
 
 
@@ -30,6 +32,9 @@ import { EditProfileComponent } from 'src/app/user/edit-profile/edit-profile.com
     TooltipModule,
     ClasificationChartComponent,
     NumbersTimeLineComponent,
+    ClasificationComponent,
+    DataComponent
+
 ],
   declarations: [
     MainUserPage,
@@ -41,8 +46,7 @@ import { EditProfileComponent } from 'src/app/user/edit-profile/edit-profile.com
     MainFooterComponent,
     NumberStadisticsComponent,
     NumberTableComponent,
-    NumberBarChartComponent,
-    EditProfileComponent
+    EditProfileComponent,
 
   ],
 

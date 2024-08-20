@@ -23,12 +23,11 @@ export class ClasificationComponent {
    */
   private async getUsersQualy() {
     console.log("Starting collectiong user data")
-    try {
-      const response: any = await this.userService.getUserCLasification();
-      this.processData(response);
-    } catch (error) {
+    this.userService.getUserClasification().then(data => {
+      this.processData(data);
+    }).catch(error => {
       console.error('Error retrieving user numbers:', error);
-    }
+    })
   }
 
   /**
@@ -38,11 +37,11 @@ export class ClasificationComponent {
   private processData(data: any) {
     if (Array.isArray(data)) {
       this.tableData = data.map((item: any, index: number) => ({
-        position: index + 1,
         number_of_single_numbers: item.numberCount,
         number_of_repeated_numbers: item.repeatedCount,
         userName: item.username,
-        profile_image : this.getImageUrl(item.profile_image)
+        profile_image: this.getImageUrl(item.profile_image),
+        daysSinceLastEntry: this.getLastDayText(item.daysSinceLastEntry)
       }));
     } else {
       console.error('Response is not an array:', data);
@@ -60,5 +59,17 @@ export class ClasificationComponent {
     } else {
       return '../../../assets/user.png';
     }
+  }
+
+  getLastDayText(days: number): string {
+
+    if (days == null) {
+      return "No ha introducido número"
+    } else if (days == 1) {
+      return "Número introducido hoy"
+    } else {
+      return days == 2 ? "Número Introducido hace " + (days - 1) + " dia" : "Número Introducido hace " + (days - 1) + " dias"
+    }
+
   }
 }

@@ -1,20 +1,25 @@
 <div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Clasificación</h3>
+  </div>
   <div class="card-body">
     <table class="table ">
       <thead>
         <tr>
-          <th>Position</th>
-          <th>Name</th>
-          <th>Numbers</th>
-          <th>Repeated</th>
+
+          <th>Nombre</th>
+          <th>Numeros</th>
+          <th>Repetidos</th>
+          <th>Dias último numero</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let player of tableData">
-          <td>{{player.position}}</td>
-          <td>   <img [src]="player.profile_image"  height=30 width=30>  {{player.userName}}</td>
+
+          <td> <img [src]="player.profile_image" height=30 width=30> {{player.userName}}</td>
           <td>{{player.number_of_single_numbers}}</td>
           <td>{{player.number_of_repeated_numbers}}</td>
+          <td>{{player.daysSinceLastEntry}}</td>
 
         </tr>
       </tbody>
