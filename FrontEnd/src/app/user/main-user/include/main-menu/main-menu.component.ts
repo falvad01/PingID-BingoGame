@@ -26,6 +26,10 @@ export class MainMenuComponent {
     this.userService.getProfile().then((data: any) => {
       this.imagePath = data.profile_image;
 
+      if(data.profile_image == null){
+        this.imagePath = '../../../assets/user.png';
+      }
+
     }).catch(error => {
       this.imagePath = '../../../assets/user.png';
     })

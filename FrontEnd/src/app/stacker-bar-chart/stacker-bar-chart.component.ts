@@ -44,7 +44,7 @@ export class StackerBarChartComponent {
     // Extraer los nombres de usuario, números sin repetir y números repetidos
     const usernames = data.map((user: any) => user.username);
     const nonRepeatedCounts = data.map((user: any) => Math.max(user.numberCount - user.repeatedCount, 0)); // Asegurarse de que los valores no sean negativos
-    const repeatedCounts = data.map((user: any) => Math.max(user.repeatedCount, 0)); // Asegurarse de que los valores no sean negativos
+    const repeatedCounts = data.map((user: any) => Math.max(user.totalRepetitions, 0)); // Asegurarse de que los valores no sean negativos
 
     // Crear el gráfico
     this.chart = new Chart("myChart", {

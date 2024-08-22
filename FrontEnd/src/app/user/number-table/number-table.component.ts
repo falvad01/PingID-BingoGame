@@ -10,7 +10,7 @@ export class NumberTableComponent {
   numbers: { number: number, repetitions: number, users: { username: string, count: number }[] }[] = [];
 
   // Initialize numbers from 1 to 99
-  allNumbers: number[] = Array.from({ length: 99 }, (_, i) => i);
+  allNumbers: number[] = Array.from({ length: 100 }, (_, i) => i);
 
   constructor(private numberService: NumberService) {
     this.obtainAllNumbers();

@@ -19,6 +19,7 @@ import { NumbersTimeLineComponent } from "../numbers-time-line/numbers-time-line
 import { EditProfileComponent } from 'src/app/user/edit-profile/edit-profile.component';
 import { ClasificationComponent } from "../clasification/clasification.component";
 import { DataComponent } from '../data/data.component';
+import { CountdownModule } from 'ngx-countdown';
 
 
 
@@ -33,12 +34,12 @@ import { DataComponent } from '../data/data.component';
     ClasificationChartComponent,
     NumbersTimeLineComponent,
     ClasificationComponent,
-    DataComponent
+    DataComponent,
+    CountdownModule 
 
 ],
   declarations: [
     MainUserPage,
-    MainHeaderComponent,
     MainMenuComponent,
     MainHeaderComponent,
     DashboardComponent,

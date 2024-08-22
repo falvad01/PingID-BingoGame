@@ -2,13 +2,10 @@ const express = require("express");
 const router = express.Router();
 const numberModel = require("../database/models/number");
 const userModel = require("../database/models/user");
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
-const { Op, literal } = require("sequelize");
-
+const { Op } = require("sequelize");
 const tokenUtils = require("../utils/TokenUtils");
-const adminTokenUtils = require("../utils/AdminTokenUtils");
 const utils = require("../utils/utils");
+require("dotenv").config();
 
 router.get("/", (req, res) => {
   res.send("Number endpoint");
@@ -145,7 +142,7 @@ router.get("/getAllNumbers", tokenUtils.verifyToken, async (req, res) => {
     });
 
     // Contar las repeticiones y almacenar los usuarios
-    data.forEach(record => {
+    data.forEach((record) => {
       const num = record.number;
       const username = record.User.username;
 
@@ -153,7 +150,7 @@ router.get("/getAllNumbers", tokenUtils.verifyToken, async (req, res) => {
         numberData[num] = {
           number: num,
           repetitions: 0,
-          users: {}
+          users: {},
         };
       }
 
@@ -165,22 +162,22 @@ router.get("/getAllNumbers", tokenUtils.verifyToken, async (req, res) => {
     });
 
     // Convertir el objeto de usuarios a un array de objetos
-    const result = Object.values(numberData).map(({ number, repetitions, users }) => ({
-      number,
-      repetitions,
-      users: Object.keys(users).map(username => ({
-        username,
-        count: users[username]
-      }))
-    }));
+    const result = Object.values(numberData).map(
+      ({ number, repetitions, users }) => ({
+        number,
+        repetitions,
+        users: Object.keys(users).map((username) => ({
+          username,
+          count: users[username],
+        })),
+      })
+    );
 
     res.status(200).send(result);
   } catch (error) {
     res.status(500).send(error);
   }
 });
-
-
 
 /**
  * retunr stadistics
@@ -314,5 +311,6 @@ router.get("/getTodayNumbers", tokenUtils.verifyToken, async (req, res) => {
       .json({ error: "An error occurred while fetching statistics." });
   }
 });
+
 
 module.exports = router;

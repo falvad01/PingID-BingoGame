@@ -68,7 +68,7 @@ export class ClasificationComponent {
     } else if (days == 1) {
       return "Número introducido hoy"
     } else {
-      return days == 2 ? "Número Introducido hace " + (days - 1) + " dia" : "Número Introducido hace " + (days - 1) + " dias"
+      return days == 2 ? "Número introducido hace " + (days - 1) + " dia" : "Número introducido hace " + (days - 1) + " dias"
     }
 
   }

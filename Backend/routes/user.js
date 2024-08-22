@@ -218,6 +218,7 @@ router.get(
             numbers: [], // Initialize empty numbers array
             numberCount: 0, // Initialize count of unique numbers
             repeatedCount: 0, // Initialize repeated count
+            totalRepetitions: 0, // Initialize total repetitions count
             lastEntryDate: null, // Initialize last entry date
             daysSinceLastEntry: null, // Initialize days since last entry
           };
@@ -231,29 +232,38 @@ router.get(
           userData[userId].numbers.push(numberObj.number);
 
           // Update lastEntryDate if the current number's date is more recent
-          if (!userData[userId].lastEntryDate || new Date(numberObj.created_at) > new Date(userData[userId].lastEntryDate)) {
+          if (
+            !userData[userId].lastEntryDate ||
+            new Date(numberObj.created_at) >
+              new Date(userData[userId].lastEntryDate)
+          ) {
             userData[userId].lastEntryDate = numberObj.created_at;
           }
         }
       });
 
-      // Calculate counts, repeated numbers, and days since last entry
+      // Calculate counts, repeated numbers, total repetitions, and days since last entry
       Object.values(userData).forEach((data) => {
         const uniqueNumbers = new Set(data.numbers);
         data.numberCount = uniqueNumbers.size; // Count of unique numbers
 
         const numberFrequency = {};
         let repeatedCount = 0;
+        let totalRepetitions = 0;
 
         data.numbers.forEach((num) => {
           numberFrequency[num] = (numberFrequency[num] || 0) + 1;
         });
 
-        repeatedCount = Object.values(numberFrequency).filter(
-          (count) => count > 1
-        ).length;
+        Object.values(numberFrequency).forEach((count) => {
+          if (count > 1) {
+            repeatedCount++;
+            totalRepetitions += count; // Sum the total repetitions
+          }
+        });
 
         data.repeatedCount = repeatedCount;
+        data.totalRepetitions = totalRepetitions;
 
         // Calculate days since last entry
         if (data.lastEntryDate) {
@@ -285,7 +295,6 @@ router.get(
     }
   }
 );
-
 
 router.get(
   "/getAllUsers",
@@ -394,8 +403,11 @@ router.post("/editProfile", tokenUtils.verifyToken, async (req, res) => {
     var tokenDecrypted = tokenUtils.parseJwt(token);
     var { username, name_surname, profile_image } = req.body;
 
-    if (username.length <= 15 && name_surname.length <= 25 && utils.isBase64Image(profile_image)) {
-
+    if (
+      username.length <= 15 &&
+      name_surname.length <= 25 &&
+      utils.isBase64Image(profile_image)
+    ) {
       utils
         .compressImage(profile_image, 228, 228)
         .then((resizedBase64) => {
@@ -431,4 +443,80 @@ router.post("/editProfile", tokenUtils.verifyToken, async (req, res) => {
       .json({ error: "An error occurred while editting the profile." });
   }
 });
+
+// Endpoint para obtener los números faltantes por línea para cada jugador
+router.get("/bingoLine", async (req, res) => {
+  // Definir los rangos de las líneas de bingo (1-9, 10-19, 20-29, ..., 90-99)
+  const bingoLines = [
+    { name: "1", range: [1, 9] },
+    { name: "10", range: [10, 19] },
+    { name: "20", range: [20, 29] },
+    { name: "30", range: [30, 39] },
+    { name: "40", range: [40, 49] },
+    { name: "50", range: [50, 59] },
+    { name: "60", range: [60, 69] },
+    { name: "70", range: [70, 79] },
+    { name: "80", range: [80, 89] },
+    { name: "90", range: [90, 99] },
+  ];
+
+  try {
+    const users = await userModel.findAll({
+      where:{
+        administrator: 0
+      },
+      include: [
+        {
+          model: numberModel,
+          attributes: ["number"],
+        },
+      ],
+    });
+
+    const result = users.map((user) => {
+      const userNumbers = user.Numbers.map((num) => num.number);
+      let fewestMissingLine = null;
+
+      bingoLines.forEach((line) => {
+        const { name, range } = line;
+        const [start, end] = range;
+        const lineNumbers = Array.from(
+          { length: end - start + 1 },
+          (_, i) => start + i
+        );
+
+        const missingNumbers = lineNumbers.filter(
+          (num) => !userNumbers.includes(num)
+        );
+
+        if (
+          !fewestMissingLine ||
+          missingNumbers.length < fewestMissingLine.missingCount
+        ) {
+          fewestMissingLine = {
+            line: name,
+            missingCount: missingNumbers.length,
+          };
+        }
+      });
+
+      return {
+        username: user.username,
+        fewestMissingLine,
+      };
+    });
+
+    // Ordenar el resultado por la cantidad de números faltantes en la línea
+    result.sort(
+      (a, b) =>
+        a.fewestMissingLine.missingCount - b.fewestMissingLine.missingCount
+    );
+
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching missing lines:", error);
+    res.status(500).json({ error: "Error fetching missing lines" });
+  }
+});
+
 module.exports = router;

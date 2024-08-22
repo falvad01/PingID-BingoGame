@@ -169,4 +169,32 @@ export class UserService {
         });
       });
     }
+
+      /*
+   * Obtain the number remaining to obtain the line in the bingo
+   * 
+   * @returns 
+   */
+  getLineRemaining() {
+
+    return new Promise((resolve, reject) => {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': this.token.getToken()
+      });
+
+      console.log("Getting user profile")
+
+      this.http.get(environment.API_PATH + 'user/bingoLine', { headers: headers }).subscribe({
+        next: (data: any) => {
+          console.log("Peticion correct %s", data)
+          resolve(data);
+        },
+        error: error => {
+          this.ErrorMessage = error.error ? error.error.error : error.message;
+          reject(error);
+        }
+      });
+    });
+  }
 }
