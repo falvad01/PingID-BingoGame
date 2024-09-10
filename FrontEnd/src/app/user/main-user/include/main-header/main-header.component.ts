@@ -1,16 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CountdownComponent, CountdownConfig } from 'ngx-countdown';
 import { TokenService } from 'src/services/token/token.service';
 
-const CountdownTimeUnits: Array<[string, number]> = [
-  ['Y', 1000 * 60 * 60 * 24 * 365], // years
-  ['M', 1000 * 60 * 60 * 24 * 30], // months
-  ['D', 1000 * 60 * 60 * 24], // days
-  ['H', 1000 * 60 * 60], // hours
-  ['m', 1000 * 60], // minutes
-  ['s', 1000], // seconds
-  ['S', 1], // million seconds
-];
+
 
 @Component({
   selector: 'app-main-header',
@@ -19,38 +11,53 @@ const CountdownTimeUnits: Array<[string, number]> = [
 })
 export class MainHeaderComponent implements OnInit {
 
-  config!: CountdownConfig;
+  date: any;
+  now: any;
+  targetDate: any = new Date(2025, 1, 1);
+  targetTime: any = this.targetDate.getTime();
+  difference: number = 0;
+  months: Array<string> = ["January", "February", "March", "April",
+    "May", "June", "July", "August", "September", "October", "November", "December"];
 
-  constructor(private tokenService: TokenService) {}
+  // Template literals is ideal for this scenario
+  currentTime: any = this.months[this.targetDate.getMonth()] +
+    ' ' + this.targetDate.getDate() + ', ' + this.targetDate.getFullYear();
+
+  @ViewChild("days", { static: true }) days!: ElementRef;
+  @ViewChild("hours", { static: true }) hours!: ElementRef;
+  @ViewChild("minutes", { static: true }) minutes!: ElementRef;
+  @ViewChild("seconds", { static: true }) seconds!: ElementRef;
+
+
+  constructor(private tokenService: TokenService) { }
 
   ngOnInit() {
-    const now = new Date();
-    const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59); // 31 de diciembre a las 23:59:59
-    const leftTime = Math.floor((endOfYear.getTime() - now.getTime()) / 1000); // tiempo restante en segundos
 
-    this.config = {
-      leftTime: leftTime,
-      format: 'DD HH:mm:ss',
-      formatDate: ({ date, formatStr }) => {
-        let duration = Number(date || 0);
-
-        return CountdownTimeUnits.reduce((current: string, [name, unit]: any) => {
-          if (current.indexOf(name) !== -1) {
-            const v = Math.floor(duration / unit);
-            duration -= v * unit;
-            return current.replace(new RegExp(`${name}+`, 'g'), (match: string) => {
-              // Cuando los días están vacíos
-              if (name === 'D' && v <= 0) {
-                return '';
-              }
-              return v.toString().padStart(match.length, '0');
-            });
-          }
-          return current;
-        }, formatStr);
-      },
-    };
   }
+
+  ngAfterViewInit() {
+    setInterval(() => {
+      this.tickTock();
+      this.difference = this.targetTime - this.now;
+      this.difference = this.difference / (1000 * 60 * 60 * 24);
+      !isNaN(this.days.nativeElement.innerText)
+        ? (this.days.nativeElement.innerText = Math.floor(this.difference))
+        : (this.days.nativeElement.innerHTML = "<img src='https://i.gifer.com/VAyR.gif' />");
+    }, 1000);
+  }
+
+
+  tickTock() {
+    this.date = new Date();
+    this.now = this.date.getTime();
+    this.days.nativeElement.innerText = Math.floor(this.difference);
+    this.hours.nativeElement.innerText = 23 - this.date.getHours();
+    this.minutes.nativeElement.innerText = 60 - this.date.getMinutes();
+    this.seconds.nativeElement.innerText = 60 - this.date.getSeconds();
+  }
+
+
+
 
   logOut() {
     this.tokenService.closeSession();

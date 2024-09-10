@@ -1,7 +1,9 @@
+import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { NumberService } from 'src/services/number/number.service';
 
 @Component({
+  providers: [DatePipe],
   selector: 'app-individual-table',
   templateUrl: './individual-table.component.html',
   styleUrls: ['./individual-table.component.scss']
@@ -9,7 +11,7 @@ import { NumberService } from 'src/services/number/number.service';
 export class IndividualTableComponent {
   numbers: { number: number, count: number, dates: string[] }[] = [];
 
-  constructor(private numberService: NumberService) {
+  constructor(private numberService: NumberService, private datepipe: DatePipe) {
     // Initialize numbers from 1 to 99
     this.obtainMarkedNumbers();
   }
@@ -88,7 +90,7 @@ export class IndividualTableComponent {
    * @returns The tooltip message including all dates.
    */
   getTooltipMessage(dates: string[]): string {
-    const formattedDates = dates.map(date => new Date(date).toLocaleDateString()).join('\n ');
+    const formattedDates = dates.map(date => this.datepipe.transform(new Date(date), 'dd/MM/yyyy')).join('\n ');
     return `${formattedDates}`;
   }
 }

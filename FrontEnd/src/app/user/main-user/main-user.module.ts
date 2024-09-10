@@ -35,7 +35,8 @@ import { CountdownModule } from 'ngx-countdown';
     NumbersTimeLineComponent,
     ClasificationComponent,
     DataComponent,
-    CountdownModule 
+    CountdownModule,
+    NumberTableComponent
 
 ],
   declarations: [
@@ -46,7 +47,6 @@ import { CountdownModule } from 'ngx-countdown';
     IndividualTableComponent,
     MainFooterComponent,
     NumberStadisticsComponent,
-    NumberTableComponent,
     EditProfileComponent,
 
   ],

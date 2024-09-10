@@ -6,7 +6,22 @@
       <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
     </li>
     <li class="nav-item">
-      <countdown #cd [config]="config" />
+      <div class="count-down-timer">
+        <div class="wrapper">
+          <div class="description">
+            <p>Days</p>
+            <p>Hours</p>
+            <p>Minutes</p>
+            <p>Seconds</p>
+          </div>
+          <div class="times">
+            <p #days></p>
+            <p #hours></p>
+            <p #minutes></p>
+            <p #seconds></p>
+          </div>
+        </div>
+      </div>
     </li>
   </ul>
   

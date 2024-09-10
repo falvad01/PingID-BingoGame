@@ -1,8 +1,12 @@
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
+import { TooltipModule } from 'primeng/tooltip';
 import { NumberService } from 'src/services/number/number.service';
 
 @Component({
   selector: 'app-number-table',
+  standalone: true,
+  imports: [NgFor, NgClass, TooltipModule, NgIf],
   templateUrl: './number-table.component.html',
   styleUrls: ['./number-table.component.scss']
 })
