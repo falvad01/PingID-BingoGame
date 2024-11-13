@@ -62,7 +62,7 @@ router.post("/add", tokenUtils.verifyToken, async (req, res) => {
         tokenDecrypted.userId
       );
 
-      return res.status(469).json({
+      return res.status(400).json({
         message: "Number already created",
         number: number,
       });
@@ -73,7 +73,7 @@ router.post("/add", tokenUtils.verifyToken, async (req, res) => {
       number,
       tokenDecrypted.userId
     );
-    return res.status(469).json({
+    return res.status(569).json({
       message: "Fail creating number",
       number: number,
     });

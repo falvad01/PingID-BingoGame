@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TokenService } from 'src/services/token/token.service';
 import { UserService } from 'src/services/user/user.service';
 
@@ -7,11 +7,12 @@ import { UserService } from 'src/services/user/user.service';
   templateUrl: './main-menu.component.html',
   styleUrls: ['./main-menu.component.scss']
 })
-export class MainMenuComponent {
+export class MainMenuComponent implements OnInit{
 
 
   userName: String
   imagePath: String = ""
+  isNumberAdded: boolean = false
 
 
   constructor(private tokenService: TokenService, private userService: UserService) {
@@ -20,6 +21,12 @@ export class MainMenuComponent {
     this.getUserProfile()
   }
 
+  ngOnInit(): void {
+    this.userService.checkDayNumber().then((data) => {
+      if(data)
+        this.isNumberAdded = true;
+    })
+  }
 
   private getUserProfile() {
 
