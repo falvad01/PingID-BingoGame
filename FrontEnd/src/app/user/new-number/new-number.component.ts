@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { NumberService } from 'src/services/number/number.service';
+import { ComunicationService } from 'src/services/user/comunication-service.service';
 declare var $: any; // jQuery
 
 enum STATUS {
@@ -25,7 +27,7 @@ export class NewNumberComponent implements OnInit {
   message: string = '';
 
 
-  constructor(private numberService: NumberService) { }
+  constructor(private numberService: NumberService,private router: Router, private comunicationService: ComunicationService) { }
 
   ngOnInit(): void {
     const today = new Date();
@@ -64,6 +66,7 @@ export class NewNumberComponent implements OnInit {
           this.header = '¡SUUUUUUUU!';
           this.subheader = 'Número guardado correctamente';
           this.message = '';
+          
 
         }).catch((error: any) => {
           console.log(error);
@@ -89,7 +92,8 @@ export class NewNumberComponent implements OnInit {
     } else if (this.status == STATUS.SENDED) {
       this.status = STATUS.IDLE
       $('#confirmationModal').modal('hide'); // Cerrar el modal después de confirmar
-
+      this.comunicationService.emitNumberChange(true);
+      this.router.navigate(["user/dashboard"])
 
 
     } else if (this.status == STATUS.ERROR) {

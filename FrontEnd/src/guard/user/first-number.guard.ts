@@ -13,6 +13,7 @@ export class firstNumberGuard implements CanActivate {
     if(await this.user.checkDayNumber()) {
       return true;
     }
+    this.router.navigate(['user/number']);
     return false;
   }
 }
