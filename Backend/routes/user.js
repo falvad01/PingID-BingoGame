@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const numberModel = require("../database/models/number");
 const tokenUtils = require("../utils/TokenUtils");
 const utils = require("../utils/utils");
+const { Op } = require("sequelize");
 
 const adminTokenUtils = require("../utils/AdminTokenUtils");
 
@@ -517,6 +518,45 @@ router.get("/bingoLine", async (req, res) => {
     console.error("Error fetching missing lines:", error);
     res.status(500).json({ error: "Error fetching missing lines" });
   }
+});
+
+router.get("/isDayNumberAdded", tokenUtils.verifyToken, async (req, res) => {
+  try {
+    if(req.headers){
+      // Try to decode token from headers
+      let token = req.headers["x-access-token"] || req.headers["authorization"];
+      console.debug(token)
+      // Remove Bearer from string
+      token = token.replace(/^Bearer\s+/, "");
+      var tokenDecrypted = tokenUtils.parseJwt(token);
+      const today = new Date();
+      // Obtener la fecha de hoy en formato adecuado para comparación en Sequelize
+      const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+      const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+      // Check if a number has been addded by the user today
+      const response = await numberModel.findOne({
+        where: {
+          user_id: tokenDecrypted.userId,
+          created_at: {
+            [Op.between]: [startOfDay, endOfDay], 
+          },
+        }
+      });
+      // If the number has been added return true if not false
+      if(response) {
+        res.status(200).send(true);
+        return;
+      }
+      res.status(200).send(false);
+      return;
+    }
+  } catch (error) {
+    console.error("Error checking if the user has added the daily number:", error);
+    res.status(500).json({ error: "Error checking if the user has added the daily number" });
+    return;
+  }
+ 
+
 });
 
 module.exports = router;

@@ -32,7 +32,7 @@ export class LoginPage implements OnInit {
       console.log(data)
       if (data == true) {
 
-        this.router.navigate(['/user/dashboard']);
+        this.router.navigate(['/user/number']);
       } else {
         console.error("Bad crecentials")
         this.errorText = "Credential are incorrect"

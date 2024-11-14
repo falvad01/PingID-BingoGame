@@ -197,4 +197,29 @@ export class UserService {
       });
     });
   }
+/**
+ * Check if the user have added the daily number
+ * @returns 
+ */
+  checkDayNumber() {
+    return new Promise((res,rej) => {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': this.token.getToken()
+      });
+
+      console.log("checking user number")
+
+      this.http.get(environment.API_PATH + 'user/isDayNumberAdded', { headers: headers }).subscribe({
+        next: (data: any) => {
+          console.log("Peticion correct %s", data)
+          res(data);
+        },
+        error: error => {
+          this.ErrorMessage = error.error ? error.error.error : error.message;
+          rej(error);
+        }
+      });
+    })
+  }
 }
