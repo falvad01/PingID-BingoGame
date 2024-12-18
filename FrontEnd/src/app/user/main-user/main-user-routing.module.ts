@@ -9,6 +9,7 @@ import { ClasificationComponent } from '../clasification/clasification.component
 import { EditProfileComponent } from '../edit-profile/edit-profile.component'
 import { DataComponent } from '../data/data.component';
 import { firstNumberGuard } from 'src/guard/user/first-number.guard';
+import { numberAddedGuard } from 'src/guard/user/number-added.guard';
 
 
 const routes: Routes = [
@@ -24,7 +25,8 @@ const routes: Routes = [
       },
       {
         path: "number",
-        component: NewNumberComponent
+        component: NewNumberComponent,
+        canActivate: [numberAddedGuard]
       },
       {
         path: "clasification",

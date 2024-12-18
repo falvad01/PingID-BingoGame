@@ -34,7 +34,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-                <li class="nav-item">
+                <li class="nav-item" *ngIf="!isNumberAdded">
                     <a href="user/number" class="nav-link">
                         <i class="fas fa-plus"></i>
                         <p> Nuevo número</p>
