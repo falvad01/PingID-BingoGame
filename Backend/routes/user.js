@@ -449,7 +449,7 @@ router.post("/editProfile", tokenUtils.verifyToken, async (req, res) => {
 router.get("/bingoLine", async (req, res) => {
   // Definir los rangos de las líneas de bingo (1-9, 10-19, 20-29, ..., 90-99)
   const bingoLines = [
-    { name: "1", range: [1, 9] },
+ 
     { name: "10", range: [10, 19] },
     { name: "20", range: [20, 29] },
     { name: "30", range: [30, 39] },

@@ -13,7 +13,7 @@ export class MainHeaderComponent implements OnInit {
 
   date: any;
   now: any;
-  targetDate: any = new Date(2025, 1, 1);
+  targetDate: any = new Date(2026, 0);
   targetTime: any = this.targetDate.getTime();
   difference: number = 0;
   months: Array<string> = ["January", "February", "March", "April",
@@ -38,7 +38,7 @@ export class MainHeaderComponent implements OnInit {
   ngAfterViewInit() {
     setInterval(() => {
       this.tickTock();
-      this.difference = this.targetTime - this.now;
+      this.difference = this.targetDate - this.now;
       this.difference = this.difference / (1000 * 60 * 60 * 24);
       !isNaN(this.days.nativeElement.innerText)
         ? (this.days.nativeElement.innerText = Math.floor(this.difference))

@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../DBConnection"); // assuming your database connection is in database.js
 const User = require("./user");
+const Season = require("./season")
 
 const Number = sequelize.define(
   "Number",
@@ -21,6 +22,13 @@ const Number = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    season_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: Season,
+        key: "id",
+      },
+    },
 
   },
   {
@@ -34,5 +42,6 @@ const Number = sequelize.define(
 // Define the association
 User.hasMany(Number, { foreignKey: "user_id" });
 Number.belongsTo(User, { foreignKey: "user_id" });
+Number.belongsTo(Season, { foreignKey: "season_id" });
 
 module.exports = Number;

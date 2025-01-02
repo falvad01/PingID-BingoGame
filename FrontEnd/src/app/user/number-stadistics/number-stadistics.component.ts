@@ -63,13 +63,13 @@ export class NumberStadisticsComponent implements OnInit {
     this.userService.getUserClasification().then((data: any) => {
 
       this.firstBingoName = data[0].username
-      this.firstBingoSubtext = 99 - data[0].numberCount + " para el BINGO"
+      this.firstBingoSubtext = 89 - data[0].numberCount + " para el BINGO"
 
       this.secondBingoName = data[1].username
-      this.secondBingoSubtext = 99 - data[1].numberCount + " para el BINGO"
+      this.secondBingoSubtext = 89 - data[1].numberCount + " para el BINGO"
 
       this.thirdBingoName = data[2].username
-      this.thirdBingoSubtext = 99 - data[2].numberCount + " para el BINGO"
+      this.thirdBingoSubtext = 89 - data[2].numberCount + " para el BINGO"
 
     }).catch(error => {
 

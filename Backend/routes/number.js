@@ -35,6 +35,7 @@ router.post("/add", tokenUtils.verifyToken, async (req, res) => {
     const [number, created] = await numberModel.findOrCreate({
       where: {
         user_id: tokenDecrypted.userId,
+        season_id: 2,
         created_at: {
           [Op.between]: [startOfDay, endOfDay], // Busca registros con created_at dentro del rango de hoy
         },

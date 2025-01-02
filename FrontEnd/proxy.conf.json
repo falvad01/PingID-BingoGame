@@ -1,0 +1,8 @@
+{
+    "/":{
+        "target": "https://localhost:3009",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    }
+}

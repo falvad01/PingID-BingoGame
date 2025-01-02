@@ -22,6 +22,7 @@ export class IndividualTableComponent {
    */
   obtainMarkedNumbers() {
     this.numberService.retrieveAllUserNumbers().then((response: any) => {
+
       this.processData(response);
     }).catch((error: any) => {
       console.error('Error fetching data:', error);
@@ -38,16 +39,20 @@ export class IndividualTableComponent {
     const numberMap: { [key: number]: { count: number, dates: string[] } } = {};
 
     // Initialize all numbers from 1 to 99
-    for (let i = 0; i <= 99; i++) {
+    for (let i = 10; i <= 99; i++) {
+
       numberMap[i] = { count: 0, dates: [] };
     }
 
     // Populate with data from backend
     data.forEach(item => {
-      numberMap[item.number] = {
-        count: item.count,
-        dates: item.dates
-      };
+      if (item.number >= 10 && item.number <= 99) { // Only consider numbers within the range
+
+        numberMap[item.number] = {
+          count: item.count,
+          dates: item.dates
+        };
+      }
     });
 
     // Convert the map to an array
