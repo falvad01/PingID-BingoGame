@@ -1,0 +1,70 @@
+version: '3.8'
+services:
+
+  mysql:
+    image: mysql:8
+    container_name: ${DATABASE_URL}
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASS}
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASS}
+    #ports:
+    #  - "${DATABASE_PORT}:${DATABASE_PORT}" # Mapea el puerto MySQL al host (opcional)
+    volumes:
+      - db_data:/var/lib/mysql # Volumen persistente para datos de MySQL
+    networks:
+      - app-network
+
+  bingoweb:
+    image: djavic/bingoweb:0.2.0
+    container_name: bingo-web
+    ports:
+      - "${API_HTTPS_PORT}:${API_HTTPS_PORT}" # Mapea el puerto del backend al host
+      - "${API_HTTP_PORT}:${API_HTTP_PORT}" # Mapea el puerto del backend al host
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASS=${DATABASE_PASS}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - API_HTTP_PORT=${API_HTTP_PORT}
+      - API_HTTPS_PORT=${API_HTTPS_PORT}
+      - SSL_CONFIG_KEY=./certs/server.key
+      - SSL_CONFIG_CERT=./certs/server.cert
+    depends_on:
+      - mysql 
+    networks:
+      - app-network
+    entrypoint: >
+      /bin/sh -c " echo 'Esperando 15 segundos para que la base de datos esté lista...'; sleep 15; node app.js;"
+
+  phpmyadminBingo:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadminBingo
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: ${DATABASE_USER}
+      PMA_PASSWORD: ${DATABASE_PASS}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASS}
+      HTACCESS: "true" # Habilita autenticación HTTP básica
+      
+    ports:
+      - "8181:80" # phpMyAdmin accesible en http://localhost:8181
+    networks:
+      - app-network
+    volumes:
+      - .htpasswd:/etc/phpmyadmin/.htpasswd
+      - .htaccess:/var/www/html/.htaccess
+ 
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  db_data:
+  phpmyadmin-config:
+
+
+networks:
+  app-network:

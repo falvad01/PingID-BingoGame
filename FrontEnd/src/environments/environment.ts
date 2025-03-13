@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  API_PATH: "http://15.20.140.94:3000/"
+  API_PATH: "http://localhost:3000/"
 };
 
 /*
