@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/services/auth/auth.service';
 import lottie from 'lottie-web';
@@ -17,6 +17,7 @@ export class LoginPage implements OnInit {
 
   user: string = '';
   pass: string = '';
+
 
 
   constructor(private router: Router, private authService: AuthService) {
@@ -38,7 +39,6 @@ export class LoginPage implements OnInit {
         this.errorText = "Credential are incorrect"
         this.showErrorUser = true;
         this.showErrorPass = true;
-
       }
     });
   }
@@ -89,4 +89,11 @@ export class LoginPage implements OnInit {
       this.authService.login(this.user, this.pass);
     }
   }
+
+
+  @HostListener('document:keydown.enter', ['$event'])
+  handleEnterKey(event: KeyboardEvent) {
+    this.login();
+  }
+
 }

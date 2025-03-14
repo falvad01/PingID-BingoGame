@@ -150,7 +150,8 @@ export class UserService {
         });
   
         console.log("Edit profile %s", userName)
-  
+        console.log("Base64 length:", profileImage.length);
+
         this.http.post(environment.API_PATH + 'user/editProfile', {
           "username": userName,
           "name_surname": nameSurname,

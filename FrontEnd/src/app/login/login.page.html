@@ -11,7 +11,8 @@
         <p class="login-box-msg">Sign in to start your session</p>
 
         <div class="input-group mb-3" [ngClass]="{'has-error': showErrorUser}">
-          <input type="user" class="form-control" placeholder="User" [(ngModel)]="user" [disabled]="loading" />
+          <input type="user" class="form-control" name="emailContainer" placeholder="User" [(ngModel)]="user"
+            [disabled]="loading" />
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
@@ -19,7 +20,8 @@
           </div>
         </div>
         <div class="input-group mb-3" [ngClass]="{'has-error': showErrorPass}">
-          <input type="password" class="form-control" placeholder="Password" [(ngModel)]="pass" [disabled]="loading" />
+          <input type="password" class="form-control" name="passwordContainer" placeholder="Password" [(ngModel)]="pass"
+            [disabled]="loading" />
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -33,7 +35,7 @@
           <div class="col-8"></div>
           <!-- /.col -->
           <div class="col-4">
-            <button class="btn btn-primary btn-block" (click)="login()" [disabled]="loading">
+            <button class="btn btn-primary btn-block" (click)="login()" [disabled]="loading" #loginButton>
               Sign In
               <div class="overlay" *ngIf="loading">
                 <i class="fas fa-2x fa-sync-alt"></i>

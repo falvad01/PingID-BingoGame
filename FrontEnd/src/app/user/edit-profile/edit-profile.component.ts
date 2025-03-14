@@ -42,12 +42,15 @@ export class EditProfileComponent {
     this.userService.editProfile(this.userName, this.nameSurname, this.file)
   }
 
+ 
+
   onFileChange(event: any) {
     const files = event.target.files as FileList;
 
     if (files.length > 0) {
       const _file = URL.createObjectURL(files[0]);
-      this.compressImage(_file, 228, 228).then(compressed => {
+      this.compressImage2(_file, 128).then(compressed => {
+        console.log("Compressed image" + compressed)
         this.file = compressed;
       })
       this.resetInput();
@@ -90,6 +93,24 @@ export class EditProfileComponent {
       }
       img.onerror = error => rej(error);
     })
+  }
+
+   compressImage2(base64Str: string, maxSize = 500) {
+    return new Promise<string>((resolve) => {
+      const img = new Image();
+      img.src = base64Str;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+  
+        const scaleFactor = maxSize / Math.max(img.width, img.height);
+        canvas.width = img.width * scaleFactor;
+        canvas.height = img.height * scaleFactor;
+  
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", 0.7)); // Comprime a JPEG con 70% de calidad
+      };
+    });
   }
 
 

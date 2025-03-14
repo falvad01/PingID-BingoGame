@@ -13,8 +13,8 @@
           [(ngModel)]="inputNumber">
       </div>
 
-      <button type="button" class="btn btn-primary" [disabled]="!inputNumber" (click)="openDialog()" data-toggle="modal"
-        data-target="#confirmationModal">
+      <button type="button" class="btn btn-primary" [disabled]="!inputNumber" (click)="openDialog()"
+        data-toggle="modal">
         Enviar
       </button>
 
@@ -22,9 +22,8 @@
   </div>
 
   <!-- Modal de Confirmación -->
-  <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
+  <div class="modal " *ngIf="showModal">
+    <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="confirmationModalLabel">{{ header }}</h5>

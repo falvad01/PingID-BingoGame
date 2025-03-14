@@ -26,7 +26,7 @@ const User = sequelize.define(
       allowNull: false,
     },
     profile_image: {
-      type: DataTypes.BLOB,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
   },

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NumberService } from 'src/services/number/number.service';
 import { ComunicationService } from 'src/services/user/comunication-service.service';
@@ -25,9 +25,10 @@ export class NewNumberComponent implements OnInit {
   header: string = '';
   subheader: string = '';
   message: string = '';
+  showModal: any;
 
 
-  constructor(private numberService: NumberService,private router: Router, private comunicationService: ComunicationService) { }
+  constructor(private numberService: NumberService, private router: Router, private comunicationService: ComunicationService) { }
 
   ngOnInit(): void {
     const today = new Date();
@@ -45,6 +46,8 @@ export class NewNumberComponent implements OnInit {
    * Set the text to the dialog when a user wants to send a number
    */
   openDialog() {
+    console.log("openDialog")
+    this.showModal = true;
     this.status = STATUS.PREPARATION
     this.header = '¡Cuidadin!';
     this.subheader = `El número seleccionado es el ${this.inputNumber}`;
@@ -55,7 +58,7 @@ export class NewNumberComponent implements OnInit {
    * Send the number to the API
    */
   sendNumber(): void {
-
+    console.log("sendNumber")
     if (this.status == STATUS.PREPARATION) {
       const regex = /^([1-9]|[1-9]\d)$/;
 
@@ -66,7 +69,7 @@ export class NewNumberComponent implements OnInit {
           this.header = '¡SUUUUUUUU!';
           this.subheader = 'Número guardado correctamente';
           this.message = '';
-          
+
 
         }).catch((error: any) => {
           console.log(error);
@@ -91,16 +94,36 @@ export class NewNumberComponent implements OnInit {
 
     } else if (this.status == STATUS.SENDED) {
       this.status = STATUS.IDLE
-      $('#confirmationModal').modal('hide'); // Cerrar el modal después de confirmar
+      this.showModal = false
       this.comunicationService.emitNumberChange(true);
       this.router.navigate(["user/dashboard"])
 
 
     } else if (this.status == STATUS.ERROR) {
       this.status = STATUS.IDLE
-      $('#confirmationModal').modal('hide'); // Cerrar el modal después de confirmar
+      this.showModal = false
+    }
+  }
+
+  @HostListener('document:keydown.enter', ['$event'])
+  handleEnterKey(event: KeyboardEvent) {
+    console.log(this.status)
+
+    if (this.inputNumber) {
+      if (this.status == STATUS.PREPARATION) {
+        this.sendNumber();
+      } else if (this.status == STATUS.IDLE) {
+        this.openDialog();
+      } else if (this.status == STATUS.ERROR) {
+        this.status = STATUS.IDLE
+        this.showModal = false
+      } else if (this.status == STATUS.SENDED) {
+        this.status = STATUS.IDLE
+        this.showModal = false
+        this.comunicationService.emitNumberChange(true);
+        this.router.navigate(["user/dashboard"])
+      }
 
     }
-
   }
 }

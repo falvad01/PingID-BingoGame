@@ -5,6 +5,8 @@ const userModel = require("../database/models/user");
 const { Op } = require("sequelize");
 const tokenUtils = require("../utils/TokenUtils");
 const utils = require("../utils/utils");
+const moment = require('moment');
+
 require("dotenv").config();
 
 router.get("/", (req, res) => {
@@ -35,7 +37,7 @@ router.post("/add", tokenUtils.verifyToken, async (req, res) => {
     const [number, created] = await numberModel.findOrCreate({
       where: {
         user_id: tokenDecrypted.userId,
-        season_id: 2,
+        season_id: 1,
         created_at: {
           [Op.between]: [startOfDay, endOfDay], // Busca registros con created_at dentro del rango de hoy
         },
@@ -266,52 +268,58 @@ router.get("/getStadistics", tokenUtils.verifyToken, async (req, res) => {
  * Obtain the actual day records
  */
 router.get("/getTodayNumbers", tokenUtils.verifyToken, async (req, res) => {
-  try {
-    const todayRecords = await numberModel.findAll({
-      attributes: ["number", "created_at"],
-      where: {
-        created_at: utils.dateToEpoch(new Date()), // Filtra por el día actual
+  const startOfDay = new Date(); // Crea un nuevo objeto Date para hoy
+  startOfDay.setHours(0, 0, 0, 0); // Establece el tiempo al inicio del día
+
+  const endOfDay = new Date(); // Crea un nuevo objeto Date para hoy
+  endOfDay.setHours(23, 59, 59, 999); // Establece el tiempo al final del día
+
+  const todayRecords = await numberModel.findAll({
+    attributes: ["number", "created_at"],
+    where: {
+      created_at: {
+        [Op.between]: [startOfDay.getTime(), endOfDay.getTime()], // Filtra entre el inicio y el final del día
       },
-      include: [
-        {
-          model: userModel,
-          attributes: ["username", "profile_image", "id"], // "id" es el user_id
+    },
+
+    include: [
+      {
+        model: userModel,
+        attributes: ["username", "profile_image", "id"], // "id" es el user_id
+      },
+    ],
+  });
+
+  console.silly("Today records: " + todayRecords);
+  // Añadir campo booleano 'alreadyExists' para cada registro, verificando si el número existe para ese usuario en cualquier otro día
+  const enrichedRecords = await Promise.all(
+    todayRecords.map(async (record) => {
+      const userId = record.User.id;
+      const number = record.number;
+
+      // Obtener el inicio del día actual (00:00:00)
+      const startOfToday = moment().startOf("day").toDate();
+
+      // Verificar si el número ya existe para el usuario en días diferentes
+      const numberExistsForUser = await numberModel.findOne({
+        where: {
+          user_id: userId,
+          number: number,
+          created_at: { [Op.lt]: startOfToday }, // Excluir registros creados hoy
         },
-      ],
-    });
+        raw: true,
+      });
 
-    // Añadir campo booleano 'alreadyExists' para cada registro, verificando si el número existe para ese usuario en cualquier otro día
-    const enrichedRecords = await Promise.all(
-      todayRecords.map(async (record) => {
-        const userId = record.User.id;
-        const number = record.number;
+      // Añadir el campo 'alreadyExists' al objeto de registro
+      return {
+        ...record.toJSON(),
+        alreadyExists: !!numberExistsForUser, // true si el número ya existe para este usuario en otros días, false si no
+      };
+    })
+  );
 
-        // Verificar si el número ya existe para el usuario en días diferentes
-        const numberExistsForUser = await numberModel.findOne({
-          where: {
-            user_id: userId,
-            number: number,
-            created_at: { [Op.ne]: utils.dateToEpoch(new Date()) }, // Excluir el día actual
-          },
-        });
-
-        // Añadir el campo 'alreadyExists' al objeto de registro
-        return {
-          ...record.toJSON(),
-          alreadyExists: !!numberExistsForUser, // true si el número ya existe para este usuario en otros días, false si no
-        };
-      })
-    );
-
-    // Enviar los registros enriquecidos
-    res.status(200).send(enrichedRecords);
-  } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching statistics." });
-  }
+  // Enviar los registros enriquecidos
+  res.status(200).send(enrichedRecords);
 });
-
 
 module.exports = router;
