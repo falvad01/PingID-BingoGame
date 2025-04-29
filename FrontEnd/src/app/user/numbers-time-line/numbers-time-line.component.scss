@@ -1,0 +1,35 @@
+.item {
+  background-color: #173477af !important;
+}
+
+.user-image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #dee2e6;
+}
+
+.badge-custom {
+  background-color: #2e7d32;
+  color: #dee2e6;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.badge-custom-repeated {
+  background-color: #7d2e2e;
+  color: #e6f4ea;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.history-item:hover {
+  transition: background-color 0.2s ease;
+}

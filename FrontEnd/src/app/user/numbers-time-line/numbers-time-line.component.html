@@ -3,22 +3,18 @@
     <h3 class="card-title">Historial</h3>
   </div>
   <div class="card-body p-0">
-    <div *ngFor="let td of todayNumbers" class="cell">
-      <ul class="products-list product-list-in-card pl-2 pr-2">
-        <li class="item">
-          <div class="product-img">
-            <img [src]="td.User.profile_image || '../../../assets/user.png'" alt="user image" class="img-size-20">
+    <div *ngFor="let td of todayNumbers" class="history-item">
+      <div class="d-flex align-items-center justify-content-between px-3 py-2">
+        <div class="d-flex align-items-center">
+          <img [src]="td.User.profile_image || '../../../assets/user.png'" alt="user image" class="user-image mr-3">
+          <div>
+            <div class="username font-weight-bold mb-1">{{td.User.username}}</div>
+            <div class="text-muted small">{{td.text}}</div>
           </div>
-          <div class="product-info">
-            <div class="product-title">{{td.User.username}}
-              <span class="badge badge-success float-right">{{td.number}}</span></div>
-            <span class="product-description">
-              {{td.text}}
-            </span>
-          </div>
-        </li>
-        <div class="dropdown-divider"></div>
-      </ul>
+        </div>
+        <span class="{{td.class}}">{{td.number}}</span>
+      </div>
+      <div class="dropdown-divider m-0"></div>
     </div>
   </div>
 </div>

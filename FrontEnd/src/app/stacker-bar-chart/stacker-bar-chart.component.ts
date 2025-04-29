@@ -34,19 +34,24 @@ export class StackerBarChartComponent {
   }
 
   createChart(data: any) {
-    console.log("Starting collectiong user data" + data)
-    // Validar que `data` es un array no vacío
+    console.log("Starting collecting user data" + data);
+    // Validate that `data` is a non-empty array
     if (!Array.isArray(data) || data.length === 0) {
       console.error('Invalid data provided for chart creation.');
       return;
     }
 
-    // Extraer los nombres de usuario, números sin repetir y números repetidos
-    const usernames = data.map((user: any) => user.username);
-    const nonRepeatedCounts = data.map((user: any) => Math.max(user.numberCount - user.repeatedCount, 0)); // Asegurarse de que los valores no sean negativos
-    const repeatedCounts = data.map((user: any) => Math.max(user.totalRepetitions, 0)); // Asegurarse de que los valores no sean negativos
+    // Filter out users where both non-repeated and repeated counts are 0
+    const filteredData = data.filter((user: any) =>
+      Math.max(user.numberCount - user.repeatedCount, 0) > 0 || Math.max(user.totalRepetitions, 0) > 0
+    );
 
-    // Crear el gráfico
+    // Extract usernames, non-repeated counts, and repeated counts from the filtered data
+    const usernames = filteredData.map((user: any) => user.username);
+    const nonRepeatedCounts = filteredData.map((user: any) => Math.max(user.numberCount - user.repeatedCount, 0)); // Ensure non-negative values
+    const repeatedCounts = filteredData.map((user: any) => Math.max(user.totalRepetitions, 0)); // Ensure non-negative values
+
+    // Create the chart
     this.chart = new Chart("myChart", {
       type: 'bar',
       data: {
@@ -55,14 +60,14 @@ export class StackerBarChartComponent {
           {
             label: 'Números Sin Repetir',
             data: nonRepeatedCounts,
-            backgroundColor: '#4caf50',
-            borderColor: '#36A2EB',// Color para números sin repetir
+            backgroundColor: '#4caf50', // Color for non-repeated numbers
+            borderColor: '#36A2EB',
           },
           {
             label: 'Números Repetidos',
             data: repeatedCounts,
-            backgroundColor: '#2196f3',
-            borderColor: '#36A2EB', // Color para números repetidos
+            backgroundColor: '#2196f3', // Color for repeated numbers
+            borderColor: '#36A2EB',
           }
         ]
       },
@@ -71,11 +76,9 @@ export class StackerBarChartComponent {
         plugins: {
           legend: {
             position: 'top',
-
           },
           datalabels: {
             color: '#FFF', // Text color for the labels
-          
             formatter: function (value) {
               return value; // Display the numeric value
             },
@@ -100,10 +103,10 @@ export class StackerBarChartComponent {
             title: {
               display: true,
               text: 'Usuarios',
-              color: 'white', // Cambia el color de las etiquetas del eje x a blanco
+              color: 'white', // Change x-axis label color to white
             },
             ticks: {
-              color: 'white', // Cambia el color de los ticks del eje x a blanco
+              color: 'white', // Change x-axis tick color to white
             }
           },
           y: {
@@ -112,17 +115,15 @@ export class StackerBarChartComponent {
             title: {
               display: true,
               text: 'Cantidad',
-              color: 'white', // Cambia el color de las etiquetas del eje y a blanco
+              color: 'white', // Change y-axis label color to white
             },
             ticks: {
-              color: 'white', // Cambia el color de los ticks del eje y a blanco
+              color: 'white', // Change y-axis tick color to white
               precision: 0
             }
           }
-
         }
       }
     });
-
   }
 }

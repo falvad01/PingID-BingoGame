@@ -28,7 +28,8 @@ export class NumbersTimeLineComponent {
         // Convierte el buffer de la imagen a una URL de imagen en base64
         return {
           ...td,
-          text: this.getText(td.alreadyExists)
+          text: this.getText(td.alreadyExists),
+          class: this.getClass(td.alreadyExists),
         };
       });
       console.log(this.todayNumbers);
@@ -37,9 +38,14 @@ export class NumbersTimeLineComponent {
     });
   }
 
- 
+  getClass(exists: any) {
+    return exists ? "badge-custom-repeated" : "badge-custom";
+  }
+
+
   /**
    * Obtiene el texto basado en si el número ya existe.
+   * 
    * @param exists Booleano que indica si el número ya existe.
    * @returns El mensaje apropiado.
    */

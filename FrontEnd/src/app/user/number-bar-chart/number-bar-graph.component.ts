@@ -35,11 +35,11 @@ export class NumberBarChartComponent implements OnInit {
 
     if (ctx) {
       // Initialize counts for numbers 1 to 99
-      const counts = new Array(99).fill(0);
+      const counts = new Array(89).fill(0);
 
       // Process the response data to count occurrences
       data.forEach((item: any) => {
-        if (item.number >= 1 && item.number <= 99) {
+        if (item.number >= 10 && item.number <= 99) {
           counts[item.number - 1] = item.repetitions; // Use repetitions directly
         }
       });
@@ -74,7 +74,7 @@ export class NumberBarChartComponent implements OnInit {
             },
             tooltip: {
               callbacks: {
-                label: function(context) {
+                label: function (context) {
                   return `Número ${context.label}: ${context.raw}`;
                 }
               }
@@ -85,7 +85,8 @@ export class NumberBarChartComponent implements OnInit {
               title: {
                 display: true,
                 text: 'Número'
-              }
+              },
+              min: 10,
             },
             y: {
               title: {
@@ -95,7 +96,7 @@ export class NumberBarChartComponent implements OnInit {
               beginAtZero: true,
               ticks: {
                 stepSize: 1, // Ensure integers are visible
-                callback: function(value) {
+                callback: function (value) {
                   return Number.isInteger(value) ? value : '';
                 }
               },

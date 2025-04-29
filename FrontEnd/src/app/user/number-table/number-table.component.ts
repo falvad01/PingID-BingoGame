@@ -13,8 +13,8 @@ import { NumberService } from 'src/services/number/number.service';
 export class NumberTableComponent {
   numbers: { number: number, repetitions: number, users: { username: string, count: number }[] }[] = [];
 
-  // Initialize numbers from 1 to 99
-  allNumbers: number[] = Array.from({ length: 100 }, (_, i) => i);
+  // Initialize numbers from 10 to 99
+  allNumbers: number[] = Array.from({ length: 90 }, (_, i) => i + 10);
 
   constructor(private numberService: NumberService) {
     this.obtainAllNumbers();
@@ -48,11 +48,21 @@ export class NumberTableComponent {
 
     // Map numbers to their user data
     const numberMap = new Map<number, { repetitions: number, users: { username: string, count: number }[] }>();
+
+    // Initialize all numbers from 10 to 99
+    for (let i = 10; i <= 99; i++) {
+
+      numberMap.set(i, { repetitions: 0, users: [] });
+    }
+
     data.forEach(item => {
-      numberMap.set(item.number, {
-        repetitions: item.repetitions,
-        users: item.users
-      });
+      if (item.number >= 10 && item.number <= 99) { // Only consider numbers within the range
+
+        numberMap.set(item.number, {
+          repetitions: item.repetitions,
+          users: item.users
+        });
+      }
     });
 
     // Update the numberData array with user data

@@ -5,7 +5,7 @@ $primary-color: #173477af;
 
 .card {
     background-color: $primary-color !important;
-    margin-top: 75px !important;
+    margin-top: 16px !important;
 }
   
 .dark-mode .wrapper {
@@ -43,5 +43,9 @@ body.dark-mode {
 }
 
 .modal-content {
+    background-color: $primary-color !important;
+}
+
+.info-box{
     background-color: $primary-color !important;
 }

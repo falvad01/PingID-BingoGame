@@ -25,4 +25,4 @@ EXPOSE 443
 # Start the Node.js server
 ENTRYPOINT ["node", "/app/Backend/app.js"]
 
-#docker build -t djavic/bingoWeb:0.1.4 -t djavic/bingoWeb:latest .
+#docker build -t djavic/bingoweb:0.4.0 -t djavic/bingoweb:latest .
