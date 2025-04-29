@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/services/auth/auth.service';
 import lottie from 'lottie-web';
@@ -19,7 +19,6 @@ export class LoginPage implements OnInit {
   pass: string = '';
 
 
-
   constructor(private router: Router, private authService: AuthService) {
 
     //Subscribe to login service
@@ -30,12 +29,11 @@ export class LoginPage implements OnInit {
     //
     // Subscribe to login status
     this.authService.logedObservable$.subscribe((data: boolean) => {
-      console.log(data)
       if (data == true) {
 
         this.router.navigate(['/user/number']);
       } else {
-        console.error("Bad crecentials")
+
         this.errorText = "Credential are incorrect"
         this.showErrorUser = true;
         this.showErrorPass = true;
@@ -50,7 +48,7 @@ export class LoginPage implements OnInit {
       renderer: 'svg',
       loop: true,
       autoplay: true,
-      path: '../../../assets/dice_animation.json' // Ruta al archivo Lottie
+      path: '../../../assets/dice_animation.json'
     });
   }
 
@@ -60,40 +58,27 @@ export class LoginPage implements OnInit {
   login() {
 
     if (this.user === '') {
-      console.error("User error")
       this.showErrorUser = true;
       this.errorText = "All fields are mandatory"
     } else {
-      console.log("No User error")
 
       this.showErrorUser = false;
     }
 
     if (this.pass === '') {
-      console.error("Pass error")
-
       this.showErrorPass = true;
       this.errorText = "All fields are mandatory"
 
     } else {
-      console.log("No Pass error")
 
       this.showErrorPass = false;
     }
 
     if (!this.showErrorPass && !this.showErrorUser) {
-      console.log("Continue")
       this.errorText = ""
       this.showErrorUser = false;
       this.showErrorPass = false;
       this.authService.login(this.user, this.pass);
     }
   }
-
-
-  @HostListener('document:keydown.enter', ['$event'])
-  handleEnterKey(event: KeyboardEvent) {
-    this.login();
-  }
-
 }

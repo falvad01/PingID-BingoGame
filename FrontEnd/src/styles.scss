@@ -1,1 +1,47 @@
+/* Define a variable for the color */
+$primary-color: #173477af;
+
 /* You can add global styles to this file, and also import other style files */
+
+.card {
+    background-color: $primary-color !important;
+    margin-top: 75px !important;
+}
+  
+.dark-mode .wrapper {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    background-image: url("./assets/background/background_web.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+  
+.dark-mode .content-wrapper {
+    background: transparent !important; /* quita el fondo oscuro que pone AdminLTE */
+}
+  
+body.dark-mode {
+    background: transparent !important; /* quita el fondo oscuro que pone AdminLTE */
+}
+  
+.main-header {
+    background-color: $primary-color !important;
+}
+  
+.main-footer {
+    background-color: $primary-color !important;
+}
+  
+.main-sidebar {
+    background-color: $primary-color !important;
+}
+  
+.brand-link {
+    background-color: $primary-color !important;
+}
+
+.modal-content {
+    background-color: $primary-color !important;
+}

@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CountdownComponent, CountdownConfig } from 'ngx-countdown';
 import { TokenService } from 'src/services/token/token.service';
+import { UserService } from 'src/services/user/user.service';
 
 
 
@@ -28,10 +29,12 @@ export class MainHeaderComponent implements OnInit {
   @ViewChild("minutes", { static: true }) minutes!: ElementRef;
   @ViewChild("seconds", { static: true }) seconds!: ElementRef;
 
+  imagePath: String = ""
 
-  constructor(private tokenService: TokenService) { }
+  constructor(private tokenService: TokenService, private userService: UserService) { }
 
   ngOnInit() {
+    this.getUserProfile()
 
   }
 
@@ -44,6 +47,7 @@ export class MainHeaderComponent implements OnInit {
         ? (this.days.nativeElement.innerText = Math.floor(this.difference))
         : (this.days.nativeElement.innerHTML = "<img src='https://i.gifer.com/VAyR.gif' />");
     }, 1000);
+
   }
 
 
@@ -62,5 +66,21 @@ export class MainHeaderComponent implements OnInit {
   logOut() {
     this.tokenService.closeSession();
   }
+
+  private getUserProfile() {
+
+    this.userService.getProfile().then((data: any) => {
+      this.imagePath = data.profile_image;
+
+      if (data.profile_image == null) {
+        this.imagePath = '../../../assets/user.png';
+      }
+
+    }).catch(error => {
+      this.imagePath = '../../../assets/user.png';
+    })
+
+  }
+
 
 }

@@ -1,0 +1,21 @@
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    margin-bottom: -57px;
+  }
+  
+  .logo-container .logo {
+    width: 114px;
+    height: 57px;
+    margin-right: 10px;
+  }
+  
+  .logo-container .logo-text {
+    font-size: 1.7rem;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+  
+  }

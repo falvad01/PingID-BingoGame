@@ -18,6 +18,9 @@ enum STATUS {
 })
 
 export class NewNumberComponent implements OnInit {
+  closeModal() {
+    this.showModal = false;
+  }
 
   status: STATUS = STATUS.IDLE
   todayDate: string = '';

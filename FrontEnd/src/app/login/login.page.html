@@ -1,53 +1,33 @@
-<div class="login-page">
-  <div class="login-box">
-    <!-- /.login-logo -->
-    <div class="card card-outline card-primary">
-      <div class="card-header text-center">
-        <h1><b>BINGO </b>PingID</h1>
-        <div id="lottie" class="animation"></div>
+<div class="fullscreen-bg">
+  <div class="login-panel">
+    <div class="form-wrapper">
+      <!--The text and the icon aligniated-->
+      <div class="logo-container">
+        <img src="../../assets/icons/Logo_HPSCDS_2025.svg" alt="Logo" class="logo" />
+        <div class="logo-text">Bingo</div>
       </div>
 
-      <div class="card-body">
-        <p class="login-box-msg">Sign in to start your session</p>
-
-        <div class="input-group mb-3" [ngClass]="{'has-error': showErrorUser}">
-          <input type="user" class="form-control" name="emailContainer" placeholder="User" [(ngModel)]="user"
-            [disabled]="loading" />
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
-            </div>
-          </div>
-        </div>
-        <div class="input-group mb-3" [ngClass]="{'has-error': showErrorPass}">
-          <input type="password" class="form-control" name="passwordContainer" placeholder="Password" [(ngModel)]="pass"
-            [disabled]="loading" />
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
-            </div>
-          </div>
-        </div>
-        <div *ngIf="showErrorPass || showErrorUser" class="error-message">
-          {{errorText}}
-        </div>
-        <div class="row">
-          <div class="col-8"></div>
-          <!-- /.col -->
-          <div class="col-4">
-            <button class="btn btn-primary btn-block" (click)="login()" [disabled]="loading" #loginButton>
-              Sign In
-              <div class="overlay" *ngIf="loading">
-                <i class="fas fa-2x fa-sync-alt"></i>
-              </div>
-            </button>
-          </div>
-          <!-- /.col -->
-        </div>
-        <!-- /.card-body -->
+      <!-- Usuario -->
+      <div class="input-group" [ngClass]="{'has-error': showErrorUser}">
+        <input type="text" class="form-control" placeholder="User" [(ngModel)]="user" [disabled]="loading" />
+        <span class="input-icon"><i class="fas fa-user"></i></span>
       </div>
-      <!-- /.card -->
+
+      <!-- Contraseña -->
+      <div class="input-group" [ngClass]="{'has-error': showErrorPass}">
+        <input type="password" class="form-control" placeholder="Password" [(ngModel)]="pass" [disabled]="loading" />
+        <span class="input-icon"><i class="fas fa-lock"></i></span>
+      </div>
+
+      <!-- Mensaje de error -->
+      <div *ngIf="showErrorUser || showErrorPass" class="error-message">{{ errorText }}</div>
+
+      <!-- Botón -->
+      <button class="btn-submit" (click)="login()" [disabled]="loading">
+        <span *ngIf="!loading">Sign In</span>
+        <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
+      </button>
     </div>
-    <!-- /.login-box -->
+    <div id="lottie" class="animation"></div>
   </div>
 </div>

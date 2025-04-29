@@ -1,42 +1,53 @@
 <div class="centered">
   <div class="card">
-
     <div class="card-body">
-      <div style="text-align: center; margin-bottom: 16px;">
+      <div style="text-align: center; margin-bottom: 16px">
         <h3>{{ todayDate }}</h3>
       </div>
       <div class="input-group mb-3">
         <div class="input-group-prepend">
-          <span class="input-group-text"><i class="fas fa-plus-circle"></i></span>
+          <span class="input-group-text"
+            ><i class="fas fa-plus-circle"></i
+          ></span>
         </div>
-        <input type="number" class="form-control" placeholder="Introduce un número entre 10 y 99"
-          [(ngModel)]="inputNumber">
+        <input
+          type="number"
+          class="form-control"
+          placeholder="Introduce un número entre 10 y 99"
+          [(ngModel)]="inputNumber"
+        />
       </div>
 
-      <button type="button" class="btn btn-primary" [disabled]="!inputNumber" (click)="openDialog()"
-        data-toggle="modal">
+      <button
+        type="button"
+        class="btn btn-primary"
+        [disabled]="!inputNumber"
+        (click)="openDialog()"
+        data-toggle="modal"
+      >
         Enviar
       </button>
-
     </div>
   </div>
 
   <!-- Modal de Confirmación -->
-  <div class="modal " *ngIf="showModal">
+  <div class="modal" *ngIf="showModal">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="confirmationModalLabel">{{ header }}</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
         </div>
         <div class="modal-body">
           <p>{{ subheader }}</p>
           <p>{{ message }}</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-dismiss="modal"
+            (click)="closeModal()"
+          >
             Cancelar
           </button>
           <button type="button" class="btn btn-primary" (click)="sendNumber()">
