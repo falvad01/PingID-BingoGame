@@ -1,12 +1,127 @@
-<app-number-stadistics></app-number-stadistics>
-
-<div class="row">
-
-    <div class="col-12 col-sm-6 col-md-6">
-        <app-individual-table></app-individual-table>
+<div class="dashboard-container">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-container">
+        <div class="spinner"></div>
+        <p>Cargando datos...</p>
     </div>
-    <div  class="col-12 col-sm-6 col-md-6">
-       <app-numbers-time-line></app-numbers-time-line>
+
+    <!-- Dashboard Content -->
+    <div *ngIf="!loading" class="dashboard-content">
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <!-- Total Numbers -->
+            <div class="stat-card stat-primary animate-fadeInUp">
+                <div class="stat-content">
+                    <div class="stat-header">
+                        <div class="stat-info-group">
+                            <div class="stat-label">Números totales</div>
+                            <div class="stat-value">{{ stats.totalNumbers }}</div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-hashtag"></i>
+                        </div>
+                    </div>
+                    <div class="stat-footer">
+                        <i class="fas fa-chart-line"></i>
+                        Acumulados
+                    </div>
+                </div>
+            </div>
+
+            <!-- Unique Numbers -->
+            <div class="stat-card stat-success animate-fadeInUp" style="animation-delay: 0.1s">
+                <div class="stat-content">
+                    <div class="stat-header">
+                        <div class="stat-info-group">
+                            <div class="stat-label">Números únicos</div>
+                            <div class="stat-value">{{ stats.uniqueNumbers }}</div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="stat-footer">
+                        <span class="stat-change positive" *ngIf="stats.uniqueNumbers > 0">
+                            <i class="fas fa-arrow-up"></i>
+                            {{ ((stats.uniqueNumbers / 99) * 100).toFixed(1) }}%
+                        </span>
+                        de 99 posibles
+                    </div>
+                </div>
+            </div>
+
+            <!-- Repeated Numbers -->
+            <div class="stat-card stat-warning animate-fadeInUp" style="animation-delay: 0.2s">
+                <div class="stat-content">
+                    <div class="stat-header">
+                        <div class="stat-info-group">
+                            <div class="stat-label">Números repetidos</div>
+                            <div class="stat-value">{{ stats.repeatedNumbers }}</div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-redo"></i>
+                        </div>
+                    </div>
+                    <div class="stat-footer">
+                        <i class="fas fa-sync"></i>
+                        Repeticiones
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Number -->
+            <div class="stat-card stat-info animate-fadeInUp" style="animation-delay: 0.3s">
+                <div class="stat-content">
+                    <div class="stat-header">
+                        <div class="stat-info-group">
+                            <div class="stat-label">Número de hoy</div>
+                            <div class="stat-value">
+                                <span *ngIf="stats.todayNumber">{{ stats.todayNumber }}</span>
+                                <span *ngIf="!stats.todayNumber"
+                                    style="font-size: var(--font-size-xl); opacity: 0.5;">-</span>
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                    </div>
+                    <div class="stat-footer">
+                        <i class="fas fa-clock"></i>
+                        {{ stats.lastActivity }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-chart-pie"></i>
+                    Estadísticas Generales
+                </h2>
+            </div>
+            <app-number-stadistics></app-number-stadistics>
+        </div>
+
+        <!-- Details Section -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-table"></i>
+                    Detalles
+                </h2>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-6">
+                    <app-individual-table></app-individual-table>
+                </div>
+                <div class="col-12 col-sm-6 col-md-6">
+                    <app-numbers-time-line></app-numbers-time-line>
+                </div>
+            </div>
+        </div>
+
     </div>
-   
 </div>

@@ -1,0 +1,101 @@
+.admin-sidebar {
+    width: 260px;
+    background: var(--glass-bg-strong);
+    backdrop-filter: blur(var(--glass-blur-strong));
+    border-right: 1px solid var(--glass-border);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+}
+
+.sidebar-nav {
+    padding: var(--spacing-6) 0;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-item {
+    margin-bottom: var(--spacing-2);
+    padding: 0 var(--spacing-4);
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-4);
+    border-radius: var(--border-radius-lg);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    transition: all var(--transition-base) var(--ease-out);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 3px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transform: scaleY(0);
+        transition: transform var(--transition-base) var(--ease-out);
+    }
+
+    i {
+        font-size: var(--font-size-lg);
+        width: 24px;
+        text-align: center;
+        transition: all var(--transition-base) var(--ease-out);
+    }
+
+    &:hover {
+        background: var(--color-bg-hover);
+        color: var(--color-text-primary);
+        transform: translateX(4px);
+
+        i {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    }
+
+    &.active {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+        color: var(--color-text-primary);
+        font-weight: var(--font-weight-semibold);
+        box-shadow: var(--shadow-md);
+
+        &::before {
+            transform: scaleY(1);
+        }
+
+        i {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-sidebar {
+        width: 200px;
+    }
+
+    .nav-link span {
+        font-size: var(--font-size-sm);
+    }
+}

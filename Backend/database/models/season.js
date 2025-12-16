@@ -9,11 +9,23 @@ const Season = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    year: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-
+    is_active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+    },
+    start_date: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    end_date: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     tableName: "season",

@@ -1,122 +1,450 @@
-/* Fondo de pantalla completo */
+// ========================================
+// LOGIN PAGE - MODERN DESIGN
+// ========================================
+
 .fullscreen-bg {
-    background-image: url("../../assets/background/background_login.png");
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
-    background-attachment: fixed; /* Hace que la imagen se quede fija cuando se haga scroll */
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: flex-end;
-    align-items: stretch;
+  background-image: url("../../assets/background/background_login.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+  position: relative;
+  overflow: hidden;
+
+  // Animated gradient overlay
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg,
+        hsla(250, 70%, 20%, 0.4) 0%,
+        hsla(320, 65%, 20%, 0.4) 100%);
+    z-index: 1;
+    animation: gradientShift 10s ease infinite;
+    background-size: 200% 200%;
   }
-  
-  /* Panel de login tipo "card a la derecha" */
-  .login-panel {
-    width: 45%;
-    min-width: 350px;
-    height: 100%;
-    backdrop-filter: blur(10px);
-    background: rgba(0, 0, 0, 0.6);
+}
+
+// ========================================
+// THEME TOGGLE BUTTON
+// ========================================
+.theme-toggle {
+  position: fixed;
+  top: var(--spacing-6);
+  left: var(--spacing-6);
+  width: 50px;
+  height: 50px;
+  border-radius: var(--border-radius-full);
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur-strong));
+  -webkit-backdrop-filter: blur(var(--glass-blur-strong));
+  border: 1px solid var(--glass-border);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all var(--transition-base) var(--ease-out);
+  box-shadow: var(--shadow-lg);
+
+  i {
+    font-size: var(--font-size-xl);
+    transition: transform var(--transition-base) var(--ease-out);
+  }
+
+  &:hover {
+    transform: scale(1.1) rotate(10deg);
+    box-shadow: var(--shadow-xl), var(--shadow-glow-primary);
+
+    i {
+      transform: rotate(20deg);
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// ========================================
+// LOGIN PANEL
+// ========================================
+.login-panel {
+  width: 45%;
+  min-width: 400px;
+  height: 100%;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur-strong));
+  -webkit-backdrop-filter: blur(var(--glass-blur-strong));
+  border-left: 1px solid var(--glass-border);
+  color: white;
+  padding: var(--spacing-8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  box-shadow: var(--shadow-2xl);
+
+  // Subtle animated border
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: opacity var(--transition-slow) var(--ease-out);
+    pointer-events: none;
+  }
+
+  &:hover::before {
+    opacity: 0.05;
+  }
+}
+
+// ========================================
+// FORM WRAPPER
+// ========================================
+.form-wrapper {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  animation: fadeInUp 0.6s var(--ease-out);
+}
+
+// ========================================
+// LOGO CONTAINER
+// ========================================
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-4);
+  gap: var(--spacing-4);
+  animation: fadeInDown 0.6s var(--ease-out);
+
+  .logo {
+    width: 160px;
+    height: auto;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    transition: transform var(--transition-base) var(--ease-out);
+
+    &:hover {
+      transform: scale(1.05) rotate(2deg);
+    }
+  }
+
+  .logo-text {
+    font-size: var(--font-size-5xl);
     color: white;
-    padding: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* Contenedor del formulario */
-  .form-wrapper {
-    width: 100%;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  /* Estilos del formulario */
-  .title {
-    font-size: 1.8rem;
-    text-align: center;
-    margin-bottom: 0.5rem;
-  }
-  
-  .subtitle {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  
-  .input-group {
+    font-weight: var(--font-weight-extrabold);
+    font-family: var(--font-family-heading);
+    letter-spacing: -0.02em;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(124, 58, 237, 0.5);
     position: relative;
-    margin-bottom: 1.5rem;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-primary);
+      border-radius: var(--border-radius-full);
+      transform: scaleX(0);
+      transition: transform var(--transition-base) var(--ease-out);
+    }
   }
-  
-  .input-group input {
+
+  &:hover .logo-text::after {
+    transform: scaleX(1);
+  }
+}
+
+// ========================================
+// INPUT GROUPS
+// ========================================
+.input-group {
+  position: relative;
+  margin-bottom: var(--spacing-2);
+  animation: fadeInUp 0.6s var(--ease-out);
+  animation-fill-mode: both;
+
+  &:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  &:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  input {
     width: 100%;
-    padding: 0.75rem 2.5rem 0.75rem 1rem;
-    border-radius: 8px;
-    border: none;
-    font-size: 1rem;
+    padding: var(--spacing-4) var(--spacing-6);
+    padding-right: var(--spacing-12);
+    border-radius: var(--border-radius-lg);
+    border: 2px solid hsla(0, 0%, 100%, 0.1);
+    background: hsla(0, 0%, 100%, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-size: var(--font-size-base);
+    color: white;
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-medium);
+    transition: all var(--transition-base) var(--ease-out);
+
+    &::placeholder {
+      color: hsla(0, 0%, 100%, 0.5);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary-400);
+      background: hsla(0, 0%, 100%, 0.12);
+      box-shadow: 0 0 0 4px hsla(250, 70%, 60%, 0.2),
+        0 8px 16px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
-  
+
   .input-icon {
     position: absolute;
-    right: 10px;
+    right: var(--spacing-4);
     top: 50%;
     transform: translateY(-50%);
-    color: #888;
+    color: hsla(0, 0%, 100%, 0.5);
+    font-size: var(--font-size-lg);
+    pointer-events: none;
+    transition: all var(--transition-base) var(--ease-out);
   }
-  
-  .has-error input {
-    border: 2px solid #496471;
+
+  // Animated focus state for icon
+  input:focus~.input-icon {
+    color: var(--color-primary-300);
+    transform: translateY(-50%) scale(1.1);
   }
-  
-  .error-message {
-    color: #496471;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-    text-align: center;
+
+  // Error state
+  &.has-error {
+    input {
+      border-color: var(--color-danger);
+      background: hsla(0, 84%, 60%, 0.1);
+      animation: shake 0.4s var(--ease-in-out);
+    }
+
+    .input-icon {
+      color: var(--color-danger);
+    }
   }
-  
-  .btn-submit {
-    padding: 0.75rem;
-    background: linear-gradient(to left, #dc384e, #53317b);
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 2s ease;
+}
+
+// ========================================
+// ERROR MESSAGE
+// ========================================
+.error-message {
+  color: var(--color-danger-light);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-4);
+  padding: var(--spacing-3) var(--spacing-4);
+  background: hsla(0, 84%, 60%, 0.15);
+  border-left: 3px solid var(--color-danger);
+  border-radius: var(--border-radius-base);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: slideInDown 0.3s var(--ease-out);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+
+  &::before {
+    content: '⚠';
+    font-size: var(--font-size-lg);
   }
-  
-  .animation {
+}
+
+// ========================================
+// SUBMIT BUTTON
+// ========================================
+.btn-submit {
+  padding: var(--spacing-4) var(--spacing-8);
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: var(--border-radius-lg);
+  color: white;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family-base);
+  cursor: pointer;
+  transition: all var(--transition-base) var(--ease-out);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 0.6s var(--ease-out) 0.3s;
+  animation-fill-mode: both;
+
+  // Shine effect
+  &::before {
+    content: '';
     position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-    width: 80px;
-    height: 80px;
-    pointer-events: none; /* evita que bloquee clics */
-    opacity: 0.8; /* opcional, lo hace más sutil */
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent,
+        hsla(0, 0%, 100%, 0.3),
+        transparent);
+    transition: left 0.5s;
   }
-  
-  .logo-container{
-    display: flex;
-    align-items: center;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.6),
+      0 4px 8px rgba(0, 0, 0, 0.4),
+      var(--shadow-glow-primary);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  // Loading spinner
+  i.fa-spinner {
+    animation: spin 1s linear infinite;
+  }
+}
+
+// ========================================
+// LOTTIE ANIMATION
+// ========================================
+.animation {
+  position: absolute;
+  bottom: var(--spacing-8);
+  right: var(--spacing-8);
+  width: 100px;
+  height: 100px;
+  pointer-events: none;
+  opacity: 0.7;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+  animation: float 3s var(--ease-in-out) infinite;
+}
+
+// ========================================
+// RESPONSIVE DESIGN
+// ========================================
+@media (max-width: 1024px) {
+  .login-panel {
+    width: 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  .fullscreen-bg {
     justify-content: center;
-    margin-bottom: 1rem;
-    align-self: center;
   }
-  
-  .logo-container .logo{
-    width: 176px;
-    height: 97px;
-    margin-right: 10px;
+
+  .login-panel {
+    width: 100%;
+    min-width: unset;
+    border-left: none;
   }
-  
-  .logo-container .logo-text{
-    font-size: 2.6rem;
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 5px;
+
+  .form-wrapper {
+    max-width: 90%;
   }
+
+  .logo-container {
+    flex-direction: column;
+    gap: var(--spacing-2);
+
+    .logo {
+      width: 120px;
+    }
+
+    .logo-text {
+      font-size: var(--font-size-4xl);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .login-panel {
+    padding: var(--spacing-6);
+  }
+
+  .form-wrapper {
+    gap: var(--spacing-4);
+  }
+
+  .logo-container .logo-text {
+    font-size: var(--font-size-3xl);
+  }
+
+  .input-group input {
+    padding: var(--spacing-3) var(--spacing-5);
+    font-size: var(--font-size-sm);
+  }
+
+  .btn-submit {
+    padding: var(--spacing-3) var(--spacing-6);
+    font-size: var(--font-size-base);
+  }
+
+  .animation {
+    width: 70px;
+    height: 70px;
+    bottom: var(--spacing-4);
+    right: var(--spacing-4);
+  }
+}
+
+// ========================================
+// ACCESSIBILITY
+// ========================================
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

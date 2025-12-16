@@ -24,12 +24,21 @@
       </div>
     </li> -->
   </ul>
-  
+
   <ul class="navbar-nav ml-auto">
+    <!-- Admin Panel Button (only for admins) -->
+    <li class="nav-item" *ngIf="isAdmin">
+      <a class="nav-link admin-panel-btn" routerLink="/admin/dashboard">
+        <i class="fas fa-user-shield"></i>
+        <span>Admin Panel</span>
+      </a>
+    </li>
+
     <!-- Notifications Dropdown Menu -->
     <li class="nav-item dropdown">
       <a class="nav-link" data-toggle="dropdown" href="#">
-        <img  [src]="imagePath || '../../../../../assets/user.png'" class="img-circle elevation-2" style="margin-left: 12px; height: 30px;"/>
+        <img [src]="imagePath || '../../../../../assets/user.png'" class="img-circle elevation-2"
+          style="margin-left: 12px; height: 30px;" />
 
       </a>
       <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">

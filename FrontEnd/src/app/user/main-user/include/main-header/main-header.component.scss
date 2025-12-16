@@ -9,6 +9,7 @@
   padding-right: 12px;
   padding-left: 12px;
   padding-top: 1px;
+
   >p {
     margin: 5px 0 15px 0;
   }
@@ -34,8 +35,36 @@
         letter-spacing: 1px;
         font: normal 14px courier, sans-serif;
         margin-bottom: 0px;
-       
+
       }
     }
+  }
+}
+
+// Admin Panel Button
+.admin-panel-btn {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+  border-radius: 8px;
+  padding: 8px 16px !important;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(245, 87, 108, 0.3);
+
+  i {
+    font-size: 16px;
+  }
+
+  span {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 87, 108, 0.5);
+    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%) !important;
   }
 }

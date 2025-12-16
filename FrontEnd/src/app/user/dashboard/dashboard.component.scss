@@ -1,18 +1,67 @@
-.content {
-  padding: 1rem;
-  /* Ajusta el padding según tu diseño */
+// ========================================
+// DASHBOARD COMPONENT STYLES
+// ========================================
+
+.dashboard-container {
+  padding: var(--spacing-4);
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: var(--spacing-4);
 
-.statistics {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-  font-size: 16px;
+  p {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+  }
 }
 
-.statistics p {
-  margin: 0;
-  padding: 5px 0;
+.dashboard-content {
+  animation: fadeIn 0.5s var(--ease-out);
+}
+
+// ========================================
+// EQUAL HEIGHT COMPONENTS
+// ========================================
+.dashboard-section {
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+
+    >[class*="col-"] {
+      display: flex;
+      flex: 1;
+      min-width: 0;
+
+      >* {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Import widget styles
+@import '../../../css/dashboard-widgets.scss';
+
+
+// ========================================
+// RESPONSIVE
+// ========================================
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: var(--spacing-3);
+  }
+
+  .dashboard-section {
+    .row {
+      flex-direction: column;
+    }
+  }
 }

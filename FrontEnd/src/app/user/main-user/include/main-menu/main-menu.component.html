@@ -4,10 +4,10 @@
     <div class="logo-container">
         <img src="../../assets/icons/Logo_HPSCDS_2025.svg" alt="Logo" class="logo" />
         <div class="logo-text">Bingo</div>
-      </div>
+    </div>
     <!-- Sidebar -->
     <div class="sidebar">
-     
+
         <hr>
 
         <!-- Sidebar Menu -->
@@ -15,19 +15,19 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
                 <li class="nav-item">
-                    <a href="user/number" class="nav-link">
+                    <a routerLink="/user/number" class="nav-link">
                         <i class="fas fa-plus"></i>
                         <p> Nuevo número</p>
                     </a>
                 </li>
                 <li class="nav-item" *ngIf="isNumberAdded">
-                    <a href="user/dashboard" class="nav-link">
+                    <a routerLink="/user/dashboard" class="nav-link">
                         <i class="fas fa-tachometer-alt"></i>
                         <p> Dashboard</p>
                     </a>
                 </li>
                 <li class="nav-item" *ngIf="isNumberAdded">
-                    <a href="user/data" class="nav-link">
+                    <a routerLink="/user/data" class="nav-link">
                         <i class="fas fa-database"></i>
                         <p> Data</p>
                     </a>
@@ -35,9 +35,25 @@
 
 
                 <li class="nav-item">
-                    <a href="user/clasification" class="nav-link">
+                    <a routerLink="/user/clasification" class="nav-link">
                         <i class="fas fa-sort-amount-down"></i>
                         <p> Clasificación</p>
+                    </a>
+                </li>
+
+                <!-- Historical View (for all users) -->
+                <li class="nav-item">
+                    <a routerLink="/user/historical" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <p>Histórico</p>
+                    </a>
+                </li>
+
+                <!-- Admin Panel (only for admins) -->
+                <li class="nav-item" *ngIf="isAdmin">
+                    <a routerLink="/admin/seasons" class="nav-link admin-link">
+                        <i class="fas fa-cog"></i>
+                        <p>Gestión Temporadas</p>
                     </a>
                 </li>
 

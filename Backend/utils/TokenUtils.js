@@ -23,6 +23,10 @@ async function verifyToken(req, res, next) {
         message: "Failed to authenticate token.",
       });
     } else {
+      // Pass decoded token data to request
+      req.userId = decoded.userId;
+      req.username = decoded.username;
+      req.administrator = decoded.administrator || 0;
       next();
     }
   });

@@ -30,10 +30,12 @@ export class MainHeaderComponent implements OnInit {
   @ViewChild("seconds", { static: true }) seconds!: ElementRef;
 
   imagePath: String = ""
+  isAdmin: boolean = false
 
   constructor(private tokenService: TokenService, private userService: UserService) { }
 
   ngOnInit() {
+    this.isAdmin = this.tokenService.isAdmin()
     this.getUserProfile()
 
   }
@@ -43,9 +45,11 @@ export class MainHeaderComponent implements OnInit {
       this.tickTock();
       this.difference = this.targetDate - this.now;
       this.difference = this.difference / (1000 * 60 * 60 * 24);
-      !isNaN(this.days.nativeElement.innerText)
-        ? (this.days.nativeElement.innerText = Math.floor(this.difference))
-        : (this.days.nativeElement.innerHTML = "<img src='https://i.gifer.com/VAyR.gif' />");
+      if (this.days && this.days.nativeElement) {
+        !isNaN(this.days.nativeElement.innerText)
+          ? (this.days.nativeElement.innerText = Math.floor(this.difference))
+          : (this.days.nativeElement.innerHTML = "<img src='https://i.gifer.com/VAyR.gif' />");
+      }
     }, 1000);
 
   }
@@ -54,10 +58,18 @@ export class MainHeaderComponent implements OnInit {
   tickTock() {
     this.date = new Date();
     this.now = this.date.getTime();
-    this.days.nativeElement.innerText = Math.floor(this.difference);
-    this.hours.nativeElement.innerText = 23 - this.date.getHours();
-    this.minutes.nativeElement.innerText = 60 - this.date.getMinutes();
-    this.seconds.nativeElement.innerText = 60 - this.date.getSeconds();
+    if (this.days && this.days.nativeElement) {
+      this.days.nativeElement.innerText = Math.floor(this.difference);
+    }
+    if (this.hours && this.hours.nativeElement) {
+      this.hours.nativeElement.innerText = 23 - this.date.getHours();
+    }
+    if (this.minutes && this.minutes.nativeElement) {
+      this.minutes.nativeElement.innerText = 60 - this.date.getMinutes();
+    }
+    if (this.seconds && this.seconds.nativeElement) {
+      this.seconds.nativeElement.innerText = 60 - this.date.getSeconds();
+    }
   }
 
 

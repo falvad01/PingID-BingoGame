@@ -3,6 +3,7 @@ const router = express.Router();
 const userModel = require("../database/models/user");
 const jwt = require("jsonwebtoken");
 const numberModel = require("../database/models/number");
+const seasonModel = require("../database/models/season");
 const tokenUtils = require("../utils/TokenUtils");
 const utils = require("../utils/utils");
 const { Op } = require("sequelize");
@@ -47,38 +48,34 @@ router.post("/login", validateLogin, async (request, response) => {
 
     console.log(`User ${user.username} found`);
 
-    if (user.administrator == 0) {
-      // Compare the hashed password
-      bcrypt.compare(
-        password,
-        String(user.password).trim(),
-        function (err, result) {
-          if (result == false) {
-            console.log("Autentication failed, 401");
-            response.status(401).json({ error: "Authentication failed" });
-            return;
-          }
-          // Generate JWT token
-          const token = jwt.sign(
-            {
-              userId: user.id,
-              username: user.username,
-              name_surname: user.name_surname,
-            },
-            process.env.JWT_SECRET_KEY,
-            {
-              expiresIn: "1h",
-            }
-          );
-          console.log("Autentication suscess, 200");
-          response.status(200).json({ token });
+    // Compare the hashed password
+    bcrypt.compare(
+      password,
+      String(user.password).trim(),
+      function (err, result) {
+        if (result == false) {
+          console.log("Authentication failed, 401");
+          response.status(401).json({ error: "Authentication failed" });
           return;
         }
-      );
-    } else {
-      console.log("Autentication failed, 402");
-      response.status(401).json({ error: "Authentication failed" });
-    }
+        // Generate JWT token (works for both users and admins)
+        const token = jwt.sign(
+          {
+            userId: user.id,
+            username: user.username,
+            name_surname: user.name_surname,
+            administrator: user.administrator, // Include admin flag in token
+          },
+          process.env.JWT_SECRET_KEY,
+          {
+            expiresIn: "1h",
+          }
+        );
+        console.log(`Authentication success for ${user.administrator == 1 ? 'admin' : 'user'}, 200`);
+        response.status(200).json({ token });
+        return;
+      }
+    );
   } catch (error) {
     console.error("Error during login process:", error);
     response.status(500).json({ error: "Internal server error" });
@@ -236,7 +233,7 @@ router.get(
           if (
             !userData[userId].lastEntryDate ||
             new Date(numberObj.created_at) >
-              new Date(userData[userId].lastEntryDate)
+            new Date(userData[userId].lastEntryDate)
           ) {
             userData[userId].lastEntryDate = numberObj.created_at;
           }
@@ -277,6 +274,7 @@ router.get(
 
       // Convert userData to an array and sort by numberCount and repeatedCount
       const sortedUsers = Object.values(userData)
+        .filter((data) => data.numberCount > 0) // Solo usuarios con al menos 1 número
         .map((data) => {
           // Return desired output format without the numbers array and id
           const { numbers, ...userWithoutNumbers } = data;
@@ -449,7 +447,7 @@ router.post("/editProfile", tokenUtils.verifyToken, async (req, res) => {
 router.get("/bingoLine", async (req, res) => {
   // Definir los rangos de las líneas de bingo (1-9, 10-19, 20-29, ..., 90-99)
   const bingoLines = [
- 
+
     { name: "10", range: [10, 19] },
     { name: "20", range: [20, 29] },
     { name: "30", range: [30, 39] },
@@ -463,7 +461,7 @@ router.get("/bingoLine", async (req, res) => {
 
   try {
     const users = await userModel.findAll({
-      where:{
+      where: {
         administrator: 0
       },
       include: [
@@ -522,7 +520,7 @@ router.get("/bingoLine", async (req, res) => {
 
 router.get("/isDayNumberAdded", tokenUtils.verifyToken, async (req, res) => {
   try {
-    if(req.headers){
+    if (req.headers) {
       // Try to decode token from headers
       let token = req.headers["x-access-token"] || req.headers["authorization"];
       console.debug(token)
@@ -538,12 +536,12 @@ router.get("/isDayNumberAdded", tokenUtils.verifyToken, async (req, res) => {
         where: {
           user_id: tokenDecrypted.userId,
           created_at: {
-            [Op.between]: [startOfDay, endOfDay], 
+            [Op.between]: [startOfDay, endOfDay],
           },
         }
       });
       // If the number has been added return true if not false
-      if(response) {
+      if (response) {
         res.status(200).send(true);
         return;
       }
@@ -555,8 +553,325 @@ router.get("/isDayNumberAdded", tokenUtils.verifyToken, async (req, res) => {
     res.status(500).json({ error: "Error checking if the user has added the daily number" });
     return;
   }
- 
 
+
+});
+
+// ===== SEASON MANAGEMENT ENDPOINTS =====
+
+/**
+ * Get active season
+ */
+router.get("/season/active", tokenUtils.verifyToken, async (req, res) => {
+  try {
+    const activeSeason = await seasonModel.findOne({
+      where: { is_active: true },
+    });
+
+    if (!activeSeason) {
+      return res.status(404).json({ error: "No active season found" });
+    }
+
+    res.status(200).json(activeSeason);
+  } catch (error) {
+    console.error("Error fetching active season:", error);
+    res.status(500).json({ error: "Error fetching active season" });
+  }
+});
+
+/**
+ * Get all seasons (Admin only)
+ */
+router.get("/season", tokenUtils.verifyToken, async (req, res) => {
+  try {
+    // Verify user is admin (administrator field is in the token)
+    if (req.administrator !== 1) {
+      return res.status(403).json({ error: "Access denied. Admin only." });
+    }
+
+    const seasons = await seasonModel.findAll({
+      order: [['created_at', 'DESC']],
+    });
+    res.status(200).json(seasons);
+  } catch (error) {
+    console.error("Error fetching seasons:", error);
+    res.status(500).json({ error: "Error fetching seasons" });
+  }
+});
+
+/**
+ * Create a new season (Admin only)
+ */
+router.post("/season/create", tokenUtils.verifyToken, async (req, res) => {
+  try {
+    // Verify user is admin (administrator field is in the token)
+    if (req.administrator !== 1) {
+      return res.status(403).json({ error: "Access denied. Admin only." });
+    }
+
+    const { name, start_date, end_date, is_active } = req.body;
+
+    if (!name) {
+      return res.status(400).json({ error: "Season name is required" });
+    }
+
+    // If this season should be active, deactivate all other seasons
+    if (is_active) {
+      await seasonModel.update(
+        { is_active: false },
+        { where: { is_active: true } }
+      );
+    }
+
+    const newSeason = await seasonModel.create({
+      name,
+      start_date: start_date || null,
+      end_date: end_date || null,
+      is_active: is_active || false,
+    });
+
+    res.status(201).json({
+      message: "Season created successfully",
+      season: newSeason,
+    });
+  } catch (error) {
+    console.error("Error creating season:", error);
+    res.status(500).json({ error: "Error creating season" });
+  }
+});
+
+/**
+ * Activate a season (Admin only)
+ */
+router.put("/season/activate/:id", tokenUtils.verifyToken, async (req, res) => {
+  try {
+    // Verify user is admin (administrator field is in the token)
+    if (req.administrator !== 1) {
+      return res.status(403).json({ error: "Access denied. Admin only." });
+    }
+
+    const seasonId = parseInt(req.params.id);
+
+    if (!seasonId) {
+      return res.status(400).json({ error: "Season ID is required" });
+    }
+
+    // Check if season exists
+    const season = await seasonModel.findByPk(seasonId);
+    if (!season) {
+      return res.status(404).json({ error: "Season not found" });
+    }
+
+    // Deactivate all seasons first
+    await seasonModel.update(
+      { is_active: false },
+      { where: { is_active: true } }
+    );
+
+    // Activate the selected season
+    await seasonModel.update(
+      { is_active: true },
+      { where: { id: seasonId } }
+    );
+
+    res.status(200).json({
+      message: "Season activated successfully",
+      seasonId: seasonId,
+    });
+  } catch (error) {
+    console.error("Error activating season:", error);
+    res.status(500).json({ error: "Error activating season" });
+  }
+});
+
+/**
+ * Get classification for a specific season
+ */
+router.get(
+  "/getUsersQualify/:seasonId",
+  tokenUtils.verifyToken,
+  async (request, response) => {
+    try {
+      const seasonId = request.params.seasonId || null;
+
+      // Fetch all users and numbers from the database
+      const users = await userModel.findAll({
+        attributes: [
+          "id",
+          "username",
+          "name_surname",
+          "profile_image",
+          "administrator",
+        ],
+      });
+
+      const whereClause = seasonId ? { season_id: seasonId } : {};
+      const numbers = await numberModel.findAll({ where: whereClause });
+
+      // Map to store user data
+      const userData = {};
+
+      // Initialize user data
+      users.forEach((user) => {
+        if (user.administrator == 0) {
+          const userDataValues = user.get({ plain: true });
+          const { password, id, ...userWithoutPassword } = userDataValues;
+          userData[id] = {
+            ...userWithoutPassword,
+            numbers: [],
+            numberCount: 0,
+            repeatedCount: 0,
+            totalRepetitions: 0,
+            lastEntryDate: null,
+            daysSinceLastEntry: null,
+          };
+        }
+      });
+
+      // Organize numbers by user
+      numbers.forEach((numberObj) => {
+        const userId = numberObj.user_id;
+        if (userData[userId]) {
+          userData[userId].numbers.push(numberObj.number);
+
+          if (
+            !userData[userId].lastEntryDate ||
+            new Date(numberObj.created_at) >
+            new Date(userData[userId].lastEntryDate)
+          ) {
+            userData[userId].lastEntryDate = numberObj.created_at;
+          }
+        }
+      });
+
+      // Calculate counts
+      Object.values(userData).forEach((data) => {
+        const uniqueNumbers = new Set(data.numbers);
+        data.numberCount = uniqueNumbers.size;
+
+        const numberFrequency = {};
+        let repeatedCount = 0;
+        let totalRepetitions = 0;
+
+        data.numbers.forEach((num) => {
+          numberFrequency[num] = (numberFrequency[num] || 0) + 1;
+        });
+
+        Object.values(numberFrequency).forEach((count) => {
+          if (count > 1) {
+            repeatedCount++;
+            totalRepetitions += count;
+          }
+        });
+
+        data.repeatedCount = repeatedCount;
+        data.totalRepetitions = totalRepetitions;
+
+        if (data.lastEntryDate) {
+          const currentDate = new Date();
+          const lastEntryDate = new Date(data.lastEntryDate);
+          const diffTime = Math.abs(currentDate - lastEntryDate);
+          data.daysSinceLastEntry = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+      });
+
+      const sortedUsers = Object.values(userData)
+        .filter((data) => data.numberCount > 0) // Solo usuarios con al menos 1 número
+        .map((data) => {
+          const { numbers, ...userWithoutNumbers } = data;
+          return userWithoutNumbers;
+        })
+        .sort((a, b) => {
+          if (b.numberCount !== a.numberCount) {
+            return b.numberCount - a.numberCount;
+          }
+          return b.repeatedCount - a.repeatedCount;
+        });
+
+      response.status(200).json(sortedUsers);
+    } catch (error) {
+      response.status(500).send(error.message);
+    }
+  }
+);
+
+/**
+ * Get bingo line data for a specific season
+ */
+router.get("/bingoLine/:seasonId", tokenUtils.verifyToken, async (req, res) => {
+  const bingoLines = [
+    { name: "10", range: [10, 19] },
+    { name: "20", range: [20, 29] },
+    { name: "30", range: [30, 39] },
+    { name: "40", range: [40, 49] },
+    { name: "50", range: [50, 59] },
+    { name: "60", range: [60, 69] },
+    { name: "70", range: [70, 79] },
+    { name: "80", range: [80, 89] },
+    { name: "90", range: [90, 99] },
+  ];
+
+  try {
+    const seasonId = req.params.seasonId || null;
+    const whereClause = seasonId ? { season_id: seasonId } : {};
+
+    const users = await userModel.findAll({
+      where: {
+        administrator: 0
+      },
+      include: [
+        {
+          model: numberModel,
+          attributes: ["number"],
+          where: whereClause,
+          required: false,
+        },
+      ],
+    });
+
+    const result = users.map((user) => {
+      const userNumbers = user.Numbers.map((num) => num.number);
+      let fewestMissingLine = null;
+
+      bingoLines.forEach((line) => {
+        const { name, range } = line;
+        const [start, end] = range;
+        const lineNumbers = Array.from(
+          { length: end - start + 1 },
+          (_, i) => start + i
+        );
+
+        const missingNumbers = lineNumbers.filter(
+          (num) => !userNumbers.includes(num)
+        );
+
+        if (
+          !fewestMissingLine ||
+          missingNumbers.length < fewestMissingLine.missingCount
+        ) {
+          fewestMissingLine = {
+            line: name,
+            missingCount: missingNumbers.length,
+          };
+        }
+      });
+
+      return {
+        username: user.username,
+        fewestMissingLine,
+      };
+    });
+
+    result.sort(
+      (a, b) =>
+        a.fewestMissingLine.missingCount - b.fewestMissingLine.missingCount
+    );
+
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching missing lines:", error);
+    res.status(500).json({ error: "Error fetching missing lines" });
+  }
 });
 
 module.exports = router;

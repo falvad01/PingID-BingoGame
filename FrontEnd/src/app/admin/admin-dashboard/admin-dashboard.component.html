@@ -1,0 +1,53 @@
+<app-admin-header></app-admin-header>
+<div class="admin-layout">
+    <app-admin-sidebar></app-admin-sidebar>
+    <div class="admin-content">
+        <div class="admin-dashboard">
+            <div class="dashboard-header">
+                <h1>Admin Dashboard</h1>
+            </div>
+
+            <div class="dashboard-content">
+                <!-- Active Season Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-trophy"></i> Active Season</h2>
+                    </div>
+                    <div class="card-body">
+                        <div *ngIf="loading" class="loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                        <div *ngIf="!loading && activeSeason">
+                            <div class="season-info">
+                                <h3>{{ activeSeason.name }}</h3>
+                                <p *ngIf="activeSeason.start_date">Started: {{ activeSeason.start_date | date }}</p>
+                                <p *ngIf="activeSeason.end_date">Ends: {{ activeSeason.end_date | date }}</p>
+                            </div>
+                        </div>
+                        <div *ngIf="!loading && !activeSeason" class="no-season">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>No active season found</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+                    </div>
+                    <div class="card-body">
+                        <button class="action-btn" (click)="goToSeasonManagement()">
+                            <i class="fas fa-cog"></i>
+                            <span>Manage Seasons</span>
+                        </button>
+                        <button class="action-btn" (click)="goToUserManagement()">
+                            <i class="fas fa-users"></i>
+                            <span>Manage Users</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

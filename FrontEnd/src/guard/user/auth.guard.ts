@@ -11,8 +11,8 @@ export class AuthGuard implements CanActivate {
 
   canActivate(): boolean {
 
-    if (this.tokenService.isLogged() && !this.tokenService.isAdmin()) {
-      // User is logged in, allow access
+    if (this.tokenService.isLogged()) {
+      // User is logged in (normal or admin), allow access
       return true;
     } else {
       // User is not logged in, redirect to the login page

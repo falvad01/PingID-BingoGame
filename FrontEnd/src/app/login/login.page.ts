@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/services/auth/auth.service';
+import { ThemeService } from 'src/services/theme/theme.service';
 import lottie from 'lottie-web';
 
 @Component({
@@ -19,25 +20,28 @@ export class LoginPage implements OnInit {
   pass: string = '';
 
 
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    public themeService: ThemeService
+  ) {
 
     //Subscribe to login service
     this.authService.logginInObservable$.subscribe((data: boolean) => {
+      console.log('LoggingIn status:', data);
       this.loading = data;
 
     });
     //
     // Subscribe to login status
     this.authService.logedObservable$.subscribe((data: boolean) => {
-      if (data == true) {
-
+      console.log('Logged status changed:', data);
+      // Solo redirigir cuando data es true
+      if (data === true) {
+        console.log('Redirecting to /user/number');
         this.router.navigate(['/user/number']);
-      } else {
-
-        this.errorText = "Credential are incorrect"
-        this.showErrorUser = true;
-        this.showErrorPass = true;
       }
+      // No mostrar error aquí, se maneja en el catch del login
     });
   }
 
@@ -80,5 +84,12 @@ export class LoginPage implements OnInit {
       this.showErrorPass = false;
       this.authService.login(this.user, this.pass);
     }
+  }
+
+  /**
+   * Toggle theme
+   */
+  toggleTheme() {
+    this.themeService.toggleTheme();
   }
 }

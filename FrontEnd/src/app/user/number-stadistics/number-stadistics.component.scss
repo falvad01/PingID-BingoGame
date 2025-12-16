@@ -1,19 +1,214 @@
-.less-margin {
-    margin-top: -12px;
+// ========================================
+// NUMBER STADISTICS - COMPLETE REDESIGN
+// ========================================
+
+.rankings-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
 }
 
-.first-position {
-    background-color: gold !important;
-    color: black !important;
+.ranking-section {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--border-primary);
+    border-radius: var(--border-radius-xl);
+    padding: var(--spacing-4);
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-2);
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-bold);
+        color: var(--text-primary);
+        margin-bottom: var(--spacing-4);
+        padding-bottom: var(--spacing-3);
+        border-bottom: 2px solid var(--border-primary);
+
+        i {
+            color: var(--color-primary-400);
+            font-size: var(--font-size-xl);
+        }
+    }
 }
 
-.second-position {
-    background-color: silver !important;
-    color: black !important;
+.ranking-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
 }
 
-.third-position {
-    background-color: #CD7F32 !important;
-    color: black !important;
+.rank-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-lg);
+    border: 2px solid transparent;
+    transition: all var(--transition-base) var(--ease-out);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        transition: width var(--transition-base) var(--ease-out);
+    }
+
+    &:hover {
+        transform: translateX(4px);
+        box-shadow: var(--shadow-md);
+
+        &::before {
+            width: 8px;
+        }
+    }
+
+    // Gold variant
+    &.gold {
+        border-color: rgba(255, 215, 0, 0.3);
+
+        &::before {
+            background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
+        }
+
+        .rank-medal {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
+
+            i {
+                animation: pulse 2s ease-in-out infinite;
+            }
+        }
+    }
+
+    // Silver variant
+    &.silver {
+        border-color: rgba(192, 192, 192, 0.3);
+
+        &::before {
+            background: linear-gradient(180deg, #C0C0C0 0%, #808080 100%);
+        }
+
+        .rank-medal {
+            background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%);
+            box-shadow: 0 4px 12px rgba(192, 192, 192, 0.5);
+        }
+    }
+
+    // Bronze variant
+    &.bronze {
+        border-color: rgba(205, 127, 50, 0.3);
+
+        &::before {
+            background: linear-gradient(180deg, #CD7F32 0%, #8B4513 100%);
+        }
+
+        .rank-medal {
+            background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%);
+            box-shadow: 0 4px 12px rgba(205, 127, 50, 0.5);
+        }
+    }
 }
 
+.rank-medal {
+    width: 45px;
+    height: 45px;
+    border-radius: var(--border-radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    color: white;
+
+    i {
+        position: absolute;
+        font-size: var(--font-size-xl);
+    }
+
+    .rank-num {
+        position: absolute;
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-bold);
+        bottom: 2px;
+    }
+}
+
+.rank-content {
+    flex: 1;
+    min-width: 0;
+
+    .player-name {
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-semibold);
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 2px;
+    }
+
+    .player-score {
+        font-size: var(--font-size-sm);
+        color: var(--text-secondary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+// Animations
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+// Responsive
+@media (max-width: 992px) {
+    .rankings-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-3);
+    }
+}
+
+@media (max-width: 768px) {
+    .rank-card {
+        padding: var(--spacing-2);
+        gap: var(--spacing-2);
+    }
+
+    .rank-medal {
+        width: 40px;
+        height: 40px;
+
+        i {
+            font-size: var(--font-size-lg);
+        }
+    }
+
+    .rank-content {
+        .player-name {
+            font-size: var(--font-size-sm);
+        }
+
+        .player-score {
+            font-size: var(--font-size-xs);
+        }
+    }
+}

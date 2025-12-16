@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const numberModel = require("../database/models/number");
 const userModel = require("../database/models/user");
+const seasonModel = require("../database/models/season");
 const { Op } = require("sequelize");
 const tokenUtils = require("../utils/TokenUtils");
 const utils = require("../utils/utils");
@@ -32,12 +33,23 @@ router.post("/add", tokenUtils.verifyToken, async (req, res) => {
 
   console.log("Adding number %d", newNumber);
 
+  // Get active season
+  const activeSeason = await seasonModel.findOne({
+    where: { is_active: true },
+  });
+
+  if (!activeSeason) {
+    return res.status(400).json({
+      message: "No active season found. Please contact administrator.",
+    });
+  }
+
   // Validación para permitir solo números enteros entre 1 y 99
   if (Number.isInteger(newNumber) && newNumber > 0 && newNumber < 100) {
     const [number, created] = await numberModel.findOrCreate({
       where: {
         user_id: tokenDecrypted.userId,
-        season_id: 2,
+        season_id: activeSeason.id,
         created_at: {
           [Op.between]: [startOfDay, endOfDay], // Busca registros con created_at dentro del rango de hoy
         },
@@ -95,7 +107,7 @@ router.get("/getUserNumbers", tokenUtils.verifyToken, async (req, res) => {
     // Inicializar un objeto para contar las ocurrencias de cada número y para almacenar las fechas
     const numberCounts = {};
     const numberDates = {};
-    for (let i = 1; i <= 99; i++) {
+    for (let i = 10; i <= 99; i++) {
       numberCounts[i] = 0;
       numberDates[i] = [];
     }
@@ -213,8 +225,8 @@ router.get("/getStadistics", tokenUtils.verifyToken, async (req, res) => {
 
     allNumbersIntroduced = data.length;
 
-    // Loop over possible numbers (1-99)
-    for (let i = 1; i <= 99; i++) {
+    // Loop over possible numbers (10-99)
+    for (let i = 10; i <= 99; i++) {
       const count = numberCount.get(i) || 0;
 
       // Update most frequent number
@@ -319,6 +331,199 @@ router.get("/getTodayNumbers", tokenUtils.verifyToken, async (req, res) => {
   );
 
   // Enviar los registros enriquecidos
+  res.status(200).send(enrichedRecords);
+});
+
+// ===== SEASON-SPECIFIC ENDPOINTS =====
+
+/**
+ * Get user numbers for a specific season
+ */
+router.get("/getUserNumbers/:seasonId", tokenUtils.verifyToken, async (req, res) => {
+  try {
+    let token = req.headers["x-access-token"] || req.headers["authorization"];
+    const tokenDecrypted = tokenUtils.parseJwt(token);
+    const seasonId = req.params.seasonId;
+
+    // Inicializar un objeto para contar las ocurrencias de cada número y para almacenar las fechas
+    const numberCounts = {};
+    const numberDates = {};
+    for (let i = 10; i <= 99; i++) {
+      numberCounts[i] = 0;
+      numberDates[i] = [];
+    }
+
+    // Obtener los números del usuario para la temporada específica
+    const whereClause = {
+      user_id: tokenDecrypted.userId,
+    };
+
+    if (seasonId) {
+      whereClause.season_id = seasonId;
+    }
+
+    const data = await numberModel.findAll({
+      attributes: ["number", "created_at"],
+      where: whereClause,
+    });
+
+    // Contar las ocurrencias y almacenar las fechas
+    data.forEach((record) => {
+      const num = record.number;
+      numberCounts[num]++;
+      numberDates[num].push(record.created_at);
+    });
+
+    // Convertir el objeto de conteos a un array de objetos
+    const result = Object.keys(numberCounts).map((number) => ({
+      number: parseInt(number, 10),
+      count: numberCounts[number],
+      dates: numberDates[number],
+    }));
+
+    res.status(200).send(result);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+/**
+ * Get statistics for a specific season
+ */
+router.get("/getStadistics/:seasonId", tokenUtils.verifyToken, async (req, res) => {
+  try {
+    const seasonId = req.params.seasonId;
+
+    // Fetch all numbers and their creation dates for the season
+    const whereClause = seasonId ? { season_id: seasonId } : {};
+    const data = await numberModel.findAll({
+      attributes: ["number", "created_at"],
+      where: whereClause,
+    });
+
+    // Initialize a map to count occurrences
+    const numberCount = new Map();
+
+    // Count occurrences of each number
+    data.forEach((entry) => {
+      const number = entry.number;
+      numberCount.set(number, (numberCount.get(number) || 0) + 1);
+    });
+
+    // Variables for storing statistics
+    let mostFrequentNumber = 0;
+    let allNumbersIntroduced = 0;
+    let totalNumbers = 0;
+    let missingNumbers = 0;
+    let onceAppearedCount = 0;
+    let moreThanOnceCount = 0;
+    let maxCount = 0;
+    let minCount = Infinity;
+
+    allNumbersIntroduced = data.length;
+
+    // Loop over possible numbers (10-99)
+    for (let i = 10; i <= 99; i++) {
+      const count = numberCount.get(i) || 0;
+
+      if (count > maxCount) {
+        maxCount = count;
+        mostFrequentNumber = i;
+      }
+
+      if (count < minCount) {
+        minCount = count;
+      }
+
+      if (count > 0) {
+        totalNumbers++;
+        if (count === 1) {
+          onceAppearedCount++;
+        } else {
+          moreThanOnceCount++;
+        }
+      } else {
+        missingNumbers++;
+      }
+    }
+
+    if (minCount === Infinity) {
+      minCount = 0;
+      allNumbersIntroduced = null;
+    }
+
+    res.json({
+      mostFrequentNumber,
+      allNumbersIntroduced,
+      totalNumbers,
+      missingNumbers,
+      onceAppearedCount,
+      moreThanOnceCount,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching statistics." });
+  }
+});
+
+/**
+ * Get today's numbers for a specific season
+ */
+router.get("/getTodayNumbers/:seasonId", tokenUtils.verifyToken, async (req, res) => {
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+
+  const seasonId = req.params.seasonId;
+  const whereClause = {
+    created_at: {
+      [Op.between]: [startOfDay.getTime(), endOfDay.getTime()],
+    },
+  };
+
+  if (seasonId) {
+    whereClause.season_id = seasonId;
+  }
+
+  const todayRecords = await numberModel.findAll({
+    attributes: ["number", "created_at"],
+    where: whereClause,
+    include: [
+      {
+        model: userModel,
+        attributes: ["username", "profile_image", "id"],
+      },
+    ],
+  });
+
+  const enrichedRecords = await Promise.all(
+    todayRecords.map(async (record) => {
+      const userId = record.User.id;
+      const number = record.number;
+
+      const startOfToday = moment().startOf("day").toDate();
+
+      const numberExistsForUser = await numberModel.findOne({
+        where: {
+          user_id: userId,
+          number: number,
+          season_id: seasonId,
+          created_at: { [Op.lt]: startOfToday },
+        },
+        raw: true,
+      });
+
+      return {
+        ...record.toJSON(),
+        alreadyExists: !!numberExistsForUser,
+      };
+    })
+  );
+
   res.status(200).send(enrichedRecords);
 });
 

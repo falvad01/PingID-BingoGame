@@ -8,6 +8,7 @@ import { NewNumberComponent } from '../new-number/new-number.component';
 import { ClasificationComponent } from '../clasification/clasification.component';
 import { EditProfileComponent } from '../edit-profile/edit-profile.component'
 import { DataComponent } from '../data/data.component';
+import { HistoricalViewComponent } from '../historical-view/historical-view.component';
 import { firstNumberGuard } from 'src/guard/user/first-number.guard';
 
 
@@ -16,10 +17,10 @@ const routes: Routes = [
   {
     path: '',
     component: MainUserPage,
-    children:[
+    children: [
       {
         path: 'dashboard',
-        component : DashboardComponent,
+        component: DashboardComponent,
         canActivate: [firstNumberGuard]
       },
       {
@@ -33,21 +34,24 @@ const routes: Routes = [
       {
         path: "edit",
         component: EditProfileComponent
-      }
-      ,
+      },
       {
         path: "data",
         component: DataComponent,
         canActivate: [firstNumberGuard]
+      },
+      {
+        path: "historical",
+        component: HistoricalViewComponent
       }
     ]
 
   }
-  
+
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class MainUserPageRoutingModule {}
+export class MainUserPageRoutingModule { }

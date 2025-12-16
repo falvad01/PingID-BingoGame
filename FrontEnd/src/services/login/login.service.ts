@@ -31,14 +31,24 @@ export class LoginService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-      console.log("User %s", user)
-
       this.http.post(environment.API_PATH + 'user/login', {
         "username": user,
         "password": password
       }, { headers }).subscribe({
         next: (data: any) => {
+          // Update regular user token
           this.token.updateToken(data.token);
+
+          // Check if user is admin by decoding token
+          const isAdmin = this.token.isAdmin();
+
+          if (isAdmin) {
+            // If admin, also store admin token and flag
+            localStorage.setItem('adminToken', data.token);
+            localStorage.setItem('isAdminLoggedIn', 'true');
+            console.log('Admin user logged in');
+          }
+
           resolve(true);
         },
         error: error => {
@@ -50,39 +60,41 @@ export class LoginService {
     });
   }
 
-    /**
-   * Request API user login
-   * @param user
-   * @param password
-   * @returns
-   */
-    requestLoginAdmin(user: string, password: string) {
-      //
-      // Clear error message
-      this.ErrorMessage = '';
-  
-  
-      return new Promise((resolve, reject) => {
-        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-  
-        console.log("User %s", user)
-  
-        this.http.post(environment.API_PATH + 'user/login/admin', {
-          "username": user,
-          "password": password
-        }, { headers }).subscribe({
-          next: (data: any) => {
-            this.token.updateToken(data.token);
-            resolve(true);
-          },
-          error: error => {
-            this.ErrorMessage = error.error ? error.error.error : error.message;
-            console.log(this.ErrorMessage);
-            reject(false);
-          }
-        });
+  /**
+ * Request API admin login
+ * @param user
+ * @param password
+ * @returns
+ */
+  requestLoginAdmin(user: string, password: string) {
+    //
+    // Clear error message
+    this.ErrorMessage = '';
+
+
+    return new Promise((resolve, reject) => {
+      const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+      console.log("Admin User %s", user)
+
+      this.http.post(environment.API_PATH + 'user/login/admin', {
+        "username": user,
+        "password": password
+      }, { headers }).subscribe({
+        next: (data: any) => {
+          // Store admin token separately
+          localStorage.setItem('adminToken', data.token);
+          localStorage.setItem('isAdminLoggedIn', 'true');
+          resolve(true);
+        },
+        error: error => {
+          this.ErrorMessage = error.error ? error.error.error : error.message;
+          console.log(this.ErrorMessage);
+          reject(false);
+        }
       });
-    }
+    });
+  }
 
   /**
    * Request API user logout

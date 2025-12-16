@@ -1,4 +1,4 @@
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { NumberService } from 'src/services/number/number.service';
 import { Buffer } from 'buffer';
@@ -6,7 +6,7 @@ import { Buffer } from 'buffer';
 @Component({
   selector: 'app-numbers-time-line',
   standalone: true,
-  imports: [NgFor],
+  imports: [NgFor, NgIf],
   templateUrl: './numbers-time-line.component.html',
   styleUrls: ['./numbers-time-line.component.scss']
 })

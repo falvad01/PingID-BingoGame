@@ -1,4 +1,4 @@
-import { NgFor } from '@angular/common';
+import { NgFor, CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { NumberService } from 'src/services/number/number.service';
 import { UserService } from 'src/services/user/user.service';
@@ -6,7 +6,7 @@ import { UserService } from 'src/services/user/user.service';
 @Component({
   selector: 'app-clasification',
   standalone: true,
-  imports: [NgFor],
+  imports: [NgFor, CommonModule],
   templateUrl: './clasification.component.html',
   styleUrl: './clasification.component.scss'
 })
