@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TokenService } from 'src/services/token/token.service';
-import { ComunicationService } from 'src/services/user/comunication-service.service';
+import { ComunicationService }
+  from 'src/services/user/comunication-service.service';
 import { UserService } from 'src/services/user/user.service';
 
 @Component({

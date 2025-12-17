@@ -1,18 +1,65 @@
-<div class="row">
-    <div class="col-12 col-sm-6 col-md-6">
-        <app-clasification-chart></app-clasification-chart>
-        <app-stacker-bar-chart></app-stacker-bar-chart>
+<div class="data-container">
+
+    <!-- Fun Stats Cards Section -->
+    <div class="data-section">
+        <div class="section-header">
+            <h2>
+                <i class="fas fa-star"></i>
+                Estadísticas Rápidas
+            </h2>
+        </div>
+        <app-fun-stats-cards></app-fun-stats-cards>
     </div>
 
-    <div class="col-12 col-sm-6 col-md-6">
+    <!-- Análisis de Números Section -->
+    <div class="data-section">
+        <div class="section-header">
+            <h2>
+                <i class="fas fa-chart-bar"></i>
+                Análisis de Números
+            </h2>
+        </div>
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <app-clasification-chart></app-clasification-chart>
+            </div>
+            <div class="col-12 col-lg-6">
+                <app-stacker-bar-chart></app-stacker-bar-chart>
+            </div>
+        </div>
+    </div>
 
+    <!-- Distribución Visual Section -->
+    <div class="data-section">
+        <div class="section-header">
+            <h2>
+                <i class="fas fa-chart-pie"></i>
+                Distribución Visual
+            </h2>
+        </div>
+        <app-distribution-charts></app-distribution-charts>
+    </div>
+
+    <!-- Gráfica Completa de Números (Full Width) -->
+    <div class="data-section">
+        <div class="section-header">
+            <h2>
+                <i class="fas fa-chart-area"></i>
+                Distribución de Todos los Números
+            </h2>
+        </div>
+        <app-number-bar-chart></app-number-bar-chart>
+    </div>
+
+    <!-- Datos Detallados Section -->
+    <div class="data-section">
+        <div class="section-header">
+            <h2>
+                <i class="fas fa-table"></i>
+                Datos Detallados
+            </h2>
+        </div>
         <app-number-table></app-number-table>
     </div>
 
-    <div class="col-12 col-sm-6 col-md-6">
-
-    </div>
-
 </div>
-
-<app-number-bar-chart></app-number-bar-chart>

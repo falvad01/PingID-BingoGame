@@ -26,7 +26,18 @@ export class NumberTableComponent {
    */
   obtainAllNumbers() {
     this.numberService.retrieveAllNumbers().then((response: any) => {
-      this.processData(response);
+      // Handle new response structure { numbers: [...], metadata: {...} }
+      // or old structure (just array)
+      let data: any[];
+      if (response && response.numbers && Array.isArray(response.numbers)) {
+        data = response.numbers;
+      } else if (Array.isArray(response)) {
+        data = response;
+      } else {
+        console.error('Unexpected response format:', response);
+        data = [];
+      }
+      this.processData(data);
     }).catch((error: any) => {
       console.error('Error fetching data:', error);
     });

@@ -5,6 +5,15 @@
     <li class="nav-item">
       <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
     </li>
+
+    <!-- Season Display -->
+    <li class="nav-item season-display" *ngIf="activeSeason">
+      <div class="nav-link">
+        <span class="season-label">Temporada:</span>
+        <span class="season-name">{{ activeSeason.name }}</span>
+      </div>
+    </li>
+
     <!-- <li class="nav-item">
       <div class="count-down-timer">
         <div class="wrapper">

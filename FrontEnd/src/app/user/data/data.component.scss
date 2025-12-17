@@ -1,0 +1,70 @@
+// ========================================
+// DATA COMPONENT STYLES
+// ========================================
+
+.data-container {
+    padding: var(--spacing-4);
+    max-width: 1400px;
+    margin: 0 auto;
+    animation: fadeIn 0.5s var(--ease-out);
+}
+
+// ========================================
+// DATA SECTIONS
+// ========================================
+.data-section {
+    margin-bottom: var(--spacing-6);
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-4);
+
+        h2 {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin: 0;
+
+            i {
+                margin-right: var(--spacing-2);
+                color: var(--color-primary-400);
+            }
+        }
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-4);
+
+        >[class*="col-"] {
+            display: flex;
+            flex: 1;
+            min-width: 0;
+
+            >* {
+                width: 100%;
+            }
+        }
+    }
+}
+
+// Import widget styles
+@import '../../../css/dashboard-widgets.scss';
+
+// ========================================
+// RESPONSIVE
+// ========================================
+@media (max-width: 768px) {
+    .data-container {
+        padding: var(--spacing-3);
+    }
+
+    .data-section {
+        .row {
+            flex-direction: column;
+        }
+    }
+}

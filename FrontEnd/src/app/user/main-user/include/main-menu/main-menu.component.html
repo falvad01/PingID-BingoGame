@@ -5,6 +5,7 @@
         <img src="../../assets/icons/Logo_HPSCDS_2025.svg" alt="Logo" class="logo" />
         <div class="logo-text">Bingo</div>
     </div>
+
     <!-- Sidebar -->
     <div class="sidebar">
 
@@ -14,7 +15,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-                <li class="nav-item">
+                <li class="nav-item" *ngIf="!isNumberAdded">
                     <a routerLink="/user/number" class="nav-link">
                         <i class="fas fa-plus"></i>
                         <p> Nuevo número</p>
@@ -34,26 +35,17 @@
                 </li>
 
 
-                <li class="nav-item">
+                <li class="nav-item" *ngIf="isNumberAdded">
                     <a routerLink="/user/clasification" class="nav-link">
                         <i class="fas fa-sort-amount-down"></i>
                         <p> Clasificación</p>
                     </a>
                 </li>
 
-                <!-- Historical View (for all users) -->
-                <li class="nav-item">
+                <li class="nav-item" *ngIf="isNumberAdded">
                     <a routerLink="/user/historical" class="nav-link">
                         <i class="fas fa-history"></i>
                         <p>Histórico</p>
-                    </a>
-                </li>
-
-                <!-- Admin Panel (only for admins) -->
-                <li class="nav-item" *ngIf="isAdmin">
-                    <a routerLink="/admin/seasons" class="nav-link admin-link">
-                        <i class="fas fa-cog"></i>
-                        <p>Gestión Temporadas</p>
                     </a>
                 </li>
 

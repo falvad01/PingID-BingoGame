@@ -8,11 +8,11 @@
   </div>
 
   <!-- Podium for Top 3 -->
-  <div class="podium-section" *ngIf="tableData.length >= 3">
+  <div class="podium-section" *ngIf="tableData.length > 0">
     <div class="podium">
       <!-- Second Place -->
       <div class="podium-position second animate-fadeInUp" style="animation-delay: 0.2s">
-        <div class="podium-player">
+        <div class="podium-player" *ngIf="tableData.length > 1">
           <div class="rank-badge silver">
             <i class="fas fa-medal"></i>
             <span>2</span>
@@ -75,7 +75,7 @@
 
       <!-- Third Place -->
       <div class="podium-position third animate-fadeInUp" style="animation-delay: 0.3s">
-        <div class="podium-player">
+        <div class="podium-player" *ngIf="tableData.length > 2">
           <div class="rank-badge bronze">
             <i class="fas fa-medal"></i>
             <span>3</span>

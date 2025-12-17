@@ -24,7 +24,18 @@ export class NumberBarChartComponent implements OnInit {
    */
   obtainMarkedNumbers() {
     this.numberService.retrieveAllNumbers().then((response: any) => {
-      this.createChart(response);
+      // Handle new response structure { numbers: [...], metadata: {...} }
+      // or old structure (just array)
+      let data: any[];
+      if (response && response.numbers && Array.isArray(response.numbers)) {
+        data = response.numbers;
+      } else if (Array.isArray(response)) {
+        data = response;
+      } else {
+        console.error('Unexpected response format:', response);
+        data = [];
+      }
+      this.createChart(data);
     }).catch((error: any) => {
       console.error('Error fetching data:', error);
     });
@@ -84,24 +95,38 @@ export class NumberBarChartComponent implements OnInit {
             x: {
               title: {
                 display: true,
-                text: 'Número'
+                text: 'Número',
+                color: '#e0e0e0' // Light color for visibility
               },
               min: 10,
+              ticks: {
+                color: '#e0e0e0', // Light color for number labels
+                maxRotation: 90,
+                minRotation: 45
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)' // Subtle grid lines
+              }
             },
             y: {
               title: {
                 display: true,
-                text: 'Frecuencia'
+                text: 'Frecuencia',
+                color: '#e0e0e0' // Light color for visibility
               },
               beginAtZero: true,
               ticks: {
                 stepSize: 1, // Ensure integers are visible
+                color: '#e0e0e0', // Light color for number labels
                 callback: function (value) {
                   return Number.isInteger(value) ? value : '';
                 }
               },
               min: 0, // Ensure the axis starts at 0
-              max: Math.max(...counts) + 1 // Ensure the axis reaches the maximum value + 1
+              max: Math.max(...counts) + 1, // Ensure the axis reaches the maximum value + 1
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)' // Subtle grid lines
+              }
             }
           }
         }

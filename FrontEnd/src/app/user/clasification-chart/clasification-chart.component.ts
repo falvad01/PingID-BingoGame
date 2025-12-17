@@ -94,7 +94,14 @@ export class ClasificationChartComponent {
               beginAtZero: true, // Start x-axis at zero
               title: {
                 display: true,
-                text: 'Jugadores' // X-axis title
+                text: 'Jugadores', // X-axis title
+                color: '#e0e0e0' // Light color for title
+              },
+              ticks: {
+                color: '#e0e0e0' // Light color for labels
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)' // Subtle grid lines
               }
             },
             y: {
@@ -102,7 +109,14 @@ export class ClasificationChartComponent {
               max: 89, // Set maximum value for y-axis
               title: {
                 display: true,
-                text: 'Números restantes' // Y-axis title
+                text: 'Números restantes', // Y-axis title
+                color: '#e0e0e0' // Light color for title
+              },
+              ticks: {
+                color: '#e0e0e0' // Light color for labels
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)' // Subtle grid lines
               }
             }
           },

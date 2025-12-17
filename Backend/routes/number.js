@@ -104,6 +104,15 @@ router.get("/getUserNumbers", tokenUtils.verifyToken, async (req, res) => {
     let token = req.headers["x-access-token"] || req.headers["authorization"];
     const tokenDecrypted = tokenUtils.parseJwt(token);
 
+    // Get active season
+    const activeSeason = await seasonModel.findOne({
+      where: { is_active: true },
+    });
+
+    if (!activeSeason) {
+      return res.status(404).json({ error: "No active season found" });
+    }
+
     // Inicializar un objeto para contar las ocurrencias de cada número y para almacenar las fechas
     const numberCounts = {};
     const numberDates = {};
@@ -117,6 +126,7 @@ router.get("/getUserNumbers", tokenUtils.verifyToken, async (req, res) => {
       attributes: ["number", "created_at"],
       where: {
         user_id: tokenDecrypted.userId,
+        season_id: activeSeason.id,
       },
     });
 
@@ -142,12 +152,22 @@ router.get("/getUserNumbers", tokenUtils.verifyToken, async (req, res) => {
 
 router.get("/getAllNumbers", tokenUtils.verifyToken, async (req, res) => {
   try {
+    // Get active season
+    const activeSeason = await seasonModel.findOne({
+      where: { is_active: true },
+    });
+
+    if (!activeSeason) {
+      return res.status(404).json({ error: "No active season found" });
+    }
+
     // Inicializar un objeto para contar las repeticiones de cada número y almacenar los usuarios
     const numberData = {};
 
-    // Obtener todos los números almacenados
+    // Obtener todos los números almacenados (including created_at)
     const data = await numberModel.findAll({
-      attributes: ["number"],
+      attributes: ["number", "created_at"],
+      where: { season_id: activeSeason.id },
       include: [
         {
           model: userModel,
@@ -156,16 +176,25 @@ router.get("/getAllNumbers", tokenUtils.verifyToken, async (req, res) => {
       ],
     });
 
+    // Almacenar todas las fechas para calcular días activos
+    const allDates = new Set();
+
     // Contar las repeticiones y almacenar los usuarios
     data.forEach((record) => {
       const num = record.number;
       const username = record.User.username;
+      const createdAt = record.created_at;
+
+      // Add date to set (using only date part, not time)
+      const dateOnly = new Date(createdAt).toISOString().split('T')[0];
+      allDates.add(dateOnly);
 
       if (!numberData[num]) {
         numberData[num] = {
           number: num,
           repetitions: 0,
           users: {},
+          dates: []
         };
       }
 
@@ -174,21 +203,29 @@ router.get("/getAllNumbers", tokenUtils.verifyToken, async (req, res) => {
         numberData[num].users[username] = 0;
       }
       numberData[num].users[username]++;
+      numberData[num].dates.push(createdAt);
     });
 
     // Convertir el objeto de usuarios a un array de objetos
     const result = Object.values(numberData).map(
-      ({ number, repetitions, users }) => ({
+      ({ number, repetitions, users, dates }) => ({
         number,
         repetitions,
         users: Object.keys(users).map((username) => ({
           username,
           count: users[username],
         })),
+        dates // Include dates in response
       })
     );
 
-    res.status(200).send(result);
+    // Add metadata about active days
+    const metadata = {
+      totalActiveDays: allDates.size,
+      totalEntries: data.length
+    };
+
+    res.status(200).send({ numbers: result, metadata });
   } catch (error) {
     res.status(500).send(error);
   }
@@ -199,9 +236,19 @@ router.get("/getAllNumbers", tokenUtils.verifyToken, async (req, res) => {
  */
 router.get("/getStadistics", tokenUtils.verifyToken, async (req, res) => {
   try {
+    // Get active season
+    const activeSeason = await seasonModel.findOne({
+      where: { is_active: true },
+    });
+
+    if (!activeSeason) {
+      return res.status(404).json({ error: "No active season found" });
+    }
+
     // Fetch all numbers and their creation dates
     const data = await numberModel.findAll({
       attributes: ["number", "created_at"],
+      where: { season_id: activeSeason.id },
     });
 
     // Initialize a map to count occurrences
@@ -280,6 +327,15 @@ router.get("/getStadistics", tokenUtils.verifyToken, async (req, res) => {
  * Obtain the actual day records
  */
 router.get("/getTodayNumbers", tokenUtils.verifyToken, async (req, res) => {
+  // Get active season
+  const activeSeason = await seasonModel.findOne({
+    where: { is_active: true },
+  });
+
+  if (!activeSeason) {
+    return res.status(404).json({ error: "No active season found" });
+  }
+
   const startOfDay = new Date(); // Crea un nuevo objeto Date para hoy
   startOfDay.setHours(0, 0, 0, 0); // Establece el tiempo al inicio del día
 
@@ -289,6 +345,7 @@ router.get("/getTodayNumbers", tokenUtils.verifyToken, async (req, res) => {
   const todayRecords = await numberModel.findAll({
     attributes: ["number", "created_at"],
     where: {
+      season_id: activeSeason.id,
       created_at: {
         [Op.between]: [startOfDay.getTime(), endOfDay.getTime()], // Filtra entre el inicio y el final del día
       },
@@ -317,6 +374,7 @@ router.get("/getTodayNumbers", tokenUtils.verifyToken, async (req, res) => {
         where: {
           user_id: userId,
           number: number,
+          season_id: activeSeason.id,
           created_at: { [Op.lt]: startOfToday }, // Excluir registros creados hoy
         },
         raw: true,

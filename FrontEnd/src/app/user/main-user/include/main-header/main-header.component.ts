@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CountdownComponent, CountdownConfig } from 'ngx-countdown';
 import { TokenService } from 'src/services/token/token.service';
 import { UserService } from 'src/services/user/user.service';
+import { SeasonService, Season } from 'src/app/services/season.service';
 
 
 
@@ -31,12 +32,23 @@ export class MainHeaderComponent implements OnInit {
 
   imagePath: String = ""
   isAdmin: boolean = false
+  activeSeason: Season | null = null;
 
-  constructor(private tokenService: TokenService, private userService: UserService) { }
+  constructor(private tokenService: TokenService, private userService: UserService, private seasonService: SeasonService) { }
 
   ngOnInit() {
     this.isAdmin = this.tokenService.isAdmin()
     this.getUserProfile()
+
+    // Load active season
+    this.seasonService.getActiveSeason().subscribe({
+      next: (season) => {
+        this.activeSeason = season;
+      },
+      error: (error) => {
+        console.error('Error loading active season:', error);
+      }
+    });
 
   }
 

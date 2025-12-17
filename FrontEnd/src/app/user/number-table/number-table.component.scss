@@ -1,134 +1,242 @@
-.container {
+// ========================================
+// NUMBERS TABLE - MODERN COMPACT DESIGN
+// ========================================
+
+.numbers-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-xl);
+  overflow: hidden;
+  transition: all var(--transition-base) var(--ease-out);
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  height: 100vh;
-  /* Full viewport height */
-  box-sizing: border-box;
+
+  &:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-primary-400);
+  }
 }
 
-.row {
+.numbers-header {
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--glass-border);
+  background: var(--glass-bg-strong);
+
+  .numbers-title {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+
+    i {
+      color: var(--color-primary-400);
+      font-size: var(--font-size-base);
+    }
+  }
+}
+
+.numbers-body {
+  padding: var(--spacing-3);
+  flex: 1;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  overflow-y: auto;
 
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: var(--border-radius-full);
+
+    &:hover {
+      background: var(--color-primary-400);
+    }
+  }
 }
 
-.col-1 {
-  flex: 0 0 10%;
-  /* Ensure 10 columns per row */
-  max-width: 10%;
+.numbers-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: var(--spacing-2);
 }
 
 .cell {
-  border: 2px solid #e0e0e0;
-  /* Light gray border for the cells */
-  font-size: 18px;
-  /* Increase the font size */
-  font-weight: bold;
-  /* Make the numbers bold */
-  height: 40px;
-  /* Adjust the height of each cell */
-  width: 9%; // Cada celda ocupa el 10% del ancho del contenedor padre
+  aspect-ratio: 1;
   display: flex;
   flex-direction: column;
-  /* Stack number and tiny text vertically */
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
-  /* Include padding and border in the cell size */
-  background-color: #ffffff;
-  /* White background color for the cells */
-  border-radius: 10px;
-  /* Rounded corners for the cells */
-  transition: transform 0.2s;
-  /* Smooth transition for hover effect */
-  margin: 1px;
-  /* Add some space between cells */
-  color: black;
-  /* Ensure text is black by default */
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 2px solid var(--border-primary);
+  border-radius: var(--border-radius-base);
+  transition: all var(--transition-base) var(--ease-out);
+  cursor: pointer;
   position: relative;
+  overflow: hidden;
+  min-height: 45px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    transition: opacity var(--transition-base) var(--ease-out);
+    z-index: 0;
+  }
+
+  .text,
+  .tiny-text {
+    position: relative;
+    z-index: 1;
+  }
+
+  .text {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-extrabold);
+    font-family: var(--font-family-heading);
+    color: var(--text-primary);
+  }
+
+  .tiny-text {
+    font-size: 0.6rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+    margin-top: 2px;
+    padding: 1px var(--spacing-1);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-full);
+  }
+
+  &:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-primary-400);
+  }
+
+  // Color variants
+  &.highlight-green {
+    border-color: var(--color-success);
+
+    &::before {
+      background: var(--gradient-success);
+      opacity: 0.1;
+    }
+
+    .text {
+      color: var(--color-success);
+    }
+
+    &:hover::before {
+      opacity: 0.2;
+    }
+  }
+
+  &.highlight-blue {
+    border-color: var(--color-info);
+
+    &::before {
+      background: linear-gradient(135deg, var(--color-info) 0%, var(--color-primary-400) 100%);
+      opacity: 0.1;
+    }
+
+    .text {
+      color: var(--color-info);
+    }
+
+    &:hover::before {
+      opacity: 0.2;
+    }
+  }
 }
 
-.centered-num {
-  margin-top: 20%;
-}
-
-.cell:hover {
-  transform: scale(1.05);
-  /* Slightly enlarge cell on hover */
-}
-
-.cell.highlight-green {
-  background-color: #4caf50;
-  /* Green background for highlighted cells */
-  color: white;
-  /* White text color for readability */
-}
-
-.cell.highlight-blue {
-  background-color: #2196f3;
-  /* Blue background for highlighted cells */
-  color: white;
-  /* White text color for readability */
-}
-
-.cell.highlight-transparent {
-  background-color: transparent;
-  color: transparent;
-  visibility: hidden;
-}
-
-.tiny-text {
-  position: absolute;
-  font-size: 10px;
-  /* left: 40%; */
-  font-weight: normal;
-  color: white;
-  bottom: 0px;
-  left: 0px;
-  right: 4px;
-  text-align: right;
-}
-
-.text{
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  bottom: 0px;
-  right: 0px;
-  text-align: center;
-  align-content: center;
-}
-
+// Legend
 .legend {
   display: flex;
+  gap: var(--spacing-4);
   justify-content: center;
-  align-items: center;
-  gap: 20px;
-  /* Space between legend items */
+  padding: var(--spacing-3);
+  background: var(--bg-primary);
+  border-radius: var(--border-radius-base);
+  border: 1px solid transparent;
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+
+    .color-box {
+      width: 16px;
+      height: 16px;
+      border-radius: var(--border-radius-sm);
+      border: 2px solid;
+
+      &.highlight-green {
+        border-color: var(--color-success);
+        background: var(--gradient-success);
+        opacity: 0.4;
+      }
+
+      &.highlight-blue {
+        border-color: var(--color-info);
+        background: linear-gradient(135deg, var(--color-info) 0%, var(--color-primary-400) 100%);
+        opacity: 0.4;
+      }
+    }
+  }
 }
 
-.legend-item {
-  display: flex;
-  align-items: center;
-}
+@media (max-width: 768px) {
+  .numbers-grid {
+    grid-template-columns: repeat(10, 1fr);
+    gap: var(--spacing-1);
+  }
 
-.color-box {
-  width: 20px;
-  height: 20px;
-  display: inline-block;
-  margin-right: 8px;
-  border-radius: 50%;
-  /* Make color boxes circular */
-}
+  .cell {
+    min-height: 38px;
 
-.color-box.highlight-green {
-  background-color: #4caf50;
-  /* Green color box */
-}
+    .text {
+      font-size: var(--font-size-base);
+    }
 
-.color-box.highlight-blue {
-  background-color: #2196f3;
-  /* Blue color box */
+    .tiny-text {
+      font-size: 0.5rem;
+      padding: 1px 4px;
+    }
+  }
+
+  .legend {
+    flex-direction: column;
+    gap: var(--spacing-2);
+    align-items: flex-start;
+
+    .legend-item {
+      font-size: 10px;
+
+      .color-box {
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
 }

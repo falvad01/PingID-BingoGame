@@ -81,11 +81,11 @@ export class UserService {
   }
 
   /*
-   * Obtain que users clasifications
-   * 
+   * Obtain the users clasifications
+   * @param seasonId Optional season ID to filter classification by season
    * @returns 
    */
-  getUserClasification() {
+  getUserClasification(seasonId?: number) {
 
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders({
@@ -93,9 +93,13 @@ export class UserService {
         'Authorization': this.token.getToken()
       });
 
-      console.log("Getting user clasification")
+      const endpoint = seasonId
+        ? `user/getUsersQualify/${seasonId}`
+        : 'user/getUsersQualify';
 
-      this.http.get(environment.API_PATH + 'user/getUsersQualify', { headers: headers }).subscribe({
+      console.log("Getting user clasification" + (seasonId ? ` for season ${seasonId}` : ""))
+
+      this.http.get(environment.API_PATH + endpoint, { headers: headers }).subscribe({
         next: (data: any) => {
           console.log("Peticion correct %s", data)
           resolve(data);
@@ -136,47 +140,12 @@ export class UserService {
     });
   }
 
-    /*
-   * Edir profile
-   * 
-   * @returns 
-   */
-    editProfile(userName: String, nameSurname: String, profileImage: string) {
-
-      return new Promise((resolve, reject) => {
-        const headers = new HttpHeaders({
-          'Content-Type': 'application/json',
-          'Authorization': this.token.getToken()
-        });
-  
-        console.log("Edit profile %s", userName)
-        console.log("Base64 length:", profileImage.length);
-
-        this.http.post(environment.API_PATH + 'user/editProfile', {
-          "username": userName,
-          "name_surname": nameSurname,
-          "profile_image": profileImage,
-         
-        }, { headers }).subscribe({
-          next: (data: any) => {
-            console.log(data)
-            resolve(data);
-          },
-          error: error => {
-            this.ErrorMessage = error.error ? error.error.error : error.message;
-            console.log(this.ErrorMessage);
-            reject(false);
-          }
-        });
-      });
-    }
-
-      /*
-   * Obtain the number remaining to obtain the line in the bingo
-   * 
-   * @returns 
-   */
-  getLineRemaining() {
+  /*
+ * Edir profile
+ * 
+ * @returns 
+ */
+  editProfile(userName: String, nameSurname: String, profileImage: string) {
 
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders({
@@ -184,9 +153,48 @@ export class UserService {
         'Authorization': this.token.getToken()
       });
 
-      console.log("Getting user profile")
+      console.log("Edit profile %s", userName)
+      console.log("Base64 length:", profileImage.length);
 
-      this.http.get(environment.API_PATH + 'user/bingoLine', { headers: headers }).subscribe({
+      this.http.post(environment.API_PATH + 'user/editProfile', {
+        "username": userName,
+        "name_surname": nameSurname,
+        "profile_image": profileImage,
+
+      }, { headers }).subscribe({
+        next: (data: any) => {
+          console.log(data)
+          resolve(data);
+        },
+        error: error => {
+          this.ErrorMessage = error.error ? error.error.error : error.message;
+          console.log(this.ErrorMessage);
+          reject(false);
+        }
+      });
+    });
+  }
+
+  /*
+* Obtain the number remaining to obtain the line in the bingo
+* @param seasonId Optional season ID to filter bingo lines by season
+* @returns 
+*/
+  getLineRemaining(seasonId?: number) {
+
+    return new Promise((resolve, reject) => {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': this.token.getToken()
+      });
+
+      const endpoint = seasonId
+        ? `user/bingoLine/${seasonId}`
+        : 'user/bingoLine';
+
+      console.log("Getting bingo line" + (seasonId ? ` for season ${seasonId}` : ""))
+
+      this.http.get(environment.API_PATH + endpoint, { headers: headers }).subscribe({
         next: (data: any) => {
           console.log("Peticion correct %s", data)
           resolve(data);
@@ -198,12 +206,12 @@ export class UserService {
       });
     });
   }
-/**
- * Check if the user have added the daily number
- * @returns 
- */
+  /**
+   * Check if the user have added the daily number
+   * @returns 
+   */
   checkDayNumber() {
-    return new Promise((res,rej) => {
+    return new Promise((res, rej) => {
       const headers = new HttpHeaders({
         'Content-Type': 'application/json',
         'Authorization': this.token.getToken()

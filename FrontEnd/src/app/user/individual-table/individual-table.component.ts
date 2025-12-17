@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { NumberService } from 'src/services/number/number.service';
+import { SeasonService } from 'src/app/services/season.service';
 
 @Component({
   providers: [DatePipe],
@@ -10,8 +11,13 @@ import { NumberService } from 'src/services/number/number.service';
 })
 export class IndividualTableComponent {
   numbers: { number: number, count: number, dates: string[] }[] = [];
+  activeSeasonId: number | null = null;
 
-  constructor(private numberService: NumberService, private datepipe: DatePipe) {
+  constructor(
+    private numberService: NumberService,
+    private datepipe: DatePipe,
+    private seasonService: SeasonService
+  ) {
     // Initialize numbers from 1 to 99
     this.obtainMarkedNumbers();
   }
@@ -21,11 +27,22 @@ export class IndividualTableComponent {
    * Calls the NumberService to retrieve user numbers and then processes the data.
    */
   obtainMarkedNumbers() {
-    this.numberService.retrieveAllUserNumbers().then((response: any) => {
+    // Get active season first
+    this.seasonService.getActiveSeason().subscribe({
+      next: (season) => {
+        this.activeSeasonId = season.id;
+        console.log('Active season:', season);
 
-      this.processData(response);
-    }).catch((error: any) => {
-      console.error('Error fetching data:', error);
+        // Get user numbers for active season
+        this.numberService.retrieveAllUserNumbers(this.activeSeasonId).then((response: any) => {
+          this.processData(response);
+        }).catch((error: any) => {
+          console.error('Error fetching data:', error);
+        });
+      },
+      error: (error) => {
+        console.error('Error loading active season:', error);
+      }
     });
   }
 

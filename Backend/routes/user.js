@@ -191,6 +191,15 @@ router.get(
   tokenUtils.verifyToken,
   async (request, response) => {
     try {
+      // Get active season
+      const activeSeason = await seasonModel.findOne({
+        where: { is_active: true },
+      });
+
+      if (!activeSeason) {
+        return response.status(404).json({ error: "No active season found" });
+      }
+
       // Fetch all users and numbers from the database
       const users = await userModel.findAll({
         attributes: [
@@ -201,26 +210,26 @@ router.get(
           "administrator",
         ],
       });
-      const numbers = await numberModel.findAll();
+      const numbers = await numberModel.findAll({
+        where: { season_id: activeSeason.id },
+      });
 
       // Map to store user data
       const userData = {};
 
       // Initialize user data
       users.forEach((user) => {
-        if (user.administrator == 0) {
-          const userDataValues = user.get({ plain: true });
-          const { password, id, ...userWithoutPassword } = userDataValues;
-          userData[id] = {
-            ...userWithoutPassword, // Spread all user properties except password
-            numbers: [], // Initialize empty numbers array
-            numberCount: 0, // Initialize count of unique numbers
-            repeatedCount: 0, // Initialize repeated count
-            totalRepetitions: 0, // Initialize total repetitions count
-            lastEntryDate: null, // Initialize last entry date
-            daysSinceLastEntry: null, // Initialize days since last entry
-          };
-        }
+        const userDataValues = user.get({ plain: true });
+        const { password, id, ...userWithoutPassword } = userDataValues;
+        userData[id] = {
+          ...userWithoutPassword, // Spread all user properties except password
+          numbers: [], // Initialize empty numbers array
+          numberCount: 0, // Initialize count of unique numbers
+          repeatedCount: 0, // Initialize repeated count
+          totalRepetitions: 0, // Initialize total repetitions count
+          lastEntryDate: null, // Initialize last entry date
+          daysSinceLastEntry: null, // Initialize days since last entry
+        };
       });
 
       // Organize numbers by user
@@ -300,9 +309,20 @@ router.get(
   adminTokenUtils.verifyToken,
   async (request, response) => {
     try {
+      // Get active season
+      const activeSeason = await seasonModel.findOne({
+        where: { is_active: true },
+      });
+
+      if (!activeSeason) {
+        return response.status(404).json({ error: "No active season found" });
+      }
+
       // Fetch all users and numbers from the database
       const users = await userModel.findAll();
-      const numbers = await numberModel.findAll();
+      const numbers = await numberModel.findAll({
+        where: { season_id: activeSeason.id },
+      });
 
       // Map to store user data
       const userData = {};
@@ -460,14 +480,22 @@ router.get("/bingoLine", async (req, res) => {
   ];
 
   try {
+    // Get active season
+    const activeSeason = await seasonModel.findOne({
+      where: { is_active: true },
+    });
+
+    if (!activeSeason) {
+      return res.status(404).json({ error: "No active season found" });
+    }
+
     const users = await userModel.findAll({
-      where: {
-        administrator: 0
-      },
       include: [
         {
           model: numberModel,
           attributes: ["number"],
+          where: { season_id: activeSeason.id },
+          required: false,
         },
       ],
     });
@@ -713,22 +741,23 @@ router.get(
 
       // Initialize user data
       users.forEach((user) => {
-        if (user.administrator == 0) {
-          const userDataValues = user.get({ plain: true });
-          const { password, id, ...userWithoutPassword } = userDataValues;
-          userData[id] = {
-            ...userWithoutPassword,
-            numbers: [],
-            numberCount: 0,
-            repeatedCount: 0,
-            totalRepetitions: 0,
-            lastEntryDate: null,
-            daysSinceLastEntry: null,
-          };
-        }
+        const userDataValues = user.get({ plain: true });
+        const { password, id, ...userWithoutPassword } = userDataValues;
+        userData[id] = {
+          ...userWithoutPassword,
+          numbers: [],
+          numberCount: 0,
+          repeatedCount: 0,
+          totalRepetitions: 0,
+          lastEntryDate: null,
+          daysSinceLastEntry: null,
+        };
       });
 
       // Organize numbers by user
+      console.log(`Numbers found:`, numbers.map(n => ({ user_id: n.user_id, number: n.number })));
+      console.log(`User IDs in userData:`, Object.keys(userData));
+
       numbers.forEach((numberObj) => {
         const userId = numberObj.user_id;
         if (userData[userId]) {
@@ -741,6 +770,8 @@ router.get(
           ) {
             userData[userId].lastEntryDate = numberObj.created_at;
           }
+        } else {
+          console.log(`Number ${numberObj.number} has user_id ${userId} which is not in userData (might be admin)`);
         }
       });
 
@@ -788,6 +819,7 @@ router.get(
           return b.repeatedCount - a.repeatedCount;
         });
 
+      console.log(`getUsersQualify for season ${seasonId}: found ${numbers.length} numbers, ${Object.keys(userData).length} users, ${sortedUsers.length} users with numbers`);
       response.status(200).json(sortedUsers);
     } catch (error) {
       response.status(500).send(error.message);
@@ -816,9 +848,6 @@ router.get("/bingoLine/:seasonId", tokenUtils.verifyToken, async (req, res) => {
     const whereClause = seasonId ? { season_id: seasonId } : {};
 
     const users = await userModel.findAll({
-      where: {
-        administrator: 0
-      },
       include: [
         {
           model: numberModel,
