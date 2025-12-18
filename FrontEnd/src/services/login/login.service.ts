@@ -43,10 +43,11 @@ export class LoginService {
           const isAdmin = this.token.isAdmin();
 
           if (isAdmin) {
-            // If admin, also store admin token and flag
-            localStorage.setItem('adminToken', data.token);
-            localStorage.setItem('isAdminLoggedIn', 'true');
+            // Save admin flag
+            localStorage.setItem('isAdmin', 'true');
             console.log('Admin user logged in');
+          } else {
+            localStorage.setItem('isAdmin', 'false');
           }
 
           resolve(true);

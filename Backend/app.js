@@ -7,10 +7,9 @@ const https = require("https");
 const fs = require("fs");
 const path = require("path");
 const sec = require("./utils/Securitation");
-const logger = require("./utils/logger.controller");
+const logger = require("./utils/logger");
 const bodyParser = require("body-parser");
 const dbCreation = require("./database/DBCreation");
-logger.initLogger();
 
 // Especificar el puerto y la dirección en la que escuchar
 const port = process.env.API_HTTP_PORT || 80;
@@ -31,6 +30,7 @@ sec.securization(app);
 // Importar las rutas
 const userRoutes = require("./routes/user");
 const numberRoutes = require("./routes/number");
+const adminRoutes = require("./routes/admin");
 
 // Usar las rutas
 app.use(express.json({ limit: "1gb" }));
@@ -39,6 +39,7 @@ app.use(bodyParser.urlencoded({ limit: "1gb", extended: true }));
 
 app.use("/user", userRoutes);
 app.use("/number", numberRoutes);
+app.use("/admin", adminRoutes);
 
 // Configuración para servir el frontend en producción
 app.use(express.static(path.join(__dirname, "../dist/frontend")));
@@ -58,13 +59,13 @@ sequelize
     startServer();
   })
   .catch((err) => {
-    console.error("Unable to connect to the database:", err);
+    logger.error("Unable to connect to the database:", err);
   });
 
 // Función para iniciar el servidor
 function startServer() {
 
-  console.info("Connection to the database has been established successfully.");
+  logger.info("Connection to the database has been established successfully.");
   dbCreation.createDB().then(async () => {
     // Iniciar el servidor HTTP
     http.createServer(app).listen(port, "0.0.0.0", () => {

@@ -3,13 +3,13 @@ import { CanActivateFn, Router } from '@angular/router';
 
 export const authAdminGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
-  const adminToken = localStorage.getItem('adminToken');
-  const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn');
+  const token = localStorage.getItem('token');
+  const isAdmin = localStorage.getItem('isAdmin');
 
-  if (adminToken && isAdminLoggedIn === 'true') {
+  if (token && isAdmin === 'true') {
     return true;
   } else {
-    router.navigate(['/login']); // Redirigir al login principal
+    router.navigate(['/login']); // Redirect to regular login
     return false;
   }
 };

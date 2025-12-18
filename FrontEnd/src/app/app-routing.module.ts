@@ -8,6 +8,7 @@ import { authAdminGuard } from './guard/admin/auth-admin.guard';
 import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
 import { SeasonManagementComponent } from './admin/season-management/season-management.component';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
+import { NumberManagementComponent } from './admin/number-management/number-management.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,11 @@ const routes: Routes = [
   {
     path: 'admin/users',
     component: UserManagementComponent,
+    canActivate: [authAdminGuard]
+  },
+  {
+    path: 'admin/numbers',
+    component: NumberManagementComponent,
     canActivate: [authAdminGuard]
   },
 ];

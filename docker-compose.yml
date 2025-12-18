@@ -10,8 +10,8 @@ services:
       MYSQL_DATABASE: ${DATABASE_NAME}
       MYSQL_USER: ${DATABASE_USER}
       MYSQL_PASSWORD: ${DATABASE_PASS}
-    #ports:
-    #  - "${DATABASE_PORT}:${DATABASE_PORT}" # Mapea el puerto MySQL al host (opcional)
+    ports:
+      - 33065:${DATABASE_PORT} # Mapea el puerto MySQL al host (opcional)
     volumes:
       - db_data:/var/lib/mysql # Volumen persistente para datos de MySQL
     networks:
@@ -34,7 +34,7 @@ services:
       - SSL_CONFIG_KEY=./certs/server.key
       - SSL_CONFIG_CERT=./certs/server.cert
     depends_on:
-      - mysql 
+      - mysql
     networks:
       - app-network
     entrypoint: >
@@ -49,7 +49,7 @@ services:
       PMA_PASSWORD: ${DATABASE_PASS}
       MYSQL_ROOT_PASSWORD: ${DATABASE_PASS}
       HTACCESS: "true" # Habilita autenticación HTTP básica
-      
+
     ports:
       - "8181:80" # phpMyAdmin accesible en http://localhost:8181
     networks:
@@ -57,7 +57,7 @@ services:
     volumes:
       - .htpasswd:/etc/phpmyadmin/.htpasswd
       - .htaccess:/var/www/html/.htaccess
- 
+
     extra_hosts:
       - "host.docker.internal:host-gateway"
 

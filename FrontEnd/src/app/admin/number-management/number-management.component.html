@@ -1,0 +1,177 @@
+<app-admin-header></app-admin-header>
+<div class="admin-layout">
+    <app-admin-sidebar></app-admin-sidebar>
+    <div class="admin-content">
+        <div class="content-header">
+            <h1>Gestión de Números</h1>
+            <button class="btn btn-primary" (click)="toggleAddForm()">
+                <i class="fas" [ngClass]="showAddForm ? 'fa-times' : 'fa-plus'"></i>
+                {{ showAddForm ? 'Cancelar' : 'Añadir Número' }}
+            </button>
+        </div>
+
+        <!-- Message Alert -->
+        <div *ngIf="message" class="alert" [ngClass]="messageType === 'success' ? 'alert-success' : 'alert-error'">
+            {{ message }}
+        </div>
+
+        <!-- Add Number Form -->
+        <div *ngIf="showAddForm" class="card add-form">
+            <h2>Añadir Número</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="user">Usuario</label>
+                    <select id="user" [(ngModel)]="newNumber.userId" class="form-control">
+                        <option [value]="null">Selecciona un usuario</option>
+                        <option *ngFor="let user of users" [value]="user.id">
+                            {{ user.username }} - {{ user.name_surname }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="season">Temporada</label>
+                    <select id="season" [(ngModel)]="newNumber.seasonId" class="form-control">
+                        <option [value]="null">Selecciona una temporada</option>
+                        <option *ngFor="let season of seasons" [value]="season.id">
+                            {{ season.name }} {{ season.is_active ? '(Activa)' : '' }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="number">Número (10-99)</label>
+                    <input type="number" id="number" [(ngModel)]="newNumber.number" min="10" max="99"
+                        class="form-control" placeholder="Ej: 42">
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Fecha</label>
+                    <input type="date" id="date" [(ngModel)]="newNumber.date" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-success" (click)="addNumber()" [disabled]="loading">
+                    <i class="fas fa-check"></i> Añadir
+                </button>
+                <button class="btn btn-secondary" (click)="toggleAddForm()">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card filters">
+            <h2>Filtros</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="filterSeason">Temporada</label>
+                    <select id="filterSeason" [(ngModel)]="selectedSeasonId" class="form-control">
+                        <option [value]="null">Todas</option>
+                        <option *ngFor="let season of seasons" [value]="season.id">
+                            {{ season.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="filterUser">Usuario</label>
+                    <select id="filterUser" [(ngModel)]="selectedUserId" class="form-control">
+                        <option [value]="null">Todos</option>
+                        <option *ngFor="let user of users" [value]="user.id">
+                            {{ user.username }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="filterNumber">Número</label>
+                    <input type="number" id="filterNumber" [(ngModel)]="selectedNumber" min="10" max="99"
+                        class="form-control" placeholder="Todos">
+                </div>
+
+                <div class="form-group">
+                    <label for="startDate">Fecha Desde</label>
+                    <input type="date" id="startDate" [(ngModel)]="startDate" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="endDate">Fecha Hasta</label>
+                    <input type="date" id="endDate" [(ngModel)]="endDate" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-primary" (click)="applyFilters()">
+                    <i class="fas fa-filter"></i> Aplicar Filtros
+                </button>
+                <button class="btn btn-secondary" (click)="clearFilters()">
+                    <i class="fas fa-eraser"></i> Limpiar
+                </button>
+            </div>
+        </div>
+
+        <!-- Numbers Table -->
+        <div class="card table-container">
+            <h2>Números Registrados ({{ filteredNumbers.length }})</h2>
+
+            <div *ngIf="loading" class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Cargando...
+            </div>
+
+            <div *ngIf="!loading && filteredNumbers.length === 0" class="no-data">
+                No se encontraron números con los filtros aplicados
+            </div>
+
+            <table *ngIf="!loading && filteredNumbers.length > 0" class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Número</th>
+                        <th>Temporada</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let num of filteredNumbers">
+                        <td>{{ num.id }}</td>
+                        <td>{{ num.User.username }}</td>
+                        <td>
+                            <span *ngIf="editingId !== num.id" class="number-badge">{{ num.number }}</span>
+                            <input *ngIf="editingId === num.id" type="number" [(ngModel)]="editForm.number" min="10"
+                                max="99" class="form-control-sm">
+                        </td>
+                        <td>{{ num.Season.name }}</td>
+                        <td>
+                            <span *ngIf="editingId !== num.id">{{ formatDate(num.created_at) }}</span>
+                            <input *ngIf="editingId === num.id" type="date" [(ngModel)]="editForm.date"
+                                class="form-control-sm">
+                        </td>
+                        <td class="actions">
+                            <ng-container *ngIf="editingId !== num.id">
+                                <button class="btn-icon btn-edit" (click)="startEdit(num)" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon btn-delete"
+                                    (click)="deleteNumber(num.id, num.User.username, num.number)" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="editingId === num.id">
+                                <button class="btn-icon btn-save" (click)="saveEdit(num.id)" title="Guardar">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button class="btn-icon btn-cancel" (click)="cancelEdit()" title="Cancelar">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </ng-container>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

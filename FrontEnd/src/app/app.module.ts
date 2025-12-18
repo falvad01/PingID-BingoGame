@@ -15,6 +15,7 @@ import { SeasonManagementComponent } from './admin/season-management/season-mana
 import { AdminHeaderComponent } from './admin/admin-header/admin-header.component';
 import { AdminSidebarComponent } from './admin/admin-sidebar/admin-sidebar.component';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
+import { NumberManagementComponent } from './admin/number-management/number-management.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { UserManagementComponent } from './admin/user-management/user-management
     AdminHeaderComponent,
     AdminSidebarComponent,
     UserManagementComponent,
+    NumberManagementComponent,
   ],
   imports: [
     BrowserModule,

@@ -67,8 +67,7 @@
                             <th>Username</th>
                             <th>Name & Surname</th>
                             <th>Role</th>
-                            <th>Unique Numbers</th>
-                            <th>Repeated Numbers</th>
+                            <th>Numbers</th>
                             <th>Created</th>
                         </tr>
                     </thead>
@@ -84,12 +83,11 @@
                                     {{ getRoleBadge(user.administrator) }}
                                 </span>
                             </td>
-                            <td class="number-stat">{{ user.numberCount }}</td>
-                            <td class="number-stat">{{ user.repeatedCount }}</td>
+                            <td class="number-stat">{{ user.totalNumbers }}</td>
                             <td>{{ formatDate(user.created_at) }}</td>
                         </tr>
                         <tr *ngIf="users.length === 0 && !loading">
-                            <td colspan="6" class="no-data">
+                            <td colspan="5" class="no-data">
                                 No users found. Create your first user to get started.
                             </td>
                         </tr>

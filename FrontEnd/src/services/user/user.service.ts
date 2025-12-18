@@ -231,4 +231,30 @@ export class UserService {
       });
     })
   }
+
+  /**
+   * Get all seasons
+   * @returns Promise with all seasons
+   */
+  getAllSeasons() {
+    return new Promise((resolve, reject) => {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': this.token.getToken()
+      });
+
+      console.log("Getting all seasons");
+
+      this.http.get(environment.API_PATH + 'user/season', { headers: headers }).subscribe({
+        next: (data: any) => {
+          console.log("Seasons retrieved", data);
+          resolve(data);
+        },
+        error: error => {
+          this.ErrorMessage = error.error ? error.error.error : error.message;
+          reject(error);
+        }
+      });
+    });
+  }
 }

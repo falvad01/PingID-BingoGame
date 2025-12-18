@@ -17,7 +17,8 @@ async function verifyToken(req, res, next) {
     //
     // If an error happens decoding token, return an error response
     if (err) {
-      console.error("Auth: Failed to authenticate token.");
+      console.error("Auth: Failed to authenticate token. Error:", err.name, "-", err.message);
+      console.error("Token received (first 30 chars):", token ? token.substring(0, 30) + "..." : "null/undefined");
       return res.status(500).send({
         auth: false,
         message: "Failed to authenticate token.",

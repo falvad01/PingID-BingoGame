@@ -9,6 +9,8 @@ const rateLimit = require("express-rate-limit");
 const requestIp = require("request-ip");
 const path = require("path");
 
+const logger = require("./logger");
+
 /**
  * Initialize API securization
  * @param {*} app
@@ -16,11 +18,11 @@ const path = require("path");
 const securization = (app) => {
   //
   // Compressing requests
-  console.silly("Compressing requests");
+  logger.debug("Compressing requests");
   app.use(compression());
   //
   // Add remote IP to request
-  console.silly("Adding IP to request");
+  logger.debug("Adding IP to request");
   app.use((req, res, next) => {
     req.ip = requestIp.getClientIp(req);
     next();
@@ -32,27 +34,27 @@ const securization = (app) => {
   // app.use(ipFilter(ips, { mode: "allow" }));
   //
   // Sessions
-  console.silly("Configuring sessions");
+  logger.debug("Configuring sessions");
   //
 
   //
 
   //
   // Middleware
-  console.silly("Configuring middleware");
+  logger.debug("Configuring middleware");
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   //
   // Securizing headers
-  console.silly("Securizing headers");
+  logger.debug("Securizing headers");
   app.use(cors());
   app.use(helmet());
   //
   // Morgan http logger redirection to winston
-  console.silly("Loggin http requests");
+  logger.debug("Logging http requests");
   const stream = {
     // Use the http severity reirected to winston
-    write: (message) => console.http(message),
+    write: (message) => logger.http(message.trim()),
   };
   const skip = () => {
     const env = process.env.NODE_ENV || "development";
@@ -64,11 +66,11 @@ const securization = (app) => {
   );
   app.use(morganMiddleware);
   //
-  console.silly("Disabling x-powered-by");
+  logger.debug("Disabling x-powered-by");
   app.disable("x-powered-by");
   //
   // Rete limiter
-  console.silly("Limiting request to 100 per 15 minutes per IP");
+  logger.debug("Limiting request to 1000 per minute per IP");
   const limiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 15 minutes
     max: 1000, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
@@ -79,7 +81,7 @@ const securization = (app) => {
   //
   // Custom error handler
   app.use((err, req, res, next) => {
-    console.error(err.stack);
+    logger.error(err.stack);
     res.status(500).sendFile(path.join(__dirname, "../public/500.html"));
   });
 };

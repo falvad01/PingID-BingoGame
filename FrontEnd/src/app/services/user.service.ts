@@ -10,6 +10,7 @@ export interface User {
     administrator: number;
     profile_image?: string;
     created_at: string;
+    totalNumbers: number;
     numberCount: number;
     repeatedCount: number;
 }
@@ -34,7 +35,7 @@ export class UserService {
      * Get all users with statistics (Admin only)
      */
     getAllUsers(): Observable<User[]> {
-        const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
+        const token = localStorage.getItem('token');
         const headers = new HttpHeaders({
             'Authorization': `Bearer ${token}`
         });
@@ -45,7 +46,7 @@ export class UserService {
      * Create a new user (Admin only)
      */
     createUser(userData: CreateUserData): Observable<any> {
-        const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
+        const token = localStorage.getItem('token');
         const headers = new HttpHeaders({
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -57,7 +58,7 @@ export class UserService {
      * Update user (Future implementation - requires backend endpoint)
      */
     updateUser(userId: number, userData: Partial<CreateUserData>): Observable<any> {
-        const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
+        const token = localStorage.getItem('token');
         const headers = new HttpHeaders({
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -70,7 +71,7 @@ export class UserService {
      * Delete user (Future implementation - requires backend endpoint)
      */
     deleteUser(userId: number): Observable<any> {
-        const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
+        const token = localStorage.getItem('token');
         const headers = new HttpHeaders({
             'Authorization': `Bearer ${token}`
         });
