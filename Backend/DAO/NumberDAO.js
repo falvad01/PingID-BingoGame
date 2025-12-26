@@ -167,7 +167,7 @@ class NumberDAO {
                 include: [
                     {
                         model: userModel,
-                        attributes: ["id", "username", "name_surname"]
+                        attributes: ["id", "username", "name_surname", "profile_image"]
                     },
                     {
                         model: seasonModel,

@@ -45,7 +45,7 @@ export class LoginService {
           if (isAdmin) {
             // Save admin flag
             localStorage.setItem('isAdmin', 'true');
-            console.log('Admin user logged in');
+            console.info('Admin user logged in');
           } else {
             localStorage.setItem('isAdmin', 'false');
           }
@@ -54,7 +54,7 @@ export class LoginService {
         },
         error: error => {
           this.ErrorMessage = error.error ? error.error.error : error.message;
-          console.log(this.ErrorMessage);
+          console.info(this.ErrorMessage);
           reject(false);
         }
       });
@@ -76,7 +76,7 @@ export class LoginService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-      console.log("Admin User %s", user)
+      console.info("Admin User %s", user)
 
       this.http.post(environment.API_PATH + 'user/login/admin', {
         "username": user,
@@ -90,7 +90,7 @@ export class LoginService {
         },
         error: error => {
           this.ErrorMessage = error.error ? error.error.error : error.message;
-          console.log(this.ErrorMessage);
+          console.info(this.ErrorMessage);
           reject(false);
         }
       });

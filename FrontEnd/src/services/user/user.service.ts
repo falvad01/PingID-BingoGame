@@ -59,7 +59,7 @@ export class UserService {
         'Authorization': this.token.getToken()
       });
 
-      console.log("Registering %s", userName)
+      console.info("Registering %s", userName)
 
       this.http.post(environment.API_PATH + 'user/register', {
         "username": userName,
@@ -68,12 +68,12 @@ export class UserService {
         "admin": admin
       }, { headers }).subscribe({
         next: (data: any) => {
-          console.log(data)
+          console.info(data)
           resolve(data);
         },
         error: error => {
           this.ErrorMessage = error.error ? error.error.error : error.message;
-          console.log(this.ErrorMessage);
+          console.info(this.ErrorMessage);
           reject(false);
         }
       });
@@ -97,11 +97,11 @@ export class UserService {
         ? `user/getUsersQualify/${seasonId}`
         : 'user/getUsersQualify';
 
-      console.log("Getting user clasification" + (seasonId ? ` for season ${seasonId}` : ""))
+      console.info("Getting user clasification" + (seasonId ? ` for season ${seasonId}` : ""))
 
       this.http.get(environment.API_PATH + endpoint, { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct %s", data)
+          console.info("Peticion correct %s", data)
           resolve(data);
         },
         error: error => {
@@ -125,11 +125,11 @@ export class UserService {
         'Authorization': this.token.getToken()
       });
 
-      console.log("Getting user profile")
+      console.info("Getting user profile")
 
       this.http.get(environment.API_PATH + 'user/getProfile', { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct %s", data)
+          console.info("Peticion correct %s", data)
           resolve(data);
         },
         error: error => {
@@ -153,8 +153,8 @@ export class UserService {
         'Authorization': this.token.getToken()
       });
 
-      console.log("Edit profile %s", userName)
-      console.log("Base64 length:", profileImage.length);
+      console.info("Edit profile %s", userName)
+      console.info("Base64 length:", profileImage.length);
 
       this.http.post(environment.API_PATH + 'user/editProfile', {
         "username": userName,
@@ -163,12 +163,12 @@ export class UserService {
 
       }, { headers }).subscribe({
         next: (data: any) => {
-          console.log(data)
+          console.info(data)
           resolve(data);
         },
         error: error => {
           this.ErrorMessage = error.error ? error.error.error : error.message;
-          console.log(this.ErrorMessage);
+          console.info(this.ErrorMessage);
           reject(false);
         }
       });
@@ -192,11 +192,11 @@ export class UserService {
         ? `user/bingoLine/${seasonId}`
         : 'user/bingoLine';
 
-      console.log("Getting bingo line" + (seasonId ? ` for season ${seasonId}` : ""))
+      console.info("Getting bingo line" + (seasonId ? ` for season ${seasonId}` : ""))
 
       this.http.get(environment.API_PATH + endpoint, { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct %s", data)
+          console.info("Peticion correct %s", data)
           resolve(data);
         },
         error: error => {
@@ -217,12 +217,12 @@ export class UserService {
         'Authorization': this.token.getToken()
       });
 
-      console.log("checking user number")
+      console.info("checking user number")
 
       this.http.get(environment.API_PATH + 'user/isDayNumberAdded', { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct %s", data)
-          res(data);
+          console.info("Peticion correct %s", data)
+          res(data.hasNumber);
         },
         error: error => {
           this.ErrorMessage = error.error ? error.error.error : error.message;
@@ -243,11 +243,73 @@ export class UserService {
         'Authorization': this.token.getToken()
       });
 
-      console.log("Getting all seasons");
+      console.info("Getting all seasons");
 
       this.http.get(environment.API_PATH + 'user/season', { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Seasons retrieved", data);
+          console.info("Seasons retrieved", data);
+          resolve(data);
+        },
+        error: error => {
+          this.ErrorMessage = error.error ? error.error.error : error.message;
+          reject(error);
+        }
+      });
+    });
+  }
+
+  /**
+   * Get all line winners (historical list)
+   * @param seasonId Optional season ID
+   * @returns Promise with array of all line winners
+   */
+  getLineWinners(seasonId?: number) {
+    return new Promise((resolve, reject) => {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': this.token.getToken()
+      });
+
+      const endpoint = seasonId
+        ? `user/lineWinners/${seasonId}`
+        : 'user/lineWinners';
+
+      console.info("Getting line winners" + (seasonId ? ` for season ${seasonId}` : ""));
+
+      this.http.get(environment.API_PATH + endpoint, { headers: headers }).subscribe({
+        next: (data: any) => {
+          console.info("Line winners retrieved", data);
+          resolve(data);
+        },
+        error: error => {
+          this.ErrorMessage = error.error ? error.error.error : error.message;
+          reject(error);
+        }
+      });
+    });
+  }
+
+  /**
+   * Get all bingo winners (historical list)
+   * @param seasonId Optional season ID
+   * @returns Promise with array of all bingo winners
+   */
+  getBingoWinners(seasonId?: number) {
+    return new Promise((resolve, reject) => {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': this.token.getToken()
+      });
+
+      const endpoint = seasonId
+        ? `user/bingoWinners/${seasonId}`
+        : 'user/bingoWinners';
+
+      console.info("Getting bingo winners" + (seasonId ? ` for season ${seasonId}` : ""));
+
+      this.http.get(environment.API_PATH + endpoint, { headers: headers }).subscribe({
+        next: (data: any) => {
+          console.info("Bingo winners retrieved", data);
           resolve(data);
         },
         error: error => {

@@ -30,11 +30,11 @@ export class NumberService {
         'Authorization': this.token.getToken()
       });
 
-      console.log("Adding number %s", number)
+      console.info("Adding number %s", number)
 
       this.http.post(environment.API_PATH + 'number/add?number=' + number, null, { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct")
+          console.info("Peticion correct")
           resolve(true);
         },
         error: error => {
@@ -62,11 +62,11 @@ export class NumberService {
         ? `number/getUserNumbers/${seasonId}`
         : 'number/getUserNumbers';
 
-      console.log("Getting user numbers" + (seasonId ? ` for season ${seasonId}` : ""))
+      console.info("Getting user numbers" + (seasonId ? ` for season ${seasonId}` : ""))
 
       this.http.get(environment.API_PATH + endpoint, { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct")
+          console.info("Peticion correct")
           resolve(data);
         },
         error: error => {
@@ -89,11 +89,11 @@ export class NumberService {
         'Authorization': this.token.getToken()
       });
 
-      console.log("Getting all user numbers")
+      console.info("Getting all user numbers")
 
       this.http.get(environment.API_PATH + 'number/getAllNumbers', { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct")
+          console.info("Peticion correct")
           // Handle new response structure { numbers: [...], metadata: {...} }
           // or old structure (just array)
           if (data && data.numbers && Array.isArray(data.numbers)) {
@@ -133,11 +133,11 @@ export class NumberService {
         ? `number/getStadistics/${seasonId}`
         : 'number/getStadistics';
 
-      console.log("Getting statistics" + (seasonId ? ` for season ${seasonId}` : ""))
+      console.info("Getting statistics" + (seasonId ? ` for season ${seasonId}` : ""))
 
       this.http.get(environment.API_PATH + endpoint, { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct")
+          console.info("Peticion correct")
           resolve(data);
         },
         error: error => {
@@ -165,11 +165,11 @@ export class NumberService {
         ? `number/getTodayNumbers/${seasonId}`
         : 'number/getTodayNumbers';
 
-      console.log("Getting day numbers" + (seasonId ? ` for season ${seasonId}` : ""))
+      console.info("Getting day numbers" + (seasonId ? ` for season ${seasonId}` : ""))
 
       this.http.get(environment.API_PATH + endpoint, { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct")
+          console.info("Peticion correct")
           resolve(data);
         },
         error: error => {

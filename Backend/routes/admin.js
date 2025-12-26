@@ -21,7 +21,7 @@ router.get("/numbers", adminTokenUtils.verifyToken, async (req, res) => {
             number: req.query.number ? parseInt(req.query.number) : null
         };
 
-        console.log("Admin getting numbers with filters:", filters);
+        console.info("Admin getting numbers with filters:", filters);
 
         const numbers = await NumberService.adminGetNumbers(filters);
 
@@ -43,7 +43,7 @@ router.post("/numbers/add", adminTokenUtils.verifyToken, async (req, res) => {
             return res.status(400).json({ error: "Missing required fields" });
         }
 
-        console.log(`Admin adding number ${number} for user ${userId} on date ${date}`);
+        console.info(`Admin adding number ${number} for user ${userId} on date ${date}`);
 
         const result = await NumberService.adminAddNumber(
             parseInt(userId),
@@ -84,7 +84,7 @@ router.put("/numbers/edit/:id", adminTokenUtils.verifyToken, async (req, res) =>
             return res.status(400).json({ error: "No fields to update" });
         }
 
-        console.log(`Admin editing number ${id}:`, updates);
+        console.info(`Admin editing number ${id}:`, updates);
 
         const result = await NumberService.adminEditNumber(id, updates);
 
@@ -110,7 +110,7 @@ router.delete("/numbers/delete/:id", adminTokenUtils.verifyToken, async (req, re
     try {
         const id = parseInt(req.params.id);
 
-        console.log(`Admin deleting number ${id}`);
+        console.info(`Admin deleting number ${id}`);
 
         const result = await NumberService.adminDeleteNumber(id);
 

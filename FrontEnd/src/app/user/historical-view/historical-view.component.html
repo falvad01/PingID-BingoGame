@@ -47,6 +47,12 @@
             </div>
         </div>
 
+        <!-- Winners Section -->
+        <div class="section">
+            <h2><i class="fas fa-trophy"></i> Ganadores</h2>
+            <app-winners-display [seasonId]="selectedSeasonId"></app-winners-display>
+        </div>
+
         <!-- Classification Table -->
         <div class="section">
             <h2><i class="fas fa-trophy"></i> Classification</h2>
@@ -77,19 +83,83 @@
             </div>
         </div>
 
-        <!-- Bingo Line Progress -->
-        <div class="section" *ngIf="bingoLine.length > 0">
-            <h2><i class="fas fa-chart-line"></i> Bingo Line Progress</h2>
-            <div class="bingo-grid">
-                <div class="bingo-card" *ngFor="let user of bingoLine.slice(0, 5)">
-                    <div class="player-name">{{ user.username }}</div>
-                    <div class="missing-count">
-                        {{ user.fewestMissingLine.missingCount }} missing
+        <!-- Line Progress for All Players -->
+        <div class="section">
+            <h2><i class="fas fa-minus"></i> Line Progress</h2>
+            <div class="winners-grid" *ngIf="bingoLine && bingoLine.length > 0">
+                <div class="winner-card" *ngFor="let player of bingoLine; let i = index"
+                    [class.completed]="player.fewestMissingLine?.missingCount === 0"
+                    [class.in-progress]="player.fewestMissingLine?.missingCount > 0">
+                    <div class="winner-rank">{{ i + 1 }}</div>
+                    <img [src]="getImageUrl(player.profile_image)" [alt]="player.username" class="winner-avatar">
+                    <div class="winner-info">
+                        <div class="winner-name">{{ player.name_surname }}</div>
+                        <div class="winner-username">{{ '@' + player.username }}</div>
+
+                        <!-- Completed Line -->
+                        <div class="winner-achievement" *ngIf="player.fewestMissingLine?.missingCount === 0">
+                            <i class="fas fa-star"></i>
+                            Línea {{ player.fewestMissingLine.line }} ¡Completada!
+                        </div>
+
+                        <!-- In Progress -->
+                        <div class="winner-achievement in-progress-text"
+                            *ngIf="player.fewestMissingLine?.missingCount > 0">
+                            <i class="fas fa-hourglass-half"></i>
+                            Línea {{ player.fewestMissingLine.line }} - Faltan {{ player.fewestMissingLine.missingCount
+                            }} números
+                        </div>
+
+                        <!-- Date (only for completed) -->
+                        <div class="winner-date"
+                            *ngIf="player.fewestMissingLine?.missingCount === 0 && player.fewestMissingLine?.completedAt">
+                            <i class="fas fa-calendar-check"></i>
+                            {{ formatDate(player.fewestMissingLine.completedAt) }}
+                        </div>
                     </div>
-                    <div class="line-label">Line {{ user.fewestMissingLine.line }}</div>
                 </div>
             </div>
+            <div class="no-data" *ngIf="!bingoLine || bingoLine.length === 0">
+                <i class="fas fa-info-circle"></i>
+                <p>No line progress data available</p>
+            </div>
         </div>
+
+        <!-- Bingo Progress for All Players -->
+        <div class="section">
+            <h2><i class="fas fa-th"></i> Bingo Progress</h2>
+            <div class="winners-grid" *ngIf="usersQualify && usersQualify.length > 0">
+                <div class="winner-card" *ngFor="let player of usersQualify; let i = index"
+                    [class.completed]="player.numberCount === 90" [class.in-progress]="player.numberCount < 90">
+                    <div class="winner-rank">{{ i + 1 }}</div>
+                    <img [src]="getImageUrl(player.profile_image)" [alt]="player.username" class="winner-avatar">
+                    <div class="winner-info">
+                        <div class="winner-name">{{ player.name_surname }}</div>
+                        <div class="winner-username">{{ '@' + player.username }}</div>
+
+                        <!-- Completed Bingo -->
+                        <div class="winner-achievement" *ngIf="player.numberCount === 90">
+                            <i class="fas fa-trophy"></i>
+                            BINGO Complete!
+                        </div>
+
+                        <!-- In Progress -->
+                        <div class="winner-achievement in-progress-text" *ngIf="player.numberCount < 90">
+                            <i class="fas fa-hourglass-half"></i>
+                            {{ player.numberCount }}/90 números (Faltan {{ 90 - player.numberCount }})
+                        </div>
+
+                        <!-- Date would go here for completed bingo if we had it -->
+                    </div>
+                </div>
+            </div>
+            <div class="no-data" *ngIf="!usersQualify || usersQualify.length === 0">
+                <i class="fas fa-info-circle"></i>
+                <p>No bingo progress data available</p>
+            </div>
+        </div>
+
+
     </div>
 
     <!-- No Season Selected -->

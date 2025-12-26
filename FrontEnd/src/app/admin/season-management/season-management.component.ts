@@ -30,11 +30,11 @@ export class SeasonManagementComponent implements OnInit {
    * Load all seasons
    */
   loadSeasons() {
-    console.log('Loading seasons...');
+    console.info('Loading seasons...');
     this.loading = true;
     this.seasonService.getAllSeasons().subscribe({
       next: (seasons) => {
-        console.log('Seasons loaded:', seasons);
+        console.info('Seasons loaded:', seasons);
         this.seasons = seasons;
         this.loading = false;
       },
@@ -67,7 +67,7 @@ export class SeasonManagementComponent implements OnInit {
     this.loading = true;
     this.seasonService.createSeason(this.newSeason).subscribe({
       next: (response) => {
-        console.log('Season created:', response);
+        console.info('Season created:', response);
         this.loadSeasons();
         this.resetForm();
         this.showCreateForm = false;
@@ -91,7 +91,7 @@ export class SeasonManagementComponent implements OnInit {
     this.loading = true;
     this.seasonService.activateSeason(seasonId).subscribe({
       next: (response) => {
-        console.log('Season activated:', response);
+        console.info('Season activated:', response);
         this.loadSeasons();
         this.loading = false;
       },

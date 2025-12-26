@@ -31,7 +31,7 @@ export class IndividualTableComponent {
     this.seasonService.getActiveSeason().subscribe({
       next: (season) => {
         this.activeSeasonId = season.id;
-        console.log('Active season:', season);
+        console.info('Active season:', season);
 
         // Get user numbers for active season
         this.numberService.retrieveAllUserNumbers(this.activeSeasonId).then((response: any) => {

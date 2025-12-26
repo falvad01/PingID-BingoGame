@@ -23,7 +23,7 @@ router.post("/add", tokenUtils.verifyToken, async (req, res) => {
     const decoded = tokenUtils.parseJwt(token);
 
     const numberValue = parseInt(req.query.number, 10);
-    console.log(`Adding number ${numberValue} for user ${decoded.userId}`);
+    console.info(`Adding number ${numberValue} for user ${decoded.userId}`);
 
     const result = await NumberService.addNumber(decoded.userId, numberValue);
 
@@ -63,7 +63,7 @@ router.get("/getUserNumbers/:seasonId?", tokenUtils.verifyToken, async (req, res
       seasonId = activeSeason.id;
     }
 
-    console.log(`Getting numbers for user ${decoded.userId} in season ${seasonId}`);
+    console.info(`Getting numbers for user ${decoded.userId} in season ${seasonId}`);
 
     const numbers = await NumberService.getUserNumbers(decoded.userId, seasonId);
 
@@ -90,7 +90,7 @@ router.get("/getAllNumbers/:seasonId?", tokenUtils.verifyToken, async (req, res)
       seasonId = activeSeason.id;
     }
 
-    console.log(`Getting all numbers for season ${seasonId}`);
+    console.info(`Getting all numbers for season ${seasonId}`);
 
     const result = await NumberService.getAllNumbers(seasonId);
 
@@ -117,7 +117,7 @@ router.get("/getStadistics/:seasonId?", tokenUtils.verifyToken, async (req, res)
       seasonId = activeSeason.id;
     }
 
-    console.log(`Getting statistics for season ${seasonId}`);
+    console.info(`Getting statistics for season ${seasonId}`);
 
     const stats = await NumberService.getStatistics(seasonId);
 
@@ -144,7 +144,7 @@ router.get("/getTodayNumbers/:seasonId?", tokenUtils.verifyToken, async (req, re
       seasonId = activeSeason.id;
     }
 
-    console.log(`Getting today's numbers for season ${seasonId}`);
+    console.info(`Getting today's numbers for season ${seasonId}`);
 
     const numbers = await NumberService.getTodayNumbers(seasonId);
 

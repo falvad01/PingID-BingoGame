@@ -30,11 +30,11 @@ export class NumbersTimeLineComponent {
     this.seasonService.getActiveSeason().subscribe({
       next: (season) => {
         this.activeSeasonId = season.id;
-        console.log('Active season:', season);
+        console.info('Active season:', season);
 
         // Get today's numbers for active season
         this.numberService.getDayNumbers(this.activeSeasonId).then((data: any) => {
-          console.log('Today numbers: ', data);
+          console.info('Today numbers: ', data);
           // Convertir el array de bytes en una URL para cada imagen de usuario
           this.todayNumbers = data.map((td: any) => {
             // Convierte el buffer de la imagen a una URL de imagen en base64
@@ -44,7 +44,7 @@ export class NumbersTimeLineComponent {
               class: this.getClass(td.alreadyExists),
             };
           });
-          console.log(this.todayNumbers);
+          console.info(this.todayNumbers);
         }).catch(error => {
           console.error('Error fetching today numbers:', error);
         });

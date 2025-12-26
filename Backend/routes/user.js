@@ -9,6 +9,7 @@ const utils = require("../utils/utils");
 const UserService = require("../business/UserService");
 const SeasonService = require("../business/SeasonService");
 const NumberService = require("../business/NumberService");
+const WinnerService = require("../business/WinnerService");
 
 require("dotenv").config();
 
@@ -29,11 +30,11 @@ router.post("/login", validateLogin, async (request, response) => {
     }
 
     const { username, password } = request.body;
-    console.log(`User ${username} starts the login process`);
+    console.info(`User ${username} starts the login process`);
 
     const result = await UserService.login(username, password);
 
-    console.log(`Authentication success for user, 200`);
+    console.info(`Authentication success for user, 200`);
     response.status(200).json({ token: result.token });
   } catch (error) {
     console.error("Error during login process:", error);
@@ -56,11 +57,11 @@ router.post("/login/admin", validateLogin, async (request, response) => {
     }
 
     const { username, password } = request.body;
-    console.log(`Admin ${username} starts the login process`);
+    console.info(`Admin ${username} starts the login process`);
 
     const result = await UserService.loginAdmin(username, password);
 
-    console.log(`Authentication success for admin, 200`);
+    console.info(`Authentication success for admin, 200`);
     response.status(200).json({ token: result.token });
   } catch (error) {
     console.error("Error during admin login process:", error);
@@ -114,11 +115,11 @@ router.post("/register", tokenUtils.verifyToken, async (request, response) => {
 router.get("/getUsersQualify/:seasonId?", tokenUtils.verifyToken, async (req, res) => {
   try {
     const seasonId = req.params.seasonId ? parseInt(req.params.seasonId) : null;
-    console.log(`Getting user classification for season ${seasonId || 'active'}`);
+    console.info(`Getting user classification for season ${seasonId || 'active'}`);
 
     const classification = await UserService.getUserClassification(seasonId);
 
-    console.log(`Qualification list obtained successfully`);
+    console.info(`Qualification list obtained successfully`);
     res.status(200).json(classification);
   } catch (error) {
     console.error("Error getting user classification:", error);
@@ -135,11 +136,11 @@ router.get("/getUsersQualify/:seasonId?", tokenUtils.verifyToken, async (req, re
  */
 router.get("/getAllUsers", tokenUtils.verifyToken, async (req, res) => {
   try {
-    console.log("Getting all users with stats");
+    console.info("Getting all users with stats");
 
     const users = await UserService.getAllUsersWithStats();
 
-    console.log(`Users obtained successfully`);
+    console.info(`Users obtained successfully`);
     res.status(200).json(users);
   } catch (error) {
     console.error("Error getting all users:", error);
@@ -204,21 +205,56 @@ router.post("/editProfile", tokenUtils.verifyToken, async (req, res) => {
 router.get("/bingoLine/:seasonId?", tokenUtils.verifyToken, async (req, res) => {
   try {
     const seasonId = req.params.seasonId ? parseInt(req.params.seasonId) : null;
-    console.log(`Getting bingo line for season ${seasonId || 'active'}`);
+    console.info(`Getting bingo line for season ${seasonId || 'active'}`);
 
-    // Get active season if not specified
-    let targetSeasonId = seasonId;
-    if (!targetSeasonId) {
-      const activeSeason = await SeasonService.getActiveSeason();
-      targetSeasonId = activeSeason.id;
-    }
+    // Get line progress to show which users are closest to completing a line
+    const lineProgress = await UserService.getUserLineProgress(seasonId);
 
-    // Get classification to have all users and numbers
-    const classification = await UserService.getUserClassification(targetSeasonId);
-
-    res.status(200).json(classification);
+    res.status(200).json(lineProgress);
   } catch (error) {
     console.error("Error getting bingo line:", error);
+    if (error.message === "No active season found") {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+});
+
+/**
+ * Get all line winners (historical list)
+ */
+router.get("/lineWinners/:seasonId?", tokenUtils.verifyToken, async (req, res) => {
+  try {
+    const seasonId = req.params.seasonId ? parseInt(req.params.seasonId) : null;
+    console.info(`Getting all line winners for season ${seasonId || 'active'}`);
+
+    const lineWinners = await UserService.getAllLineWinners(seasonId);
+
+    res.status(200).json(lineWinners);
+  } catch (error) {
+    console.error("Error getting line winners:", error);
+    if (error.message === "No active season found") {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+});
+
+/**
+ * Get all bingo winners (historical list)
+ */
+router.get("/bingoWinners/:seasonId?", tokenUtils.verifyToken, async (req, res) => {
+  try {
+    const seasonId = req.params.seasonId ? parseInt(req.params.seasonId) : null;
+    console.info(`Getting all bingo winners for season ${seasonId || 'active'}`);
+
+    const bingoWinners = await UserService.getAllBingoWinners(seasonId);
+
+    res.status(200).json(bingoWinners);
+  } catch (error) {
+    console.error("Error getting bingo winners:", error);
     if (error.message === "No active season found") {
       res.status(404).json({ error: error.message });
     } else {
@@ -250,7 +286,7 @@ router.get("/isDayNumberAdded", tokenUtils.verifyToken, async (req, res) => {
  */
 router.get("/season/active", tokenUtils.verifyToken, async (req, res) => {
   try {
-    console.log("Getting active season");
+    console.info("Getting active season");
 
     const season = await SeasonService.getActiveSeason();
 
@@ -270,7 +306,7 @@ router.get("/season/active", tokenUtils.verifyToken, async (req, res) => {
  */
 router.get("/season", tokenUtils.verifyToken, async (req, res) => {
   try {
-    console.log("Getting all seasons");
+    console.info("Getting all seasons");
 
     const seasons = await SeasonService.getAllSeasons();
 
@@ -337,6 +373,28 @@ router.put("/season/activate/:id", tokenUtils.verifyToken, async (req, res) => {
   } catch (error) {
     console.error("Error activating season:", error);
     if (error.message === "Season not found") {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+});
+
+/**
+ * Get season winners (line and bingo)
+ * Optional seasonId parameter
+ */
+router.get("/winners/:seasonId?", tokenUtils.verifyToken, async (req, res) => {
+  try {
+    const seasonId = req.params.seasonId ? parseInt(req.params.seasonId) : null;
+    console.info(`Getting winners for season ${seasonId || 'active'}`);
+
+    const winners = await WinnerService.getSeasonWinners(seasonId);
+
+    res.status(200).json(winners);
+  } catch (error) {
+    console.error("Error getting winners:", error);
+    if (error.message === "No active season found") {
       res.status(404).json({ error: error.message });
     } else {
       res.status(500).json({ error: "Internal server error" });

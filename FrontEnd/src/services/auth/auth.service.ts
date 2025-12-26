@@ -47,18 +47,18 @@ export class AuthService {
   login(userName: string, password: string) {
     //
     // Set user as not logged and status to logging-in
-    console.log('Starting login process...');
+    console.info('Starting login process...');
     this.logedSubject.next(false);
     this.logginInSubject.next(true);
     //
     // Request API login
     this.loginService.requestLogin(userName, password).then((response: any) => {
-      console.log('Login successful, response:', response);
+      console.info('Login successful, response:', response);
       // User has access. Set user as logged
       localStorage.setItem('isUserLoggedIn', "true");
       //
       // Set user as logged and status to not logging-in
-      console.log('Emitting logged=true');
+      console.info('Emitting logged=true');
       this.logginInSubject.next(false);
       this.logedSubject.next(true);
     }).catch((error: any) => {

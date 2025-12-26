@@ -30,24 +30,24 @@ export class LoginPage implements OnInit {
 
     //Subscribe to login service
     this.authService.logginInObservable$.subscribe((data: boolean) => {
-      console.log('LoggingIn status:', data);
+      console.info('LoggingIn status:', data);
       this.loading = data;
 
     });
     //
     // Subscribe to login status
     this.authService.logedObservable$.subscribe(async (data: boolean) => {
-      console.log('Logged status changed:', data);
+      console.info('Logged status changed:', data);
       // Solo redirigir cuando data es true
       if (data === true) {
         // Check if user has already entered today's number
         try {
           const hasEnteredNumber = await this.userService.checkDayNumber();
           if (hasEnteredNumber) {
-            console.log('User has entered number, redirecting to /user/dashboard');
+            console.info('User has entered number, redirecting to /user/dashboard');
             this.router.navigate(['/user/dashboard']);
           } else {
-            console.log('User has not entered number, redirecting to /user/number');
+            console.info('User has not entered number, redirecting to /user/number');
             this.router.navigate(['/user/number']);
           }
         } catch (error) {

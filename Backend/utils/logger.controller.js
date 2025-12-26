@@ -9,7 +9,7 @@ const winston = require('winston');
 var util = require('util');
 require('winston-daily-rotate-file');
 //
-// Custom formatter to replicate console.log behaviour
+// Custom formatter to replicate console.info behaviour
 const combineMessageAndSplat = winston.format((info, opts) => {
     //
     // combine message and args if any
@@ -85,7 +85,7 @@ function initLogger() {
     console.verbose = function (msg, contextID) { logger.log('verbose', { msg: msg, context: contextID }) };
     console.http = function (msg, contextID) { logger.log('http', { msg: msg, context: contextID }) };
     console.info = function (msg, contextID) { logger.log('info', { msg: msg, context: contextID }) };
-    //console.log = function(  ) { logger.log( 'info' , msg ) };
+    //console.info = function(  ) { logger.log( 'info' , msg ) };
     console.warn = function (msg, contextID) { logger.log('warn', { msg: msg, context: contextID }) };
     console.error = function (msg, contextID) { logger.log('error', { msg: msg, context: contextID }) };
 }

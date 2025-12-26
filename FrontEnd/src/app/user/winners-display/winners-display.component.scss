@@ -1,0 +1,393 @@
+// ========================================
+// WINNERS DISPLAY - GLASSMORPHISM DESIGN
+// ========================================
+
+.winners-container {
+  width: 100%;
+}
+
+// Loading State
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-12) var(--spacing-4);
+  color: var(--text-tertiary);
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--glass-border);
+    border-top-color: var(--color-primary-400);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: var(--spacing-4);
+  }
+
+  p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+  }
+}
+
+// Error State
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-8) var(--spacing-4);
+  color: var(--color-danger);
+  text-align: center;
+
+  i {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-3);
+    opacity: 0.8;
+  }
+
+  p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+  }
+}
+
+// Winners Grid
+.winners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-6);
+  animation: fadeInUp 0.5s var(--ease-out);
+}
+
+// Winner Card
+.winner-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-xl);
+  overflow: hidden;
+  transition: all var(--transition-base) var(--ease-out);
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+  }
+
+  &.line-winner {
+    .card-header {
+      background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+    }
+    
+    .trophy-icon {
+      color: var(--color-warning);
+    }
+  }
+
+  &.bingo-winner {
+    .card-header {
+      background: linear-gradient(135deg, var(--color-success-500) 0%, var(--color-success-600) 100%);
+    }
+    
+    .trophy-icon {
+      color: var(--color-warning);
+    }
+  }
+}
+
+// Card Header
+.card-header {
+  padding: var(--spacing-4);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    animation: shine 3s infinite;
+  }
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    position: relative;
+    z-index: 1;
+
+    i {
+      font-size: var(--font-size-lg);
+    }
+
+    h3 {
+      margin: 0;
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+    }
+  }
+
+  .trophy-icon {
+    font-size: var(--font-size-2xl);
+    position: relative;
+    z-index: 1;
+    animation: float 3s ease-in-out infinite;
+  }
+}
+
+// Card Body
+.card-body {
+  padding: var(--spacing-6);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+// Winner Info
+.winner-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--spacing-4);
+}
+
+.avatar-container {
+  position: relative;
+  margin-bottom: var(--spacing-2);
+
+  .winner-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: var(--border-radius-full);
+    object-fit: cover;
+    border: 4px solid var(--glass-border);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base) var(--ease-out);
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-lg);
+    }
+  }
+
+  .winner-badge {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--color-warning) 0%, var(--color-secondary-400) 100%);
+    border-radius: var(--border-radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: var(--font-size-base);
+    border: 3px solid var(--bg-primary);
+    box-shadow: var(--shadow-sm);
+    animation: pulse 2s ease-in-out infinite;
+
+    &.bingo {
+      background: linear-gradient(135deg, var(--color-success) 0%, var(--color-primary-400) 100%);
+    }
+  }
+}
+
+.winner-details {
+  width: 100%;
+
+  .winner-name {
+    margin: 0 0 var(--spacing-1) 0;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .winner-username {
+    margin: 0 0 var(--spacing-3) 0;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .achievement-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+    padding: var(--spacing-3);
+    background: var(--glass-bg-strong);
+    border-radius: var(--border-radius-base);
+    margin-bottom: var(--spacing-3);
+
+    .achievement-label {
+      font-size: var(--font-size-xs);
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .achievement-value {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-extrabold);
+      color: var(--color-primary-400);
+      font-family: var(--font-family-heading);
+    }
+  }
+
+  .date-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    padding: var(--spacing-2);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-base);
+
+    i {
+      color: var(--color-primary-400);
+    }
+  }
+}
+
+// No Winner State
+.no-winner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-8) var(--spacing-4);
+  text-align: center;
+  color: var(--text-tertiary);
+
+  i {
+    font-size: var(--font-size-4xl);
+    margin-bottom: var(--spacing-3);
+    opacity: 0.5;
+    animation: rotate 4s linear infinite;
+  }
+
+  p {
+    margin: 0 0 var(--spacing-2) 0;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+  }
+
+  .hint {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    font-style: italic;
+  }
+}
+
+// ========================================
+// ANIMATIONS
+// ========================================
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: var(--shadow-sm);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.3);
+  }
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ========================================
+// RESPONSIVE
+// ========================================
+@media (max-width: 768px) {
+  .winners-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-4);
+  }
+
+  .card-body {
+    padding: var(--spacing-4);
+  }
+
+  .avatar-container {
+    .winner-avatar {
+      width: 80px;
+      height: 80px;
+    }
+
+    .winner-badge {
+      width: 30px;
+      height: 30px;
+      font-size: var(--font-size-sm);
+    }
+  }
+
+  .winner-details {
+    .winner-name {
+      font-size: var(--font-size-lg);
+    }
+
+    .achievement-info {
+      .achievement-value {
+        font-size: var(--font-size-xl);
+      }
+    }
+  }
+}

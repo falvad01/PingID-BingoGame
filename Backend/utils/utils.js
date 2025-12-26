@@ -19,7 +19,7 @@ function dateToEpoch(thedate) {
  * @returns
  */
 function compressImage(base64ImageWithPrefix, newX, newY) {
-  console.log("Resizing image");
+  console.info("Resizing image");
 
   return new Promise((resolve, reject) => {
     // Eliminar el prefijo de la cadena base64
@@ -41,13 +41,13 @@ function compressImage(base64ImageWithPrefix, newX, newY) {
 function isBase64Image(base64) {
   // Remover el prefijo data: si existe
   const base64Data = base64.replace(/^data:image\/\w+;base64,/, '');
-  
+
   // Decodificar la cadena base64 en un buffer
   const buffer = Buffer.from(base64Data, 'base64');
-  
+
   // Leer los primeros bytes (magic number) para identificar el tipo de archivo
   const magicNumber = buffer.toString('hex', 0, 4).toUpperCase();
-  
+
   // Comparar el magic number con tipos de imágenes conocidos
   const imageHeaders = {
     JPEG: 'FFD8FF',

@@ -51,22 +51,22 @@ export class DashboardComponent implements OnInit {
   async loadDashboardData() {
     try {
       this.loading = true;
-      console.log('Loading dashboard data...');
+      console.info('Loading dashboard data...');
 
       // Get active season first
       this.seasonService.getActiveSeason().subscribe({
         next: async (season) => {
           this.activeSeasonId = season.id;
-          console.log('Active season:', season);
+          console.info('Active season:', season);
 
           // Load user numbers statistics for active season
           const numbers: any = await this.numberService.retrieveAllUserNumbers(this.activeSeasonId);
-          console.log('Retrieved numbers:', numbers);
+          console.info('Retrieved numbers:', numbers);
 
           if (numbers && Array.isArray(numbers)) {
             // Filter out numbers with count 0 (numbers the user has never received)
             const userNumbers = numbers.filter((n: any) => n.count > 0);
-            console.log('User numbers (filtered):', userNumbers);
+            console.info('User numbers (filtered):', userNumbers);
 
             // Calculate unique numbers (only numbers that the user has at least once)
             this.stats.uniqueNumbers = userNumbers.length;
@@ -101,7 +101,7 @@ export class DashboardComponent implements OnInit {
               this.stats.todayNumber = todayNumber;
             }
 
-            console.log('Dashboard stats calculated:', this.stats);
+            console.info('Dashboard stats calculated:', this.stats);
           } else {
             console.warn('No numbers data or invalid format:', numbers);
           }

@@ -92,7 +92,7 @@ export class NewNumberComponent implements OnInit {
       return;
     }
 
-    console.log("openDialog")
+    console.info("openDialog")
     this.showModal = true;
     this.status = STATUS.PREPARATION
     this.header = '¡Cuidadin!';
@@ -104,7 +104,7 @@ export class NewNumberComponent implements OnInit {
    * Send the number to the API
    */
   sendNumber(): void {
-    console.log("sendNumber")
+    console.info("sendNumber")
     if (this.status == STATUS.PREPARATION) {
       // Prevent multiple submissions
       if (this.sending) {
@@ -114,7 +114,7 @@ export class NewNumberComponent implements OnInit {
       const regex = /^([1-9]|[1-9]\d)$/;
 
       if (regex.test(this.inputNumber)) {
-        console.log('El número es un número natural entre 1 y 99');
+        console.info('El número es un número natural entre 1 y 99');
         this.sending = true; // Set flag to prevent multiple clicks
 
         this.numberService.requestSendNumber(this.inputNumber).then((response: any) => {
@@ -127,7 +127,7 @@ export class NewNumberComponent implements OnInit {
 
         }).catch((error: any) => {
           this.sending = false;
-          console.log(error);
+          console.info(error);
           if (error.status == 469) {
             this.status = STATUS.ERROR
             this.header = 'A donde vas, espabilad@';
@@ -141,7 +141,7 @@ export class NewNumberComponent implements OnInit {
           }
         });
       } else {
-        console.log('El número no es un número natural entre 1 y 99');
+        console.info('El número no es un número natural entre 1 y 99');
         this.status = STATUS.ERROR
         this.header = 'A donde vas, espabilad@';
         this.subheader = 'El número tiene que estar entre el 1 y el 99';
@@ -163,7 +163,7 @@ export class NewNumberComponent implements OnInit {
 
   @HostListener('document:keydown.enter', ['$event'])
   handleEnterKey(event: KeyboardEvent) {
-    console.log(this.status)
+    console.info(this.status)
 
     if (this.inputNumber) {
       if (this.status == STATUS.PREPARATION) {

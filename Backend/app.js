@@ -7,9 +7,10 @@ const https = require("https");
 const fs = require("fs");
 const path = require("path");
 const sec = require("./utils/Securitation");
-const logger = require("./utils/logger");
+const logger = require("./utils/logger.controller");
 const bodyParser = require("body-parser");
 const dbCreation = require("./database/DBCreation");
+logger.initLogger();
 
 // Especificar el puerto y la dirección en la que escuchar
 const port = process.env.API_HTTP_PORT || 80;
@@ -31,6 +32,7 @@ sec.securization(app);
 const userRoutes = require("./routes/user");
 const numberRoutes = require("./routes/number");
 const adminRoutes = require("./routes/admin");
+const { console } = require("inspector");
 
 // Usar las rutas
 app.use(express.json({ limit: "1gb" }));
@@ -59,13 +61,13 @@ sequelize
     startServer();
   })
   .catch((err) => {
-    logger.error("Unable to connect to the database:", err);
+    console.error("Unable to connect to the database:", err);
   });
 
 // Función para iniciar el servidor
 function startServer() {
 
-  logger.info("Connection to the database has been established successfully.");
+  console.info("Connection to the database has been established successfully.");
   dbCreation.createDB().then(async () => {
     // Iniciar el servidor HTTP
     http.createServer(app).listen(port, "0.0.0.0", () => {
@@ -73,9 +75,9 @@ function startServer() {
     });
 
     // Iniciar el servidor HTTPS (si está habilitado)
-    // console.log("Https:" + process.env.USE_HTTPS);
-    // console.log("Private:" + privateKey);
-    // console.log("Certificate:" + certificate);
+    // console.info("Https:" + process.env.USE_HTTPS);
+    // console.info("Private:" + privateKey);
+    // console.info("Certificate:" + certificate);
 
     if (process.env.USE_HTTPS && certificate && privateKey) {
       https.createServer(credentials, app).listen(sport, "0.0.0.0", () => {

@@ -26,19 +26,19 @@ export class ClasificationComponent {
    * Get the user clasification
    */
   private async getUsersQualy() {
-    console.log("Starting collecting user data")
+    console.info("Starting collecting user data")
 
     // Get active season first
     this.seasonService.getActiveSeason().subscribe({
       next: async (season) => {
         this.activeSeasonId = season.id;
-        console.log('Active season:', season);
+        console.info('Active season:', season);
 
         // Get classification for active season
         this.userService.getUserClasification(this.activeSeasonId).then(data => {
-          console.log('Classification data received:', data);
-          console.log('Is array?', Array.isArray(data));
-          console.log('Data length:', Array.isArray(data) ? data.length : 'not an array');
+          console.info('Classification data received:', data);
+          console.info('Is array?', Array.isArray(data));
+          console.info('Data length:', Array.isArray(data) ? data.length : 'not an array');
           this.processData(data);
         }).catch(error => {
           console.error('Error retrieving user numbers:', error);
@@ -63,7 +63,7 @@ export class ClasificationComponent {
         profile_image: this.getImageUrl(item.profile_image),
         daysSinceLastEntry: this.getLastDayText(item.daysSinceLastEntry)
       }));
-      console.log('tableData after processing:', this.tableData);
+      console.info('tableData after processing:', this.tableData);
     } else {
       console.error('Response is not an array:', data);
     }

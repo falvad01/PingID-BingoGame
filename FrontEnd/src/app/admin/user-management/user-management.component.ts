@@ -30,11 +30,11 @@ export class UserManagementComponent implements OnInit {
      * Load all users
      */
     loadUsers() {
-        console.log('Loading users...');
+        console.info('Loading users...');
         this.loading = true;
         this.userService.getAllUsers().subscribe({
             next: (users) => {
-                console.log('Users loaded:', users);
+                console.info('Users loaded:', users);
                 this.users = users;
                 this.loading = false;
             },
@@ -77,7 +77,7 @@ export class UserManagementComponent implements OnInit {
         this.loading = true;
         this.userService.createUser(this.newUser).subscribe({
             next: (response) => {
-                console.log('User created:', response);
+                console.info('User created:', response);
                 alert('User created successfully');
                 this.loadUsers();
                 this.resetForm();

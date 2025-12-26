@@ -45,7 +45,7 @@ export class NumberStadisticsComponent implements OnInit {
     this.seasonService.getActiveSeason().subscribe({
       next: (season) => {
         this.activeSeasonId = season.id;
-        console.log('Active season:', season);
+        console.info('Active season:', season);
 
         // Load statistics for active season
         this.numberService.getStadistics(this.activeSeasonId).then((data: any) => {
@@ -57,13 +57,26 @@ export class NumberStadisticsComponent implements OnInit {
         })
 
         this.userService.getLineRemaining(this.activeSeasonId).then((data: any) => {
-          console.log('Line remaining data:', data);
+          console.info('Line remaining data:', data);
 
           if (data && data.length > 0) {
             this.firstLineName = data[0]?.username || "N/A"
-            this.firstLineSubtext = data[0]?.fewestMissingLine
-              ? "Línea " + data[0].fewestMissingLine.line + ", números restantes " + data[0].fewestMissingLine.missingCount
-              : "Sin datos"
+            if (data[0]?.fewestMissingLine) {
+              if (data[0].fewestMissingLine.missingCount === 0 && data[0].fewestMissingLine.completedAt) {
+                // Line is complete, show line and completion date
+                const date = new Date(data[0].fewestMissingLine.completedAt);
+                this.firstLineSubtext = "Línea " + data[0].fewestMissingLine.line + ", completada el " + date.toLocaleDateString('es-ES', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                });
+              } else {
+                // Line not complete, show remaining numbers
+                this.firstLineSubtext = "Línea " + data[0].fewestMissingLine.line + ", números restantes " + data[0].fewestMissingLine.missingCount;
+              }
+            } else {
+              this.firstLineSubtext = "Sin datos";
+            }
           } else {
             this.firstLineName = "N/A"
             this.firstLineSubtext = "Sin datos"
@@ -71,9 +84,20 @@ export class NumberStadisticsComponent implements OnInit {
 
           if (data && data.length > 1) {
             this.secondLineName = data[1]?.username || "N/A"
-            this.secondLineSubtext = data[1]?.fewestMissingLine
-              ? "Línea " + data[1].fewestMissingLine.line + ", números restantes " + data[1].fewestMissingLine.missingCount
-              : "Sin datos"
+            if (data[1]?.fewestMissingLine) {
+              if (data[1].fewestMissingLine.missingCount === 0 && data[1].fewestMissingLine.completedAt) {
+                const date = new Date(data[1].fewestMissingLine.completedAt);
+                this.secondLineSubtext = "Línea " + data[1].fewestMissingLine.line + ", completada el " + date.toLocaleDateString('es-ES', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                });
+              } else {
+                this.secondLineSubtext = "Línea " + data[1].fewestMissingLine.line + ", números restantes " + data[1].fewestMissingLine.missingCount;
+              }
+            } else {
+              this.secondLineSubtext = "Sin datos";
+            }
           } else {
             this.secondLineName = "N/A"
             this.secondLineSubtext = "Sin datos"
@@ -81,9 +105,20 @@ export class NumberStadisticsComponent implements OnInit {
 
           if (data && data.length > 2) {
             this.thirdLineName = data[2]?.username || "N/A"
-            this.thirdLineSubtext = data[2]?.fewestMissingLine
-              ? "Línea " + data[2].fewestMissingLine.line + ", números restantes " + data[2].fewestMissingLine.missingCount
-              : "Sin datos"
+            if (data[2]?.fewestMissingLine) {
+              if (data[2].fewestMissingLine.missingCount === 0 && data[2].fewestMissingLine.completedAt) {
+                const date = new Date(data[2].fewestMissingLine.completedAt);
+                this.thirdLineSubtext = "Línea " + data[2].fewestMissingLine.line + ", completada el " + date.toLocaleDateString('es-ES', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                });
+              } else {
+                this.thirdLineSubtext = "Línea " + data[2].fewestMissingLine.line + ", números restantes " + data[2].fewestMissingLine.missingCount;
+              }
+            } else {
+              this.thirdLineSubtext = "Sin datos";
+            }
           } else {
             this.thirdLineName = "N/A"
             this.thirdLineSubtext = "Sin datos"
@@ -93,7 +128,7 @@ export class NumberStadisticsComponent implements OnInit {
         })
 
         this.userService.getUserClasification(this.activeSeasonId).then((data: any) => {
-          console.log('User classification data:', data);
+          console.info('User classification data:', data);
 
           if (data && data.length > 0) {
             this.firstBingoName = data[0]?.username || "N/A"

@@ -21,6 +21,8 @@ import { ClasificationComponent } from "../clasification/clasification.component
 import { DataComponent } from '../data/data.component';
 import { HistoricalViewComponent } from '../historical-view/historical-view.component';
 import { CountdownModule } from 'ngx-countdown';
+import { WinnersDisplayComponent } from '../winners-display/winners-display.component';
+
 
 
 
@@ -37,7 +39,8 @@ import { CountdownModule } from 'ngx-countdown';
     ClasificationComponent,
     DataComponent,
     CountdownModule,
-    NumberTableComponent
+    NumberTableComponent,
+    WinnersDisplayComponent
 
   ],
   declarations: [

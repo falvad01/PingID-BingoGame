@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SeasonService, Season } from 'src/app/services/season.service';
+import { UserService } from 'src/services/user/user.service';
 
 @Component({
   selector: 'app-historical-view',
@@ -16,8 +17,13 @@ export class HistoricalViewComponent implements OnInit {
   usersQualify: any[] = [];
   statistics: any = null;
   bingoLine: any[] = [];
+  lineWinners: any[] = [];
+  bingoWinners: any[] = [];
 
-  constructor(private seasonService: SeasonService) { }
+  constructor(
+    private seasonService: SeasonService,
+    private userService: UserService
+  ) { }
 
   ngOnInit(): void {
     this.loadSeasons();
@@ -31,7 +37,7 @@ export class HistoricalViewComponent implements OnInit {
     this.seasonService.getAllSeasons().subscribe({
       next: (seasons) => {
         this.seasons = seasons;
-        console.log('Seasons loaded:', seasons); // Debug log
+        console.info('Seasons loaded:', seasons); // Debug log
         this.loading = false;
 
         // Auto-select the first season if available
@@ -91,6 +97,22 @@ export class HistoricalViewComponent implements OnInit {
         this.loading = false;
       }
     });
+
+    // Load line winners (historical list)
+    this.userService.getLineWinners(this.selectedSeasonId).then((data: any) => {
+      this.lineWinners = data;
+      console.info('Line winners loaded:', data);
+    }).catch(error => {
+      console.error('Error loading line winners:', error);
+    });
+
+    // Load bingo winners (historical list)
+    this.userService.getBingoWinners(this.selectedSeasonId).then((data: any) => {
+      this.bingoWinners = data;
+      console.info('Bingo winners loaded:', data);
+    }).catch(error => {
+      console.error('Error loading bingo winners:', error);
+    });
   }
 
   /**
@@ -99,5 +121,27 @@ export class HistoricalViewComponent implements OnInit {
   getSelectedSeasonName(): string {
     const season = this.seasons.find(s => s.id === this.selectedSeasonId);
     return season ? season.name : '';
+  }
+
+  /**
+   * Format date for display
+   */
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  }
+
+  /**
+   * Get profile image URL
+   */
+  getImageUrl(profileImage: string): string {
+    if (!profileImage) {
+      return 'assets/avatarVoid.png';
+    }
+    return profileImage;
   }
 }

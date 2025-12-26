@@ -78,4 +78,18 @@ export class UserService {
         // TODO: Implement when backend endpoint is available
         return this.http.delete(`${this.apiUrl}/user/delete/${userId}`, { headers });
     }
+
+    /**
+     * Get season winners (line and bingo)
+     */
+    getSeasonWinners(seasonId?: number): Observable<any> {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`
+        });
+        const endpoint = seasonId
+            ? `${this.apiUrl}/user/winners/${seasonId}`
+            : `${this.apiUrl}/user/winners`;
+        return this.http.get(endpoint, { headers });
+    }
 }

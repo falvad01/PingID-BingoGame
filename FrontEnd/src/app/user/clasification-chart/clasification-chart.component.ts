@@ -26,7 +26,7 @@ export class ClasificationChartComponent {
    * Logs an error if the data retrieval fails.
    */
   private async getUsersQualy() {
-    console.log("Starting collecting user data");
+    console.info("Starting collecting user data");
 
     this.userService.getUserClasification()
       .then(data => {

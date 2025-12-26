@@ -376,6 +376,404 @@ class UserService {
             throw error;
         }
     }
+
+    /**
+     * Get players sorted by their progress towards completing a line
+     * Returns top players with their best line (line with fewest missing numbers)
+     * @param {number} seasonId - Optional, if null uses active season
+     * @returns {Promise<Array>} - Array of users with their line progress
+     */
+    async getUserLineProgress(seasonId = null) {
+        try {
+            // Get active season if not specified
+            let targetSeasonId = seasonId;
+            if (!targetSeasonId) {
+                const activeSeason = await SeasonDAO.getActiveSeason();
+                if (!activeSeason) {
+                    throw new Error("No active season found");
+                }
+                targetSeasonId = activeSeason.id;
+            }
+
+            // Get users and numbers
+            const users = await UserDAO.getAllUsersWithAttributes([
+                "id", "username", "name_surname", "profile_image", "administrator"
+            ]);
+
+            const numbersFilter = { seasonId: targetSeasonId };
+            const numbers = await NumberDAO.getAllNumbers(numbersFilter);
+
+            // Build user data map with their numbers
+            const userData = {};
+            users.forEach(user => {
+                const userDataValues = user.get({ plain: true });
+                const { id, ...userWithoutId } = userDataValues;
+                userData[id] = {
+                    ...userWithoutId,
+                    numbers: new Set() // Use Set for faster lookups
+                };
+            });
+
+            // Organize numbers by user and track timestamps
+            const numbersByUser = {};
+            users.forEach(user => {
+                numbersByUser[user.id] = [];
+            });
+
+            numbers.forEach(numberObj => {
+                const userId = numberObj.user_id;
+                if (numbersByUser[userId]) {
+                    numbersByUser[userId].push({
+                        number: numberObj.number,
+                        timestamp: numberObj.created_at
+                    });
+                }
+            });
+
+            // Calculate line progress for each user
+            const usersWithLineProgress = [];
+            Object.keys(userData).forEach(userId => {
+                const data = userData[userId];
+                const userNumbers = numbersByUser[userId] || [];
+
+                // Only include users with at least one number
+                if (userNumbers.length === 0) {
+                    return;
+                }
+
+                // Sort numbers chronologically
+                userNumbers.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+                // Track which numbers we have and when each line was completed
+                const numbersSet = new Set();
+                const lineCompletionDates = {};
+
+                // Process numbers chronologically to find when lines were completed
+                userNumbers.forEach(({ number, timestamp }) => {
+                    numbersSet.add(number);
+
+                    // Check if this number completed any line
+                    const decadeStart = Math.floor(number / 10) * 10;
+                    if (decadeStart >= 10 && decadeStart <= 90) {
+                        // Check if this decade is now complete
+                        let isComplete = true;
+                        for (let i = decadeStart; i < decadeStart + 10; i++) {
+                            if (!numbersSet.has(i)) {
+                                isComplete = false;
+                                break;
+                            }
+                        }
+
+                        // If complete and not yet recorded, record the completion date
+                        if (isComplete && !lineCompletionDates[`${decadeStart}-${decadeStart + 9}`]) {
+                            lineCompletionDates[`${decadeStart}-${decadeStart + 9}`] = timestamp;
+                        }
+                    }
+                });
+
+                // Find the line (decade) with fewest missing numbers
+                // If multiple lines are complete (0 missing), choose the one completed first
+                let bestLine = null;
+                let fewestMissing = 10; // Max missing is 10
+                let earliestCompletionDate = null;
+
+                // Check each decade from 10-19, 20-29, ..., 90-99
+                for (let decadeStart = 10; decadeStart <= 90; decadeStart += 10) {
+                    let missingCount = 0;
+                    let missingNumbers = [];
+
+                    for (let i = decadeStart; i < decadeStart + 10; i++) {
+                        if (!numbersSet.has(i)) {
+                            missingCount++;
+                            missingNumbers.push(i);
+                        }
+                    }
+
+                    const lineKey = `${decadeStart}-${decadeStart + 9}`;
+                    const completionDate = lineCompletionDates[lineKey];
+
+                    // Update bestLine if:
+                    // 1. This line has fewer missing numbers, OR
+                    // 2. Same missing count but completed earlier (for completed lines)
+                    if (missingCount < fewestMissing ||
+                        (missingCount === fewestMissing && missingCount === 0 && completionDate &&
+                            (!earliestCompletionDate || new Date(completionDate) < new Date(earliestCompletionDate)))) {
+
+                        fewestMissing = missingCount;
+                        earliestCompletionDate = completionDate;
+                        bestLine = {
+                            line: lineKey,
+                            missingCount: missingCount,
+                            missingNumbers: missingNumbers,
+                            completedAt: completionDate || null
+                        };
+                    }
+                }
+
+                usersWithLineProgress.push({
+                    username: data.username,
+                    name_surname: data.name_surname,
+                    profile_image: data.profile_image,
+                    administrator: data.administrator,
+                    numberCount: numbersSet.size,
+                    fewestMissingLine: bestLine
+                });
+            });
+
+            // Sort by fewest missing numbers in best line (ascending)
+            // For completed lines (0 missing), sort by earliest completion date
+            // Then by total numbers (descending)
+            usersWithLineProgress.sort((a, b) => {
+                // First, sort by missing count (fewer is better)
+                if (a.fewestMissingLine.missingCount !== b.fewestMissingLine.missingCount) {
+                    return a.fewestMissingLine.missingCount - b.fewestMissingLine.missingCount;
+                }
+
+                // If both have completed lines (0 missing), sort by completion date (earlier is better)
+                if (a.fewestMissingLine.missingCount === 0 && b.fewestMissingLine.missingCount === 0) {
+                    const dateA = a.fewestMissingLine.completedAt ? new Date(a.fewestMissingLine.completedAt) : null;
+                    const dateB = b.fewestMissingLine.completedAt ? new Date(b.fewestMissingLine.completedAt) : null;
+
+                    if (dateA && dateB) {
+                        return dateA - dateB; // Earlier date first
+                    }
+                }
+
+                // Finally, sort by total number count (more is better)
+                return b.numberCount - a.numberCount;
+            });
+
+            console.info(`[getUserLineProgress] Returning ${usersWithLineProgress.length} users with line progress`);
+            if (usersWithLineProgress.length > 0) {
+                console.info(`[getUserLineProgress] Top 3:`, usersWithLineProgress.slice(0, 3).map(u => ({
+                    username: u.username,
+                    line: u.fewestMissingLine.line,
+                    missing: u.fewestMissingLine.missingCount
+                })));
+            }
+
+            return usersWithLineProgress;
+        } catch (error) {
+            console.error("Error in UserService.getUserLineProgress:", error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get all players who have completed at least one line
+     * @param {number} seasonId - Optional, if null uses active season
+     * @returns {Promise<Array>} - Array of all line winners sorted by completion date
+     */
+    async getAllLineWinners(seasonId = null) {
+        try {
+            // Get active season if not specified
+            let targetSeasonId = seasonId;
+            if (!targetSeasonId) {
+                const activeSeason = await SeasonDAO.getActiveSeason();
+                if (!activeSeason) {
+                    throw new Error("No active season found");
+                }
+                targetSeasonId = activeSeason.id;
+            }
+
+            // Get users and numbers
+            const users = await UserDAO.getAllUsersWithAttributes([
+                "id", "username", "name_surname", "profile_image", "administrator"
+            ]);
+
+            const numbersFilter = { seasonId: targetSeasonId };
+            const numbers = await NumberDAO.getAllNumbers(numbersFilter);
+
+            // Organize numbers by user with timestamps
+            const numbersByUser = {};
+            users.forEach(user => {
+                numbersByUser[user.id] = {
+                    userData: user.get({ plain: true }),
+                    numbers: []
+                };
+            });
+
+            numbers.forEach(numberObj => {
+                const userId = numberObj.user_id;
+                if (numbersByUser[userId]) {
+                    numbersByUser[userId].numbers.push({
+                        number: numberObj.number,
+                        timestamp: numberObj.created_at
+                    });
+                }
+            });
+
+            // Find all users who completed at least one line
+            const lineWinners = [];
+            Object.keys(numbersByUser).forEach(userId => {
+                const { userData, numbers: userNumbers } = numbersByUser[userId];
+
+                if (userNumbers.length === 0) return;
+
+                // Sort chronologically
+                userNumbers.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+                const numbersSet = new Set();
+                const lineCompletionDates = {};
+
+                // Process to find when lines were completed
+                userNumbers.forEach(({ number, timestamp }) => {
+                    numbersSet.add(number);
+
+                    const decadeStart = Math.floor(number / 10) * 10;
+                    if (decadeStart >= 10 && decadeStart <= 90) {
+                        let isComplete = true;
+                        for (let i = decadeStart; i < decadeStart + 10; i++) {
+                            if (!numbersSet.has(i)) {
+                                isComplete = false;
+                                break;
+                            }
+                        }
+
+                        if (isComplete && !lineCompletionDates[`${decadeStart}-${decadeStart + 9}`]) {
+                            lineCompletionDates[`${decadeStart}-${decadeStart + 9}`] = timestamp;
+                        }
+                    }
+                });
+
+                // If user completed at least one line, add to winners
+                const completedLines = Object.keys(lineCompletionDates);
+                if (completedLines.length > 0) {
+                    // Find the earliest completed line
+                    let earliestLine = null;
+                    let earliestDate = null;
+
+                    completedLines.forEach(line => {
+                        const date = new Date(lineCompletionDates[line]);
+                        if (!earliestDate || date < earliestDate) {
+                            earliestDate = date;
+                            earliestLine = line;
+                        }
+                    });
+
+                    lineWinners.push({
+                        username: userData.username,
+                        name_surname: userData.name_surname,
+                        profile_image: userData.profile_image,
+                        administrator: userData.administrator,
+                        completedLine: earliestLine,
+                        completedAt: lineCompletionDates[earliestLine],
+                        numberCount: numbersSet.size,
+                        totalLinesCompleted: completedLines.length
+                    });
+                }
+            });
+
+            // Sort by completion date (earliest first)
+            lineWinners.sort((a, b) => new Date(a.completedAt) - new Date(b.completedAt));
+
+            console.info(`[getAllLineWinners] Found ${lineWinners.length} line winners`);
+            return lineWinners;
+        } catch (error) {
+            console.error("Error in UserService.getAllLineWinners:", error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get all players who have completed bingo (all 90 numbers)
+     * @param {number} seasonId - Optional, if null uses active season
+     * @returns {Promise<Array>} - Array of all bingo winners sorted by completion date
+     */
+    async getAllBingoWinners(seasonId = null) {
+        try {
+            // Get active season if not specified
+            let targetSeasonId = seasonId;
+            if (!targetSeasonId) {
+                const activeSeason = await SeasonDAO.getActiveSeason();
+                if (!activeSeason) {
+                    throw new Error("No active season found");
+                }
+                targetSeasonId = activeSeason.id;
+            }
+
+            // Get users and numbers
+            const users = await UserDAO.getAllUsersWithAttributes([
+                "id", "username", "name_surname", "profile_image", "administrator"
+            ]);
+
+            const numbersFilter = { seasonId: targetSeasonId };
+            const numbers = await NumberDAO.getAllNumbers(numbersFilter);
+
+            // Organize numbers by user with timestamps
+            const numbersByUser = {};
+            users.forEach(user => {
+                numbersByUser[user.id] = {
+                    userData: user.get({ plain: true }),
+                    numbers: []
+                };
+            });
+
+            numbers.forEach(numberObj => {
+                const userId = numberObj.user_id;
+                if (numbersByUser[userId]) {
+                    numbersByUser[userId].numbers.push({
+                        number: numberObj.number,
+                        timestamp: numberObj.created_at
+                    });
+                }
+            });
+
+            // Find all users who completed bingo
+            const bingoWinners = [];
+            Object.keys(numbersByUser).forEach(userId => {
+                const { userData, numbers: userNumbers } = numbersByUser[userId];
+
+                if (userNumbers.length === 0) return;
+
+                // Sort chronologically
+                userNumbers.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+                const numbersSet = new Set();
+                let bingoCompletedAt = null;
+
+                // Process to find when bingo was completed
+                userNumbers.forEach(({ number, timestamp }) => {
+                    numbersSet.add(number);
+
+                    // Check if this number completed the bingo
+                    if (!bingoCompletedAt && numbersSet.size === 90) {
+                        // Verify all numbers 10-99 are present
+                        let hasAllNumbers = true;
+                        for (let i = 10; i <= 99; i++) {
+                            if (!numbersSet.has(i)) {
+                                hasAllNumbers = false;
+                                break;
+                            }
+                        }
+                        if (hasAllNumbers) {
+                            bingoCompletedAt = timestamp;
+                        }
+                    }
+                });
+
+                // If user completed bingo, add to winners
+                if (bingoCompletedAt) {
+                    bingoWinners.push({
+                        username: userData.username,
+                        name_surname: userData.name_surname,
+                        profile_image: userData.profile_image,
+                        administrator: userData.administrator,
+                        completedAt: bingoCompletedAt
+                    });
+                }
+            });
+
+            // Sort by completion date (earliest first)
+            bingoWinners.sort((a, b) => new Date(a.completedAt) - new Date(b.completedAt));
+
+            console.info(`[getAllBingoWinners] Found ${bingoWinners.length} bingo winners`);
+            return bingoWinners;
+        } catch (error) {
+            console.error("Error in UserService.getAllBingoWinners:", error);
+            throw error;
+        }
+    }
 }
 
 module.exports = new UserService();

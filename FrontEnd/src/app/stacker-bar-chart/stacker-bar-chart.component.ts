@@ -22,7 +22,7 @@ export class StackerBarChartComponent {
   }
 
   ngOnInit(): void {
-    console.log("Starting collectiong user data")
+    console.info("Starting collectiong user data")
 
     this.userService.getUserClasification().then(data => {
       this.createChart(data);
@@ -34,7 +34,7 @@ export class StackerBarChartComponent {
   }
 
   createChart(data: any) {
-    console.log("Starting collecting user data" + data);
+    console.info("Starting collecting user data" + data);
     // Validate that `data` is a non-empty array
     if (!Array.isArray(data) || data.length === 0) {
       console.error('Invalid data provided for chart creation.');

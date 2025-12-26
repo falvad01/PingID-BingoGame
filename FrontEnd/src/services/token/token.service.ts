@@ -55,13 +55,13 @@ export class TokenService {
    * @returns
    */
   decodeToken(token: string) {
-    console.log("Decoding token")
+    console.info("Decoding token")
     //
     // check jwt token
     try {
       const helper = new JwtHelperService();
       const decoded = helper.decodeToken(token);
-      console.log("Decoded token:", decoded)
+      console.info("Decoded token:", decoded)
       //
       this.userName = decoded.username;
       this.userId = decoded.userId;
@@ -71,7 +71,7 @@ export class TokenService {
       this.hasAccess = decoded.allow;
       this.createdAt = decoded.createdAt;
       this.administrator = decoded.administrator == 1; // Check administrator field
-      console.log("Is administrator:", this.administrator);
+      console.info("Is administrator:", this.administrator);
     } catch (error) {
       this.closeSession();
       return;

@@ -9,8 +9,6 @@ const rateLimit = require("express-rate-limit");
 const requestIp = require("request-ip");
 const path = require("path");
 
-const logger = require("./logger");
-
 /**
  * Initialize API securization
  * @param {*} app
@@ -18,11 +16,11 @@ const logger = require("./logger");
 const securization = (app) => {
   //
   // Compressing requests
-  logger.debug("Compressing requests");
+  console.silly("Compressing requests");
   app.use(compression());
   //
   // Add remote IP to request
-  logger.debug("Adding IP to request");
+  console.silly("Adding IP to request");
   app.use((req, res, next) => {
     req.ip = requestIp.getClientIp(req);
     next();
@@ -34,24 +32,24 @@ const securization = (app) => {
   // app.use(ipFilter(ips, { mode: "allow" }));
   //
   // Sessions
-  logger.debug("Configuring sessions");
+  console.silly("Configuring sessions");
   //
 
   //
 
   //
   // Middleware
-  logger.debug("Configuring middleware");
+  console.silly("Configuring middleware");
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   //
   // Securizing headers
-  logger.debug("Securizing headers");
+  console.silly("Securizing headers");
   app.use(cors());
   app.use(helmet());
   //
   // Morgan http logger redirection to winston
-  logger.debug("Logging http requests");
+  console.silly("Logging http requests");
   const stream = {
     // Use the http severity reirected to winston
     write: (message) => logger.http(message.trim()),
@@ -66,11 +64,11 @@ const securization = (app) => {
   );
   app.use(morganMiddleware);
   //
-  logger.debug("Disabling x-powered-by");
+  console.silly("Disabling x-powered-by");
   app.disable("x-powered-by");
   //
   // Rete limiter
-  logger.debug("Limiting request to 1000 per minute per IP");
+  console.silly("Limiting request to 1000 per minute per IP");
   const limiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 15 minutes
     max: 1000, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
