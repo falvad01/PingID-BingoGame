@@ -26,3 +26,4 @@ EXPOSE 443
 ENTRYPOINT ["node", "/app/Backend/app.js"]
 
 #docker build -t djavic/bingoweb:0.4.0 -t djavic/bingoweb:latest .
+#docker build -t djavic/bingoweb:1.0.0 -t djavic/bingoweb:latest .
