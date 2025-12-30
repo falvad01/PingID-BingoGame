@@ -1,0 +1,70 @@
+<div class="extension-download-container">
+    <!-- Compact Header with Download -->
+    <div class="header-section">
+        <div class="title-area">
+            <h1>🏓 Extensión PingID Bingo</h1>
+            <p>Automatiza el envío de tus números al Bingo</p>
+        </div>
+        <div class="download-area">
+            <button class="download-btn" (click)="downloadExtension()">
+                <span class="icon">⬇️</span>
+                Descargar v{{ extensionVersion }}
+            </button>
+            <p class="version-info">{{ extensionFileSize }} • Chrome, Edge, Brave</p>
+        </div>
+    </div>
+
+    <!-- Three Column Layout -->
+    <div class="content-grid">
+        <!-- Features -->
+        <div class="card">
+            <h2>✨ Características</h2>
+            <div class="features-list">
+                <div class="feature" *ngFor="let feature of features">
+                    <span class="icon">{{ feature.icon }}</span>
+                    <div>
+                        <strong>{{ feature.title }}</strong>
+                        <p>{{ feature.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Installation -->
+        <div class="card">
+            <h2>📋 Instalación</h2>
+            <div class="steps-list">
+                <div class="step" *ngFor="let step of installStepsCompact; let i = index">
+                    <span class="num">{{ i + 1 }}</span>
+                    <div>
+                        <strong>{{ step.title }}</strong>
+                        <p>{{ step.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage -->
+        <div class="card">
+            <h2>🚀 Cómo Usar</h2>
+            <div class="usage-content">
+                <div class="usage-step">
+                    <span class="emoji">1️⃣</span>
+                    <p>Autenticarte en la extensión (primera vez)</p>
+                </div>
+                <div class="usage-step">
+                    <span class="emoji">2️⃣</span>
+                    <p>Navegar a PingID</p>
+                </div>
+                <div class="usage-step">
+                    <span class="emoji">3️⃣</span>
+                    <p><strong>¡Automático!</strong> La extensión detecta, verifica y envía el número</p>
+                </div>
+                <div class="usage-step">
+                    <span class="emoji">🎲</span>
+                    <p>Se abre el Bingo en nueva pestaña</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

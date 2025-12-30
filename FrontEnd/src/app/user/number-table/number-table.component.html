@@ -8,7 +8,7 @@
   <div class="numbers-body">
     <div class="numbers-grid">
       <div *ngFor="let num of numbers" class="cell" [ngClass]="getHighlightClass(num.number)"
-        pTooltip="{{getTooltipMessage(num.users)}}" tooltipPosition="top">
+        pTooltip="{{getTooltipMessage(num.users, num.number)}}" tooltipPosition="top">
         <div class="text">{{ num.number }}</div>
         <div *ngIf="num.repetitions > 1" class="tiny-text">
           {{ num.repetitions }}

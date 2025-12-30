@@ -1,6 +1,6 @@
-const numberModel = require("../database/models/number");
-const userModel = require("../database/models/user");
-const seasonModel = require("../database/models/season");
+const numberModel = require("./models/number");
+const userModel = require("./models/user");
+const seasonModel = require("./models/season");
 const { Op } = require("sequelize");
 
 /**
@@ -134,7 +134,7 @@ class NumberDAO {
 
     /**
      * Get all numbers with filters
-     * @param {Object} filters - { seasonId, userId, startDate, endDate, number }
+     * @param {Object} filters - { seasonId, userId, startDate, endDate, number, limit, offset }
      * @returns {Promise<Array>}
      */
     async getAllNumbers(filters = {}) {
@@ -162,7 +162,7 @@ class NumberDAO {
                 }
             }
 
-            return await numberModel.findAll({
+            const queryOptions = {
                 where: whereClause,
                 include: [
                     {
@@ -175,9 +175,56 @@ class NumberDAO {
                     }
                 ],
                 order: [["created_at", "DESC"]]
-            });
+            };
+
+            // Add pagination if specified
+            if (filters.limit) {
+                queryOptions.limit = filters.limit;
+            }
+            if (filters.offset !== undefined) {
+                queryOptions.offset = filters.offset;
+            }
+
+            return await numberModel.findAll(queryOptions);
         } catch (error) {
             console.error("Error in NumberDAO.getAllNumbers:", error);
+            throw error;
+        }
+    }
+
+    /**
+     * Count numbers with filters
+     * @param {Object} filters - { seasonId, userId, startDate, endDate, number }
+     * @returns {Promise<number>}
+     */
+    async countNumbers(filters = {}) {
+        try {
+            const whereClause = {};
+
+            if (filters.seasonId) {
+                whereClause.season_id = filters.seasonId;
+            }
+            if (filters.userId) {
+                whereClause.user_id = filters.userId;
+            }
+            if (filters.number) {
+                whereClause.number = filters.number;
+            }
+            if (filters.startDate || filters.endDate) {
+                whereClause.created_at = {};
+                if (filters.startDate) {
+                    whereClause.created_at[Op.gte] = new Date(filters.startDate);
+                }
+                if (filters.endDate) {
+                    const endDate = new Date(filters.endDate);
+                    endDate.setHours(23, 59, 59, 999);
+                    whereClause.created_at[Op.lte] = endDate;
+                }
+            }
+
+            return await numberModel.count({ where: whereClause });
+        } catch (error) {
+            console.error("Error in NumberDAO.countNumbers:", error);
             throw error;
         }
     }

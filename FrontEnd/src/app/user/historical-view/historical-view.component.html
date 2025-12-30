@@ -3,7 +3,7 @@
     <div class="header">
         <h1>Historical Data</h1>
         <div class="season-selector">
-            <label>Season:</label>
+            <label>Temporada:</label>
             <select [(ngModel)]="selectedSeasonId" (change)="onSeasonChange()" [disabled]="loading">
                 <option [value]="null" disabled>Select a season</option>
                 <option *ngFor="let season of seasons" [value]="season.id">
@@ -64,7 +64,6 @@
                             <th>Player</th>
                             <th>Unique Numbers</th>
                             <th>Repeated</th>
-                            <th>Last Entry</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -73,7 +72,6 @@
                             <td>{{ user.name_surname }}</td>
                             <td class="highlight">{{ user.numberCount }}</td>
                             <td>{{ user.repeatedCount }}</td>
-                            <td>{{ user.daysSinceLastEntry }}d ago</td>
                         </tr>
                         <tr *ngIf="usersQualify.length === 0">
                             <td colspan="5" class="no-data">No data available for this season</td>

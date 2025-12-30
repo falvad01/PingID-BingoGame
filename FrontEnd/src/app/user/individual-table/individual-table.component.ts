@@ -112,7 +112,10 @@ export class IndividualTableComponent {
    * @returns The tooltip message including all dates.
    */
   getTooltipMessage(dates: string[]): string {
-    const formattedDates = dates.map(date => this.datepipe.transform(new Date(date), 'dd/MM/yyyy')).join('\n ');
-    return `${formattedDates}`;
+    if (!dates || dates.length === 0) {
+      return 'Sin fechas registradas';
+    }
+    const formattedDates = dates.map(date => `• ${this.datepipe.transform(new Date(date), 'dd/MM/yyyy - HH:mm')}`).join('\n');
+    return `Has salido en:\n${formattedDates}`;
   }
 }

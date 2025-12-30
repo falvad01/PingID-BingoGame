@@ -46,11 +46,11 @@ export class ClasificationChartComponent {
   private processData(data: any) {
     if (Array.isArray(data) && data.length > 0) {
       // Filter out users where the remaining number is 99
-      const filteredData = data.filter(user => 89 - user.numberCount !== 89);
+      const filteredData = data.filter(user => 90 - user.numberCount !== 90);
 
       // Extract usernames and remaining numbers from the filtered data
       const usernames = filteredData.map(user => user.username);
-      const remainingNumbers = filteredData.map(user => 89 - user.numberCount);
+      const remainingNumbers = filteredData.map(user => 90 - user.numberCount);
 
       // Render the chart with the filtered data
       this.renderChart(usernames, remainingNumbers);

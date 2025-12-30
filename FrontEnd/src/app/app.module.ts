@@ -16,6 +16,7 @@ import { AdminHeaderComponent } from './admin/admin-header/admin-header.componen
 import { AdminSidebarComponent } from './admin/admin-sidebar/admin-sidebar.component';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { NumberManagementComponent } from './admin/number-management/number-management.component';
+import { ExtensionManagerComponent } from './admin/extension-manager/extension-manager.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { NumberManagementComponent } from './admin/number-management/number-mana
     AdminSidebarComponent,
     UserManagementComponent,
     NumberManagementComponent,
+    ExtensionManagerComponent,
   ],
   imports: [
     BrowserModule,

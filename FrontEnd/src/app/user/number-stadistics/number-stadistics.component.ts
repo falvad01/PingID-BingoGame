@@ -133,7 +133,7 @@ export class NumberStadisticsComponent implements OnInit {
           if (data && data.length > 0) {
             this.firstBingoName = data[0]?.username || "N/A"
             this.firstBingoSubtext = data[0]?.numberCount !== undefined
-              ? (89 - data[0].numberCount) + " para el BINGO"
+              ? (90 - data[0].numberCount) + " para el BINGO"
               : "Sin datos"
           } else {
             this.firstBingoName = "N/A"
@@ -143,7 +143,7 @@ export class NumberStadisticsComponent implements OnInit {
           if (data && data.length > 1) {
             this.secondBingoName = data[1]?.username || "N/A"
             this.secondBingoSubtext = data[1]?.numberCount !== undefined
-              ? (89 - data[1].numberCount) + " para el BINGO"
+              ? (90 - data[1].numberCount) + " para el BINGO"
               : "Sin datos"
           } else {
             this.secondBingoName = "N/A"
@@ -153,7 +153,7 @@ export class NumberStadisticsComponent implements OnInit {
           if (data && data.length > 2) {
             this.thirdBingoName = data[2]?.username || "N/A"
             this.thirdBingoSubtext = data[2]?.numberCount !== undefined
-              ? (89 - data[2].numberCount) + " para el BINGO"
+              ? (90 - data[2].numberCount) + " para el BINGO"
               : "Sin datos"
           } else {
             this.thirdBingoName = "N/A"

@@ -46,7 +46,17 @@ const securization = (app) => {
   // Securizing headers
   console.silly("Securizing headers");
   app.use(cors());
-  app.use(helmet());
+  // Configure Helmet without HTTPS-enforcing headers for HTTP-only deployment
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        upgradeInsecureRequests: null, // Disable automatic HTTPS upgrade
+      },
+    },
+    hsts: false, // Disable HTTP Strict Transport Security
+    crossOriginOpenerPolicy: false, // Disable COOP to avoid HTTPS warnings
+    crossOriginResourcePolicy: false, // Disable CORP to avoid cross-origin issues
+  }));
   //
   // Morgan http logger redirection to winston
   console.silly("Logging http requests");

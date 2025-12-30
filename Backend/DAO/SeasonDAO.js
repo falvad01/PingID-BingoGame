@@ -1,4 +1,4 @@
-const seasonModel = require("../database/models/season");
+const seasonModel = require("./models/season");
 
 /**
  * Season Data Access Object

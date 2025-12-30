@@ -9,6 +9,7 @@ import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard
 import { SeasonManagementComponent } from './admin/season-management/season-management.component';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { NumberManagementComponent } from './admin/number-management/number-management.component';
+import { ExtensionManagerComponent } from './admin/extension-manager/extension-manager.component';
 
 const routes: Routes = [
   {
@@ -43,6 +44,11 @@ const routes: Routes = [
   {
     path: 'admin/numbers',
     component: NumberManagementComponent,
+    canActivate: [authAdminGuard]
+  },
+  {
+    path: 'admin/extension',
+    component: ExtensionManagerComponent,
     canActivate: [authAdminGuard]
   },
 ];

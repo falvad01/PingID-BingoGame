@@ -1,0 +1,22 @@
+<!-- This is a placeholder for the extension icons -->
+<!-- To add actual icons, you would replace these with PNG files:
+     - icon16.png (16x16 pixels)
+     - icon48.png (48x48 pixels) 
+     - icon128.png (128x128 pixels)
+     
+     For now, you can use any PNG images or create simple icons using online tools like:
+     - https://favicon.io/
+     - https://realfavicongenerator.net/
+     - Or create them manually with image editing software
+-->
+
+<!-- Simple SVG icon that can be converted to PNG if needed -->
+<svg width="128" height="128" xmlns="http://www.w3.org/2000/svg">
+  <rect width="128" height="128" fill="#4CAF50"/>
+  <circle cx="64" cy="40" r="15" fill="white"/>
+  <circle cx="30" cy="80" r="8" fill="white"/>
+  <circle cx="64" cy="80" r="8" fill="white"/>
+  <circle cx="98" cy="80" r="8" fill="white"/>
+  <path d="M64 55 L30 72 L64 65 L98 72 Z" fill="white"/>
+  <text x="64" y="110" text-anchor="middle" fill="white" font-family="Arial" font-size="12">PING</text>
+</svg>

@@ -1,0 +1,264 @@
+.extension-download-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+// Header with Download Button
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+
+    .title-area {
+        h1 {
+            font-size: 26px;
+            margin: 0 0 5px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        p {
+            font-size: 13px;
+            color: #ddd;
+            margin: 0;
+        }
+    }
+
+    .download-area {
+        text-align: center;
+
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+
+            .icon {
+                font-size: 18px;
+                margin-right: 6px;
+            }
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            }
+
+            &:active {
+                transform: translateY(0);
+            }
+        }
+
+        .version-info {
+            color: #bbb;
+            font-size: 11px;
+            margin: 8px 0 0 0;
+            font-weight: 500;
+        }
+    }
+}
+
+// 3 Column Grid
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+
+    h2 {
+        color: #fff;
+        margin: 0 0 15px 0;
+        font-size: 18px;
+        font-weight: 600;
+        text-align: center;
+    }
+}
+
+// Features
+.features-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .feature {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        border-left: 3px solid #667eea;
+        transition: transform 0.2s ease, background 0.2s ease;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateX(3px);
+        }
+
+        .icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        strong {
+            color: #fff;
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        p {
+            color: #ccc;
+            font-size: 12px;
+            line-height: 1.5;
+            margin: 0;
+        }
+    }
+}
+
+// Installation Steps
+.steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .step {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        transition: background 0.2s ease;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .num {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        strong {
+            color: #fff;
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        p {
+            color: #ddd;
+            line-height: 1.5;
+            margin: 0;
+            font-size: 12px;
+        }
+    }
+}
+
+// Usage
+.usage-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .usage-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        transition: background 0.2s ease;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .emoji {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        p {
+            color: #ddd;
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 3px 0 0 0;
+
+            strong {
+                color: #fff;
+                font-weight: 600;
+            }
+        }
+    }
+}
+
+// Responsive
+@media (max-width: 1200px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .header-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .extension-download-container {
+        padding: 15px;
+    }
+
+    .header-section {
+        padding: 15px;
+
+        .title-area h1 {
+            font-size: 22px;
+        }
+    }
+
+    .card {
+        padding: 15px;
+    }
+}

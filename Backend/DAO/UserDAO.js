@@ -1,4 +1,4 @@
-const userModel = require("../database/models/user");
+const userModel = require("./models/user");
 const { Op } = require("sequelize");
 
 /**

@@ -35,6 +35,15 @@
   </ul>
 
   <ul class="navbar-nav ml-auto">
+    <!-- Extension Download Button (all users) -->
+    <li class="nav-item">
+      <a class="nav-link extension-btn" routerLink="/user/extension" title="Descargar Extensión">
+        <i class="fas fa-puzzle-piece"></i>
+        <span>Extensión</span>
+        <span class="badge badge-danger extension-badge" *ngIf="hasNewExtension">Nuevo</span>
+      </a>
+    </li>
+
     <!-- Admin Panel Button (only for admins) -->
     <li class="nav-item" *ngIf="isAdmin">
       <a class="nav-link admin-panel-btn" routerLink="/admin/dashboard">
@@ -50,17 +59,40 @@
           style="margin-left: 12px; height: 30px;" />
 
       </a>
-      <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+      <div class="dropdown-menu dropdown-menu-right profile-dropdown">
+        <div class="profile-dropdown-header">
+          <img [src]="imagePath || '../../../../../assets/user.png'" class="profile-dropdown-image" />
+          <div class="profile-dropdown-info">
+            <span class="profile-name">{{ userName }}</span>
+            <span class="profile-subtitle">Gestiona tu cuenta</span>
+          </div>
+        </div>
 
         <div class="dropdown-divider"></div>
-        <a href="/user/edit" class="dropdown-item">
-          <i class="fas fa-user"></i> Editar perfil
+
+        <a href="/user/edit" class="dropdown-item profile-menu-item">
+          <div class="menu-item-icon">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="menu-item-content">
+            <span class="menu-item-title">Editar Perfil</span>
+            <span class="menu-item-description">Actualiza tu información</span>
+          </div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
         </a>
+
         <div class="dropdown-divider"></div>
-        <a href="/login" class="dropdown-item" (click)="logOut()">
-          <i class="fas fa-sign-out-alt"></i> Log out
+
+        <a href="/login" class="dropdown-item profile-menu-item logout-item" (click)="logOut()">
+          <div class="menu-item-icon logout-icon">
+            <i class="fas fa-sign-out-alt"></i>
+          </div>
+          <div class="menu-item-content">
+            <span class="menu-item-title">Cerrar Sesión</span>
+            <span class="menu-item-description">Hasta pronto!</span>
+          </div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
         </a>
-        <div class="dropdown-divider"></div>
       </div>
     </li>
 

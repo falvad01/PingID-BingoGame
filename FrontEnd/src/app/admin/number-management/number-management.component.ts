@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminService } from 'src/services/admin/admin.service';
+import { TokenService } from 'src/services/token/token.service';
 
 interface Number {
     id: number;
@@ -47,6 +48,12 @@ export class NumberManagementComponent implements OnInit {
     startDate: string = '';
     endDate: string = '';
 
+    // Pagination
+    currentPage: number = 1;
+    totalPages: number = 1;
+    totalNumbers: number = 0;
+    pageSize: number = 50;
+
     // Add form
     showAddForm: boolean = false;
     newNumber = {
@@ -68,17 +75,20 @@ export class NumberManagementComponent implements OnInit {
     message: string = '';
     messageType: 'success' | 'error' = 'success';
 
+    // Expose Math to template
+    Math = Math;
+
     constructor(
-        private adminService: AdminService
+        private adminService: AdminService,
+        private tokenService: TokenService
     ) { }
 
     ngOnInit(): void {
-        // Only load data if admin token exists
-        const adminToken = localStorage.getItem('adminToken');
-        if (adminToken) {
+        // Check if user is logged in and is admin
+        if (this.tokenService.isLogged() && this.tokenService.isAdmin()) {
             this.loadData();
         } else {
-            console.error('No admin token found. Please login as admin first.');
+            console.error('No admin access. Please login as admin first.');
             this.showMessage('Por favor inicia sesión como administrador', 'error');
         }
     }
@@ -90,6 +100,11 @@ export class NumberManagementComponent implements OnInit {
     }
 
     loadNumbers(): void {
+        this.currentPage = 1; // Reset to first page
+        this.loadPage(1);
+    }
+
+    loadPage(page: number): void {
         this.loading = true;
         const filters: any = {};
 
@@ -99,10 +114,13 @@ export class NumberManagementComponent implements OnInit {
         if (this.startDate) filters.startDate = this.startDate;
         if (this.endDate) filters.endDate = this.endDate;
 
-        this.adminService.getNumbers(filters).subscribe({
-            next: (data) => {
-                this.numbers = data;
-                this.filteredNumbers = data;
+        this.adminService.getNumbers(filters, page, this.pageSize).subscribe({
+            next: (response) => {
+                this.numbers = response.data;
+                this.filteredNumbers = response.data;
+                this.currentPage = response.page;
+                this.totalPages = response.totalPages;
+                this.totalNumbers = response.total;
                 this.loading = false;
             },
             error: (error) => {
@@ -111,6 +129,24 @@ export class NumberManagementComponent implements OnInit {
                 this.loading = false;
             }
         });
+    }
+
+    nextPage(): void {
+        if (this.currentPage < this.totalPages) {
+            this.loadPage(this.currentPage + 1);
+        }
+    }
+
+    previousPage(): void {
+        if (this.currentPage > 1) {
+            this.loadPage(this.currentPage - 1);
+        }
+    }
+
+    goToPage(page: number): void {
+        if (page >= 1 && page <= this.totalPages) {
+            this.loadPage(page);
+        }
     }
 
     loadUsers(): void {

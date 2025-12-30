@@ -9,6 +9,7 @@ import { ClasificationComponent } from '../clasification/clasification.component
 import { EditProfileComponent } from '../edit-profile/edit-profile.component'
 import { DataComponent } from '../data/data.component';
 import { HistoricalViewComponent } from '../historical-view/historical-view.component';
+import { ExtensionDownloadComponent } from '../../extension-download/extension-download.component';
 import { firstNumberGuard } from 'src/guard/user/first-number.guard';
 
 
@@ -43,6 +44,10 @@ const routes: Routes = [
       {
         path: "historical",
         component: HistoricalViewComponent
+      },
+      {
+        path: "extension",
+        component: ExtensionDownloadComponent
       }
     ]
 

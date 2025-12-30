@@ -22,6 +22,7 @@ import { DataComponent } from '../data/data.component';
 import { HistoricalViewComponent } from '../historical-view/historical-view.component';
 import { CountdownModule } from 'ngx-countdown';
 import { WinnersDisplayComponent } from '../winners-display/winners-display.component';
+import { ExtensionDownloadComponent } from '../../extension-download/extension-download.component';
 
 
 
@@ -53,6 +54,7 @@ import { WinnersDisplayComponent } from '../winners-display/winners-display.comp
     NumberStadisticsComponent,
     EditProfileComponent,
     HistoricalViewComponent,
+    ExtensionDownloadComponent,
 
   ],
 

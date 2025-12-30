@@ -114,14 +114,19 @@
 
         <!-- Numbers Table -->
         <div class="card table-container">
-            <h2>Números Registrados ({{ filteredNumbers.length }})</h2>
+            <div class="table-header">
+                <h2>Números Registrados</h2>
+                <div class="pagination-info" *ngIf="!loading && totalNumbers > 0">
+                    Mostrando {{ (currentPage - 1) * pageSize + 1 }} - {{ Math.min(currentPage * pageSize, totalNumbers)
+                    }} de {{ totalNumbers }} números
+                </div>
+            </div>
 
             <div *ngIf="loading" class="loading">
                 <i class="fas fa-spinner fa-spin"></i> Cargando...
             </div>
 
             <div *ngIf="!loading && filteredNumbers.length === 0" class="no-data">
-                No se encontraron números con los filtros aplicados
             </div>
 
             <table *ngIf="!loading && filteredNumbers.length > 0" class="data-table">
@@ -172,6 +177,25 @@
                     </tr>
                 </tbody>
             </table>
+
+            <!-- Pagination Controls -->
+            <div class="pagination" *ngIf="!loading && totalPages > 1">
+                <button class="btn-page" (click)="previousPage()" [disabled]="currentPage === 1">
+                    <i class="fas fa-chevron-left"></i> Anterior
+                </button>
+
+                <div class="page-numbers">
+                    <button *ngFor="let page of [].constructor(totalPages); let i = index"
+                        [class.active]="i + 1 === currentPage" class="btn-page-number" (click)="goToPage(i + 1)"
+                        [hidden]="totalPages > 7 && (i + 1 < currentPage - 2 || i + 1 > currentPage + 2) && i + 1 !== 1 && i + 1 !== totalPages">
+                        {{ i + 1 }}
+                    </button>
+                </div>
+
+                <button class="btn-page" (click)="nextPage()" [disabled]="currentPage === totalPages">
+                    Siguiente <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
         </div>
     </div>
 </div>

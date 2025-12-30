@@ -105,6 +105,51 @@ class UserService {
     }
 
     /**
+     * Login user from browser extension (permanent token)
+     * @param {string} username 
+     * @param {string} password 
+     * @returns {Promise<Object>} - { success, token, message }
+     */
+    async loginExtension(username, password) {
+        try {
+            // Find user
+            const user = await UserDAO.findByUsername(username);
+
+            if (!user) {
+                throw new Error("User does not exist");
+            }
+
+            // Compare password
+            const isPasswordValid = await bcrypt.compare(password, String(user.password).trim());
+
+            if (!isPasswordValid) {
+                throw new Error("Authentication failed");
+            }
+
+            // Generate permanent JWT token (no expiration)
+            const token = jwt.sign(
+                {
+                    userId: user.id,
+                    username: user.username,
+                    name_surname: user.name_surname,
+                    administrator: user.administrator,
+                    isExtension: true
+                },
+                process.env.JWT_SECRET_KEY
+                // No expiresIn parameter = permanent token
+            );
+
+            return {
+                success: true,
+                token: token
+            };
+        } catch (error) {
+            console.error("Error in UserService.loginExtension:", error);
+            throw error;
+        }
+    }
+
+    /**
      * Register new user (Admin only)
      * @param {Object} userData - { username, nameSurname, password, admin }
      * @returns {Promise<Object>}

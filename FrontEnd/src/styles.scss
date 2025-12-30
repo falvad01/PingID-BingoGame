@@ -380,6 +380,64 @@ textarea.form-control {
 }
 
 // ========================================
+// PRIMENG TOOLTIP STYLES
+// ========================================
+::ng-deep .p-tooltip {
+    .p-tooltip-text {
+        background: var(--glass-bg-strong) !important;
+        backdrop-filter: blur(var(--glass-blur-strong));
+        -webkit-backdrop-filter: blur(var(--glass-blur-strong));
+        border: 1px solid var(--glass-border);
+        border-radius: var(--border-radius-base);
+        color: var(--text-primary) !important;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
+        padding: var(--spacing-2) var(--spacing-3);
+        box-shadow: var(--shadow-lg);
+        max-width: 300px;
+        white-space: pre-line;
+        line-height: 1.5;
+        animation: tooltipFadeIn 0.2s var(--ease-out);
+    }
+
+    .p-tooltip-arrow {
+        border-top-color: var(--glass-bg-strong) !important;
+        border-bottom-color: var(--glass-bg-strong) !important;
+        border-left-color: var(--glass-bg-strong) !important;
+        border-right-color: var(--glass-bg-strong) !important;
+    }
+
+    // Position-specific arrow styling
+    &.p-tooltip-top .p-tooltip-arrow {
+        border-top-color: var(--glass-bg-strong) !important;
+    }
+
+    &.p-tooltip-bottom .p-tooltip-arrow {
+        border-bottom-color: var(--glass-bg-strong) !important;
+    }
+
+    &.p-tooltip-left .p-tooltip-arrow {
+        border-left-color: var(--glass-bg-strong) !important;
+    }
+
+    &.p-tooltip-right .p-tooltip-arrow {
+        border-right-color: var(--glass-bg-strong) !important;
+    }
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// ========================================
 // RESPONSIVE UTILITIES
 // ========================================
 @media (max-width: 768px) {
@@ -392,6 +450,15 @@ textarea.form-control {
 
         .card-body {
             padding: var(--spacing-4);
+        }
+    }
+
+    // Responsive tooltip sizing
+    ::ng-deep .p-tooltip {
+        .p-tooltip-text {
+            font-size: 11px;
+            padding: var(--spacing-1) var(--spacing-2);
+            max-width: 200px;
         }
     }
 }

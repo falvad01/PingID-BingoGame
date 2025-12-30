@@ -72,6 +72,8 @@
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   gap: var(--spacing-2);
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .cell {
@@ -89,7 +91,7 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  min-height: 45px;
+  min-height: 48px;
 
   &::before {
     content: '';
@@ -213,7 +215,7 @@
   }
 
   .cell {
-    min-height: 38px;
+    min-height: 40px;
 
     .text {
       font-size: var(--font-size-base);
@@ -238,5 +240,46 @@
         height: 14px;
       }
     }
+  }
+}
+
+// ========================================
+// PRIMENG TOOLTIP CUSTOM STYLES
+// ========================================
+::ng-deep .p-tooltip {
+  .p-tooltip-text {
+    background: rgba(30, 20, 60, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(140, 100, 255, 0.3) !important;
+    border-radius: 8px !important;
+    color: #e0e0e0 !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    padding: 8px 12px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+    max-width: 300px !important;
+    white-space: pre-line !important;
+    line-height: 1.6 !important;
+  }
+
+  .p-tooltip-arrow {
+    border-color: rgba(30, 20, 60, 0.95) !important;
+  }
+
+  &.p-tooltip-top .p-tooltip-arrow {
+    border-top-color: rgba(30, 20, 60, 0.95) !important;
+  }
+
+  &.p-tooltip-bottom .p-tooltip-arrow {
+    border-bottom-color: rgba(30, 20, 60, 0.95) !important;
+  }
+
+  &.p-tooltip-left .p-tooltip-arrow {
+    border-left-color: rgba(30, 20, 60, 0.95) !important;
+  }
+
+  &.p-tooltip-right .p-tooltip-arrow {
+    border-right-color: rgba(30, 20, 60, 0.95) !important;
   }
 }

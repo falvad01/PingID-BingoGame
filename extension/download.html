@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descargar Extensión PingID Bingo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .download-section {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 45px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            margin-top: 15px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .download-icon {
+            font-size: 24px;
+            margin-right: 8px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature h3 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .feature p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .steps {
+            counter-reset: step-counter;
+        }
+
+        .step {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-left: 3px solid #e0e0e0;
+        }
+
+        .step:last-child {
+            border-left: none;
+        }
+
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: -18px;
+            top: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .step h3 {
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+
+        .step p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .step code {
+            background: #f5f5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+            font-size: 14px;
+        }
+
+        .step img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .info-box.warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+
+        .info-box.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .browser-icons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .browser-icon {
+            text-align: center;
+        }
+
+        .browser-icon img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 8px;
+        }
+
+        .browser-icon span {
+            display: block;
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏓 Extensión PingID Bingo</h1>
+            <p>Automatiza el envío de tus números de PingID al Bingo</p>
+        </div>
+
+        <!-- Download Section -->
+        <div class="card">
+            <div class="download-section">
+                <h2 style="color: #333; margin-bottom: 10px;">Descarga la Extensión</h2>
+                <p style="color: #666; margin-bottom: 20px;">Compatible con Chrome, Edge, Brave y otros navegadores
+                    basados en Chromium</p>
+
+                <a href="dist/pingid-bingo-extension.zip" class="download-btn" download>
+                    <span class="download-icon">⬇️</span>
+                    Descargar Extensión
+                </a>
+
+                <p style="color: #999; font-size: 13px; margin-top: 15px;">Versión 1.0 • Tamaño: ~20 KB</p>
+            </div>
+
+            <div class="browser-icons">
+                <div class="browser-icon">
+                    <div style="font-size: 48px;">🌐</div>
+                    <span>Chrome</span>
+                </div>
+                <div class="browser-icon">
+                    <div style="font-size: 48px;">🔷</div>
+                    <span>Edge</span>
+                </div>
+                <div class="browser-icon">
+                    <div style="font-size: 48px;">🦁</div>
+                    <span>Brave</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="card">
+            <h2 style="color: #333; margin-bottom: 25px; text-align: center;">✨ Características</h2>
+
+            <div class="features">
+                <div class="feature">
+                    <h3>🔐 Login Integrado</h3>
+                    <p>Autenticación segura con tus credenciales de usuario</p>
+                </div>
+                <div class="feature">
+                    <h3>🤖 Detección Automática</h3>
+                    <p>Encuentra el número PingID automáticamente en la página</p>
+                </div>
+                <div class="feature">
+                    <h3>📤 Envío Inteligente</h3>
+                    <p>Solo envía el primer número del día, evitando duplicados</p>
+                </div>
+                <div class="feature">
+                    <h3>🎯 Sin Interrupciones</h3>
+                    <p>Abre el Bingo en segundo plano sin interrumpir tu trabajo</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Installation Instructions -->
+        <div class="card">
+            <h2 style="color: #333; margin-bottom: 30px; text-align: center;">📋 Instrucciones de Instalación</h2>
+
+            <div class="steps">
+                <div class="step">
+                    <h3>Descarga la Extensión</h3>
+                    <p>Haz clic en el botón de descarga y guarda el archivo <code>pingid-bingo-extension.zip</code> en
+                        tu ordenador.</p>
+                    <div class="info-box">
+                        <strong>💡 Consejo</strong>
+                        <p>Guarda el archivo en una ubicación fácil de encontrar, como tu escritorio o carpeta de
+                            descargas.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3>Extrae el Archivo ZIP</h3>
+                    <p>Haz clic derecho sobre el archivo descargado y selecciona "Extraer todo..." o "Extract here".</p>
+                    <p>Se creará una carpeta con los archivos de la extensión.</p>
+                </div>
+
+                <div class="step">
+                    <h3>Abre las Extensiones de tu Navegador</h3>
+                    <p>En tu navegador, ve a:</p>
+                    <ul style="margin: 10px 0; padding-left: 20px; color: #666;">
+                        <li><strong>Chrome:</strong> <code>chrome://extensions/</code></li>
+                        <li><strong>Edge:</strong> <code>edge://extensions/</code></li>
+                        <li><strong>Brave:</strong> <code>brave://extensions/</code></li>
+                    </ul>
+                    <div class="info-box">
+                        <strong>📝 Nota</strong>
+                        <p>También puedes acceder desde el menú: ⋮ → Más herramientas → Extensiones</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3>Activa el Modo de Desarrollador</h3>
+                    <p>Busca el toggle <strong>"Modo de desarrollador"</strong> o <strong>"Developer mode"</strong> en
+                        la esquina superior derecha y actívalo.</p>
+                </div>
+
+                <div class="step">
+                    <h3>Carga la Extensión</h3>
+                    <p>Haz clic en el botón <strong>"Cargar extensión sin empaquetar"</strong> o <strong>"Load
+                            unpacked"</strong>.</p>
+                    <p>Selecciona la <strong>carpeta extraída</strong> (no el archivo ZIP) de la extensión.</p>
+                    <div class="info-box warning">
+                        <strong>⚠️ Importante</strong>
+                        <p>Asegúrate de seleccionar la carpeta que contiene el archivo <code>manifest.json</code>, no el
+                            ZIP.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3>Ancla la Extensión (Opcional)</h3>
+                    <p>Haz clic en el icono de extensiones (🧩) en la barra de herramientas.</p>
+                    <p>Busca "Ping ID Extension" y haz clic en el icono de pin (📌) para anclarla.</p>
+                </div>
+
+                <div class="step">
+                    <h3>¡Inicia Sesión y Listo!</h3>
+                    <p>Haz clic en el icono de la extensión e ingresa tus credenciales del Bingo.</p>
+                    <div class="info-box success">
+                        <strong>✅ ¡Completado!</strong>
+                        <p>Ahora la extensión detectará y enviará automáticamente tu primer número PingID del día.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage -->
+        <div class="card">
+            <h2 style="color: #333; margin-bottom: 20px; text-align: center;">🚀 ¿Cómo Usar?</h2>
+
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 10px;">
+                <ol style="padding-left: 20px; color: #666; line-height: 2;">
+                    <li><strong>Estar autenticado</strong> en la extensión (solo la primera vez)</li>
+                    <li><strong>Navegar</strong> a la página de PingID:
+                        <code>https://authenticator.pingone.com/pingid/ppm/auth</code></li>
+                    <li><strong>¡Eso es todo!</strong> La extensión hace el resto automáticamente:
+                        <ul style="margin-top: 10px; padding-left: 25px;">
+                            <li>🔍 Detecta el número</li>
+                            <li>✅ Verifica si ya añadiste uno hoy</li>
+                            <li>📤 Lo envía automáticamente (si es el primero)</li>
+                            <li>🎲 Abre el Bingo en una nueva pestaña</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="info-box" style="margin-top: 20px;">
+                <strong>💡 Consejo Pro</strong>
+                <p>Haz clic en el icono de la extensión en cualquier momento para ver el estado de tu última acción.</p>
+            </div>
+        </div>
+
+        <!-- Support -->
+        <div class="card">
+            <h2 style="color: #333; margin-bottom: 20px; text-align: center;">❓ ¿Necesitas Ayuda?</h2>
+
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 10px; text-align: center;">
+                <p style="color: #666; margin-bottom: 15px;">Si tienes problemas con la instalación o el uso de la
+                    extensión:</p>
+                <p style="color: #666;">Contacta al equipo de desarrollo o consulta la documentación incluida en la
+                    extensión.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>PingID Bingo Extension v1.0 • © 2025</p>
+    </footer>
+</body>
+
+</html>

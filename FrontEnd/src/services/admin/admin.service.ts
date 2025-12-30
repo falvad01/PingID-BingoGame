@@ -13,26 +13,28 @@ export class AdminService {
     constructor(private http: HttpClient) { }
 
     /**
-     * Get admin token from localStorage
+     * Get token from localStorage (regular token, not adminToken)
      */
-    private getAdminToken(): string {
-        return localStorage.getItem('adminToken') || '';
+    private getToken(): string {
+        return localStorage.getItem('token') || '';
     }
 
     /**
-     * Get HTTP headers with admin token
+     * Get HTTP headers with token
      */
     private getHeaders(): HttpHeaders {
+        const token = this.getToken();
         return new HttpHeaders({
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.getAdminToken()}`
+            'x-access-token': token,
+            'Authorization': `Bearer ${token}`
         });
     }
 
     /**
-     * Get filtered numbers
+     * Get filtered numbers with pagination
      */
-    getNumbers(filters: any = {}): Observable<any> {
+    getNumbers(filters: any = {}, page: number = 1, limit: number = 50): Observable<any> {
         let params = new HttpParams();
 
         if (filters.seasonId) {
@@ -50,6 +52,10 @@ export class AdminService {
         if (filters.number) {
             params = params.set('number', filters.number);
         }
+
+        // Add pagination params
+        params = params.set('page', page.toString());
+        params = params.set('limit', limit.toString());
 
         return this.http.get(`${this.apiUrl}/admin/numbers`, {
             headers: this.getHeaders(),

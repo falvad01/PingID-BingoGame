@@ -40,9 +40,10 @@ export class HistoricalViewComponent implements OnInit {
         console.info('Seasons loaded:', seasons); // Debug log
         this.loading = false;
 
-        // Auto-select the first season if available
+        // Auto-select the active season if available
         if (seasons.length > 0 && !this.selectedSeasonId) {
-          this.selectedSeasonId = seasons[0].id;
+          const activeSeason = seasons.find(s => s.is_active === true);
+          this.selectedSeasonId = activeSeason ? activeSeason.id : seasons[0].id;
           this.loadHistoricalData();
         }
       },
@@ -135,13 +136,17 @@ export class HistoricalViewComponent implements OnInit {
     });
   }
 
+
   /**
-   * Get profile image URL
+   * 
+   * @param profileImage 
+   * @returns 
    */
   getImageUrl(profileImage: string): string {
-    if (!profileImage) {
-      return 'assets/avatarVoid.png';
+    if (profileImage != null) {
+      return profileImage;
+    } else {
+      return '../../../assets/user.png';
     }
-    return profileImage;
   }
 }

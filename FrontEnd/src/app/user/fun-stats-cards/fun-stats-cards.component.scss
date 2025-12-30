@@ -99,13 +99,11 @@
     }
 
     .stat-value {
-        font-size: var(--font-size-3xl);
+        font-size: var(--font-size-2xl);
         font-weight: var(--font-weight-extrabold);
         font-family: var(--font-family-heading);
-        line-height: 1;
+        line-height: 1.2;
         margin-bottom: var(--spacing-1);
-        overflow: hidden;
-        text-overflow: ellipsis;
         white-space: nowrap;
     }
 

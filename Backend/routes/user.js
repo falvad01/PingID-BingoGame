@@ -74,6 +74,33 @@ router.post("/login/admin", validateLogin, async (request, response) => {
 });
 
 /**
+ * Login for browser extension (permanent token)
+ */
+router.post("/login/extension", validateLogin, async (request, response) => {
+  try {
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
+      return response.status(400).json({ errors: errors.array() });
+    }
+
+    const { username, password } = request.body;
+    console.info(`Extension login for user ${username}`);
+
+    const result = await UserService.loginExtension(username, password);
+
+    console.info(`Authentication success for extension, permanent token generated`);
+    response.status(200).json({ token: result.token });
+  } catch (error) {
+    console.error("Error during extension login process:", error);
+    if (error.message === "User does not exist" || error.message === "Authentication failed") {
+      response.status(401).json({ error: error.message });
+    } else {
+      response.status(500).json({ error: "Internal server error" });
+    }
+  }
+});
+
+/**
  * Register new user (Admin only)
  */
 router.post("/register", tokenUtils.verifyToken, async (request, response) => {

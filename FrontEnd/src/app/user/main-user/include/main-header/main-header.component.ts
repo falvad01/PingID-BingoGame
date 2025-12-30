@@ -3,6 +3,7 @@ import { CountdownComponent, CountdownConfig } from 'ngx-countdown';
 import { TokenService } from 'src/services/token/token.service';
 import { UserService } from 'src/services/user/user.service';
 import { SeasonService, Season } from 'src/app/services/season.service';
+import { ExtensionService } from 'src/services/extension/extension.service';
 
 
 
@@ -33,12 +34,26 @@ export class MainHeaderComponent implements OnInit {
   imagePath: String = ""
   isAdmin: boolean = false
   activeSeason: Season | null = null;
+  userName: string = "Usuario";
+  userEmail: string = "";
+  hasNewExtension: boolean = false;
 
-  constructor(private tokenService: TokenService, private userService: UserService, private seasonService: SeasonService) { }
+  constructor(
+    private tokenService: TokenService,
+    private userService: UserService,
+    private seasonService: SeasonService,
+    private extensionService: ExtensionService
+  ) { }
 
   ngOnInit() {
     this.isAdmin = this.tokenService.isAdmin()
     this.getUserProfile()
+    this.checkForNewExtension()
+
+    // Subscribe to version changes to update badge reactively
+    this.extensionService.versionSeen$.subscribe(() => {
+      this.checkForNewExtension();
+    });
 
     // Load active season
     this.seasonService.getActiveSeason().subscribe({
@@ -95,6 +110,8 @@ export class MainHeaderComponent implements OnInit {
 
     this.userService.getProfile().then((data: any) => {
       this.imagePath = data.profile_image;
+      this.userName = data.name || "Usuario";
+      this.userEmail = data.email || "";
 
       if (data.profile_image == null) {
         this.imagePath = '../../../assets/user.png';
@@ -104,6 +121,17 @@ export class MainHeaderComponent implements OnInit {
       this.imagePath = '../../../assets/user.png';
     })
 
+  }
+
+  private checkForNewExtension() {
+    this.extensionService.getLatestVersion().subscribe({
+      next: (version) => {
+        this.hasNewExtension = this.extensionService.hasNewVersion(version.id);
+      },
+      error: (error) => {
+        console.error('Error checking for new extension:', error);
+      }
+    });
   }
 
 

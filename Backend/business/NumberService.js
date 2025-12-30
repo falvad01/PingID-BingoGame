@@ -89,6 +89,13 @@ class NumberService {
             // Count occurrences and store dates
             data.forEach(record => {
                 const num = record.number;
+
+                // Skip numbers outside valid range (data integrity check)
+                if (num < 10 || num > 99) {
+                    console.warn(`Invalid number ${num} found for user ${userId} in season ${seasonId}. Skipping.`);
+                    return;
+                }
+
                 numberCounts[num]++;
                 numberDates[num].push(record.created_at);
             });
@@ -427,13 +434,35 @@ class NumberService {
     }
 
     /**
-     * Admin: Get all numbers with filters
-     * @param {Object} filters 
-     * @returns {Promise<Array>}
+     * Admin: Get all numbers with filters and pagination
+     * @param {Object} filters - { seasonId, userId, startDate, endDate, number, page, limit }
+     * @returns {Promise<Object>} - { data: [], total: number, page: number, totalPages: number }
      */
     async adminGetNumbers(filters) {
         try {
-            return await NumberDAO.getAllNumbers(filters);
+            const page = parseInt(filters.page) || 1;
+            const limit = parseInt(filters.limit) || 50;
+            const offset = (page - 1) * limit;
+
+            // Get total count
+            const total = await NumberDAO.countNumbers(filters);
+
+            // Get paginated results
+            const data = await NumberDAO.getAllNumbers({
+                ...filters,
+                limit,
+                offset
+            });
+
+            const totalPages = Math.ceil(total / limit);
+
+            return {
+                data,
+                total,
+                page,
+                totalPages,
+                limit
+            };
         } catch (error) {
             console.error("Error in NumberService.adminGetNumbers:", error);
             throw error;

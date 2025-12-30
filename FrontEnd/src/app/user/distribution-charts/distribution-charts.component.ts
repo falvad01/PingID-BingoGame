@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Chart, registerables } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { NumberService } from 'src/services/number/number.service';
 
-Chart.register(...registerables);
+Chart.register(...registerables, ChartDataLabels);
 
 @Component({
   selector: 'app-distribution-charts',
@@ -99,9 +100,10 @@ export class DistributionChartsComponent implements OnInit {
           legend: {
             position: 'bottom',
             labels: {
-              color: '#e0e0e0',
+              color: '#ffffff',
               font: {
-                size: 12
+                size: 14,
+                weight: 'bold'
               },
               padding: 15
             }
@@ -115,6 +117,16 @@ export class DistributionChartsComponent implements OnInit {
                 const percentage = ((value / total) * 100).toFixed(1);
                 return `${label}: ${value} introducciones (${percentage}%)`;
               }
+            }
+          },
+          datalabels: {
+            color: '#ffffff',
+            font: {
+              size: 16,
+              weight: 'bold'
+            },
+            formatter: (value: any) => {
+              return value;
             }
           }
         }
@@ -167,15 +179,28 @@ export class DistributionChartsComponent implements OnInit {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
         scales: {
           x: {
             title: {
               display: true,
               text: 'Decenas',
-              color: '#e0e0e0'
+              color: '#ffffff',
+              font: {
+                size: 14,
+                weight: 'bold'
+              }
             },
             ticks: {
-              color: '#e0e0e0'
+              color: '#ffffff',
+              font: {
+                size: 13,
+                weight: 'bold'
+              }
             },
             grid: {
               color: 'rgba(255, 255, 255, 0.1)'
@@ -186,10 +211,18 @@ export class DistributionChartsComponent implements OnInit {
             title: {
               display: true,
               text: 'Introducciones',
-              color: '#e0e0e0'
+              color: '#ffffff',
+              font: {
+                size: 14,
+                weight: 'bold'
+              }
             },
             ticks: {
-              color: '#e0e0e0',
+              color: '#ffffff',
+              font: {
+                size: 13,
+                weight: 'bold'
+              },
               stepSize: 1
             },
             grid: {
@@ -200,6 +233,18 @@ export class DistributionChartsComponent implements OnInit {
         plugins: {
           legend: {
             display: false
+          },
+          datalabels: {
+            anchor: 'end',
+            align: 'top',
+            color: '#ffffff',
+            font: {
+              size: 14,
+              weight: 'bold'
+            },
+            formatter: (value: any) => {
+              return value;
+            }
           }
         }
       }
@@ -260,7 +305,11 @@ export class DistributionChartsComponent implements OnInit {
           r: {
             beginAtZero: true,
             ticks: {
-              color: '#e0e0e0',
+              color: '#ffffff',
+              font: {
+                size: 13,
+                weight: 'bold'
+              },
               stepSize: 1,
               backdropColor: 'transparent'
             },
@@ -268,9 +317,10 @@ export class DistributionChartsComponent implements OnInit {
               color: 'rgba(255, 255, 255, 0.1)'
             },
             pointLabels: {
-              color: '#e0e0e0',
+              color: '#ffffff',
               font: {
-                size: 11
+                size: 13,
+                weight: 'bold'
               }
             }
           }
@@ -278,6 +328,16 @@ export class DistributionChartsComponent implements OnInit {
         plugins: {
           legend: {
             display: false
+          },
+          datalabels: {
+            color: '#ffffff',
+            font: {
+              size: 14,
+              weight: 'bold'
+            },
+            formatter: (value: any) => {
+              return value;
+            }
           }
         }
       }

@@ -60,6 +60,9 @@ router.get("/getUserNumbers/:seasonId?", tokenUtils.verifyToken, async (req, res
     let seasonId = req.params.seasonId ? parseInt(req.params.seasonId) : null;
     if (!seasonId) {
       const activeSeason = await SeasonService.getActiveSeason();
+      if (!activeSeason) {
+        return res.status(404).json({ error: "No active season found" });
+      }
       seasonId = activeSeason.id;
     }
 
@@ -87,6 +90,9 @@ router.get("/getAllNumbers/:seasonId?", tokenUtils.verifyToken, async (req, res)
     let seasonId = req.params.seasonId ? parseInt(req.params.seasonId) : null;
     if (!seasonId) {
       const activeSeason = await SeasonService.getActiveSeason();
+      if (!activeSeason) {
+        return res.status(404).json({ error: "No active season found" });
+      }
       seasonId = activeSeason.id;
     }
 
@@ -114,6 +120,9 @@ router.get("/getStadistics/:seasonId?", tokenUtils.verifyToken, async (req, res)
     let seasonId = req.params.seasonId ? parseInt(req.params.seasonId) : null;
     if (!seasonId) {
       const activeSeason = await SeasonService.getActiveSeason();
+      if (!activeSeason) {
+        return res.status(404).json({ error: "No active season found" });
+      }
       seasonId = activeSeason.id;
     }
 
@@ -141,6 +150,9 @@ router.get("/getTodayNumbers/:seasonId?", tokenUtils.verifyToken, async (req, re
     let seasonId = req.params.seasonId ? parseInt(req.params.seasonId) : null;
     if (!seasonId) {
       const activeSeason = await SeasonService.getActiveSeason();
+      if (!activeSeason) {
+        return res.status(404).json({ error: "No active season found" });
+      }
       seasonId = activeSeason.id;
     }
 

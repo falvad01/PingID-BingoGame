@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const adminTokenUtils = require("../utils/AdminTokenUtils");
+const tokenUtils = require("../utils/TokenUtils");
 
 // Import Services
 const NumberService = require("../business/NumberService");
@@ -11,7 +11,7 @@ require("dotenv").config();
  * Get all numbers with filters (Admin only)
  * Query params: seasonId, userId, startDate, endDate, number
  */
-router.get("/numbers", adminTokenUtils.verifyToken, async (req, res) => {
+router.get("/numbers", tokenUtils.verifyToken, async (req, res) => {
     try {
         const filters = {
             seasonId: req.query.seasonId ? parseInt(req.query.seasonId) : null,
@@ -35,7 +35,7 @@ router.get("/numbers", adminTokenUtils.verifyToken, async (req, res) => {
 /**
  * Add number for any user/season/date (Admin only)
  */
-router.post("/numbers/add", adminTokenUtils.verifyToken, async (req, res) => {
+router.post("/numbers/add", tokenUtils.verifyToken, async (req, res) => {
     try {
         const { userId, seasonId, number, date } = req.body;
 
@@ -68,7 +68,7 @@ router.post("/numbers/add", adminTokenUtils.verifyToken, async (req, res) => {
 /**
  * Edit a number (Admin only)
  */
-router.put("/numbers/edit/:id", adminTokenUtils.verifyToken, async (req, res) => {
+router.put("/numbers/edit/:id", tokenUtils.verifyToken, async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         const updates = {};
@@ -106,7 +106,7 @@ router.put("/numbers/edit/:id", adminTokenUtils.verifyToken, async (req, res) =>
 /**
  * Delete a number (Admin only)
  */
-router.delete("/numbers/delete/:id", adminTokenUtils.verifyToken, async (req, res) => {
+router.delete("/numbers/delete/:id", tokenUtils.verifyToken, async (req, res) => {
     try {
         const id = parseInt(req.params.id);
 
