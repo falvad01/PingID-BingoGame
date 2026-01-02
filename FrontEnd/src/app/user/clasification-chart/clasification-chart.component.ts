@@ -26,7 +26,7 @@ export class ClasificationChartComponent {
    * Logs an error if the data retrieval fails.
    */
   private async getUsersQualy() {
-    console.log("Starting collecting user data");
+    console.info("Starting collecting user data");
 
     this.userService.getUserClasification()
       .then(data => {
@@ -46,11 +46,11 @@ export class ClasificationChartComponent {
   private processData(data: any) {
     if (Array.isArray(data) && data.length > 0) {
       // Filter out users where the remaining number is 99
-      const filteredData = data.filter(user => 89 - user.numberCount !== 89);
+      const filteredData = data.filter(user => 90 - user.numberCount !== 90);
 
       // Extract usernames and remaining numbers from the filtered data
       const usernames = filteredData.map(user => user.username);
-      const remainingNumbers = filteredData.map(user => 89 - user.numberCount);
+      const remainingNumbers = filteredData.map(user => 90 - user.numberCount);
 
       // Render the chart with the filtered data
       this.renderChart(usernames, remainingNumbers);
@@ -94,7 +94,14 @@ export class ClasificationChartComponent {
               beginAtZero: true, // Start x-axis at zero
               title: {
                 display: true,
-                text: 'Jugadores' // X-axis title
+                text: 'Jugadores', // X-axis title
+                color: '#e0e0e0' // Light color for title
+              },
+              ticks: {
+                color: '#e0e0e0' // Light color for labels
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)' // Subtle grid lines
               }
             },
             y: {
@@ -102,7 +109,14 @@ export class ClasificationChartComponent {
               max: 89, // Set maximum value for y-axis
               title: {
                 display: true,
-                text: 'Números restantes' // Y-axis title
+                text: 'Números restantes', // Y-axis title
+                color: '#e0e0e0' // Light color for title
+              },
+              ticks: {
+                color: '#e0e0e0' // Light color for labels
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)' // Subtle grid lines
               }
             }
           },

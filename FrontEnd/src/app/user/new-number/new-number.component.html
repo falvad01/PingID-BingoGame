@@ -1,60 +1,103 @@
+<div class="number-entry-container">
+  <!-- Date Header -->
+  <div class="date-header animate-fadeInDown">
+    <i class="fas fa-calendar-alt"></i>
+    <h3>{{ todayDate }}</h3>
+  </div>
 
-  <div class="card">
+  <div class="card glass-card animate-fadeInUp">
     <div class="card-body">
-      <div style="text-align: center;">
-        <h3>{{ todayDate }}</h3>
-      </div>
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text"
-            ><i class="fas fa-plus-circle"></i
-          ></span>
+
+      <!-- Number Display -->
+      <div class="number-display">
+        <div class="display-label">Tu número de hoy</div>
+        <div class="display-value" [class.has-value]="inputNumber">
+          <span *ngIf="!inputNumber" class="placeholder">__</span>
+          <span *ngIf="inputNumber" class="number animate-bounceIn">{{ inputNumber }}</span>
         </div>
-        <input
-          type="number"
-          class="form-control"
-          placeholder="Introduce un número entre 10 y 99"
-          [(ngModel)]="inputNumber"
-        />
       </div>
 
-      <button
-        type="button"
-        class="btn btn-primary"
-        [disabled]="!inputNumber"
-        (click)="openDialog()"
-        data-toggle="modal"
-      >
-        Enviar
-      </button>
+      <!-- Visual Numeric Keypad -->
+      <div class="numeric-keypad">
+        <button *ngFor="let num of [1,2,3,4,5,6,7,8,9]" class="keypad-button animate-fadeIn"
+          [style.animation-delay]="(num - 1) * 0.05 + 's'" (click)="addDigit(num)">
+          {{ num }}
+        </button>
+        <button class="keypad-button clear-button" (click)="clearNumber()">
+          <i class="fas fa-backspace"></i>
+        </button>
+        <button class="keypad-button" (click)="addDigit(0)">0</button>
+        <button class="keypad-button submit-button" [disabled]="!isValidNumber()" (click)="openDialog()">
+          <i class="fas fa-check"></i>
+        </button>
+      </div>
+
+      <!-- Quick Suggestions -->
+      <div class="suggestions" *ngIf="!inputNumber">
+        <div class="suggestions-label">
+          <i class="fas fa-lightbulb"></i>
+          Números sugeridos
+        </div>
+        <div class="suggestion-chips">
+          <button class="suggestion-chip" (click)="inputNumber = 13">13</button>
+          <button class="suggestion-chip" (click)="inputNumber = 21">21</button>
+          <button class="suggestion-chip" (click)="inputNumber = 42">42</button>
+          <button class="suggestion-chip" (click)="inputNumber = 69">69</button>
+        </div>
+      </div>
+
     </div>
   </div>
+</div>
 
-  <!-- Modal de Confirmación -->
-  <div class="modal" *ngIf="showModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="confirmationModalLabel">{{ header }}</h5>
-        </div>
-        <div class="modal-body">
-          <p>{{ subheader }}</p>
-          <p>{{ message }}</p>
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-dismiss="modal"
-            (click)="closeModal()"
-          >
-            Cancelar
-          </button>
-          <button type="button" class="btn btn-primary" (click)="sendNumber()">
-            Confirmar
-          </button>
-        </div>
+<!-- Enhanced Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-container animate-bounceIn" (click)="$event.stopPropagation()">
+    <div class="modal-content glass-strong">
+
+      <!-- Icon based on status -->
+      <div class="modal-icon" [ngClass]="{
+        'icon-warning': status === 1,
+        'icon-success': status === 2,
+        'icon-error': status === 3
+      }">
+        <i class="fas" [ngClass]="{
+          'fa-exclamation-triangle': status === 1,
+          'fa-check-circle': status === 2,
+          'fa-times-circle': status === 3
+        }"></i>
       </div>
+
+      <!-- Content -->
+      <div class="modal-header">
+        <h2>{{ header }}</h2>
+      </div>
+
+      <div class="modal-body">
+        <p class="subheader">{{ subheader }}</p>
+        <p class="message" *ngIf="message">{{ message }}</p>
+      </div>
+
+      <!-- Actions -->
+      <div class="modal-footer">
+        <button *ngIf="status === 1" class="btn btn-ghost" (click)="closeModal()">
+          <i class="fas fa-times"></i>
+          Cancelar
+        </button>
+        <button class="btn" [ngClass]="{
+                  'btn-primary': status === 1,
+                  'btn-success': status === 2,
+                  'btn-danger': status === 3
+                }" [disabled]="sending" (click)="sendNumber()">
+          <i *ngIf="!sending" class="fas" [ngClass]="{
+            'fa-paper-plane': status === 1,
+            'fa-check': status === 2 || status === 3
+          }"></i>
+          <i *ngIf="sending" class="fas fa-spinner fa-spin"></i>
+          {{ sending ? 'Enviando...' : (status === 1 ? 'Confirmar' : 'Aceptar') }}
+        </button>
+      </div>
+
     </div>
   </div>
-
+</div>

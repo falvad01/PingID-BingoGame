@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
- 
+
 @Injectable({
   providedIn: 'root'
 })
 export class TokenService {
- 
+
   private userName: string = '';
   private userId: number = 0;
   private user: string = '';
@@ -21,31 +21,31 @@ export class TokenService {
     //
     // If a token is saved in local storage, decode it
     var token = localStorage.getItem('token');
-    if( token )
-      this.decodeToken( token );
+    if (token)
+      this.decodeToken(token);
   }
   //
   // Use localsotrage to save token
-  updateToken( token:string){
+  updateToken(token: string) {
     //
     // Check if any token is passed
-    if(!token){
+    if (!token) {
       this.closeSession();
       return;
     }
     //
-    this.decodeToken( token );
+    this.decodeToken(token);
     //
     // save token in local storage
-    localStorage.setItem('token',token);
+    localStorage.setItem('token', token);
   }
   /**
    * Returns stored token
    * @returns
    */
-  getToken(): string{
+  getToken(): string {
     var token = localStorage.getItem('token');
-    if( !token )
+    if (!token)
       return '';
     return token;
   }
@@ -54,15 +54,14 @@ export class TokenService {
    * @param token
    * @returns
    */
-  decodeToken( token: string )
-  {
-    console.log("Decoding token")
+  decodeToken(token: string) {
+    console.info("Decoding token")
     //
     // check jwt token
-    try{
+    try {
       const helper = new JwtHelperService();
-      const decoded = helper.decodeToken( token );
-      console.log("aa %s", decoded.profile_image)
+      const decoded = helper.decodeToken(token);
+      console.info("Decoded token:", decoded)
       //
       this.userName = decoded.username;
       this.userId = decoded.userId;
@@ -71,8 +70,9 @@ export class TokenService {
       this.userPicture = decoded.profile_image;
       this.hasAccess = decoded.allow;
       this.createdAt = decoded.createdAt;
-      this.administrator = decoded.admin;
-    } catch(error) {
+      this.administrator = decoded.administrator == 1; // Check administrator field
+      console.info("Is administrator:", this.administrator);
+    } catch (error) {
       this.closeSession();
       return;
     }
@@ -81,15 +81,15 @@ export class TokenService {
    * Check if user is logged
    * @returns
    */
-  isLogged(){
+  isLogged() {
     //
     // Check if token is expired
     const helper = new JwtHelperService();
     const token = localStorage.getItem('token');
-    if( !token ){
+    if (!token) {
       return false;
     }
-    if( helper.isTokenExpired( token ) ){
+    if (helper.isTokenExpired(token)) {
       this.closeSession();
       return false;
     }
@@ -99,37 +99,37 @@ export class TokenService {
    * Get the user ID
    * @returns 
    */
-  getUserId(){
+  getUserId() {
     return this.userId;
   }
   /**
    * Get the user name
    * @returns 
    */
-  getUserName(){
+  getUserName() {
     return this.userName;
   }
   /**
    * Get the user email
    * @returns 
    */
-  getUserEmail(){
+  getUserEmail() {
     return this.userEmail;
   }
   /**
    * Get the user picture 
    * @returns 
    */
-  getUserPicture(){
+  getUserPicture() {
     return this.userPicture;
   }
- 
-  isAdmin(){
+
+  isAdmin() {
     return this.administrator;
   }
   //
   // Close session. Clear local storage data
-  closeSession(){
+  closeSession() {
     localStorage.clear();
     this.userName = '';
     this.userId = 0;

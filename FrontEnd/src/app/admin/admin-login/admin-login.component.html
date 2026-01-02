@@ -1,0 +1,39 @@
+<div class="fullscreen-bg">
+    <div class="login-panel">
+        <div class="form-wrapper">
+            <!-- Logo and title -->
+            <div class="logo-container">
+                <img src="../../../assets/icons/Logo_HPSCDS_2025.svg" alt="Logo" class="logo" />
+                <div class="logo-text">Admin Panel</div>
+            </div>
+
+            <!-- Username -->
+            <div class="input-group" [ngClass]="{'has-error': showErrorUser}">
+                <input type="text" class="form-control" placeholder="Admin Username" [(ngModel)]="username"
+                    [disabled]="loading" />
+                <span class="input-icon"><i class="fas fa-user-shield"></i></span>
+            </div>
+
+            <!-- Password -->
+            <div class="input-group" [ngClass]="{'has-error': showErrorPass}">
+                <input type="password" class="form-control" placeholder="Password" [(ngModel)]="password"
+                    [disabled]="loading" />
+                <span class="input-icon"><i class="fas fa-lock"></i></span>
+            </div>
+
+            <!-- Error message -->
+            <div *ngIf="showErrorUser || showErrorPass" class="error-message">{{ errorText }}</div>
+
+            <!-- Submit button -->
+            <button class="btn-submit" (click)="login()" [disabled]="loading">
+                <span *ngIf="!loading">Sign In</span>
+                <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
+            </button>
+
+            <!-- Back to user login -->
+            <div class="back-link">
+                <a routerLink="/login">← Back to User Login</a>
+            </div>
+        </div>
+    </div>
+</div>

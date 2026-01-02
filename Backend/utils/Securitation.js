@@ -46,13 +46,23 @@ const securization = (app) => {
   // Securizing headers
   console.silly("Securizing headers");
   app.use(cors());
-  app.use(helmet());
+  // Configure Helmet without HTTPS-enforcing headers for HTTP-only deployment
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        upgradeInsecureRequests: null, // Disable automatic HTTPS upgrade
+      },
+    },
+    hsts: false, // Disable HTTP Strict Transport Security
+    crossOriginOpenerPolicy: false, // Disable COOP to avoid HTTPS warnings
+    crossOriginResourcePolicy: false, // Disable CORP to avoid cross-origin issues
+  }));
   //
   // Morgan http logger redirection to winston
-  console.silly("Loggin http requests");
+  console.silly("Logging http requests");
   const stream = {
     // Use the http severity reirected to winston
-    write: (message) => console.http(message),
+    write: (message) => logger.http(message.trim()),
   };
   const skip = () => {
     const env = process.env.NODE_ENV || "development";
@@ -68,7 +78,7 @@ const securization = (app) => {
   app.disable("x-powered-by");
   //
   // Rete limiter
-  console.silly("Limiting request to 100 per 15 minutes per IP");
+  console.silly("Limiting request to 1000 per minute per IP");
   const limiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 15 minutes
     max: 1000, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
@@ -79,7 +89,7 @@ const securization = (app) => {
   //
   // Custom error handler
   app.use((err, req, res, next) => {
-    console.error(err.stack);
+    logger.error(err.stack);
     res.status(500).sendFile(path.join(__dirname, "../public/500.html"));
   });
 };

@@ -1,0 +1,31 @@
+// Import styles from login page
+@import '../../login/login.page.scss';
+
+// Additional admin-specific styles
+.back-link {
+    text-align: center;
+    margin-top: var(--spacing-4);
+    animation: fadeInUp 0.6s var(--ease-out) 0.4s;
+    animation-fill-mode: both;
+
+    a {
+        color: var(--color-primary-300);
+        text-decoration: none;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
+        transition: all var(--transition-base) var(--ease-out);
+        display: inline-block;
+
+        &:hover {
+            color: var(--color-primary-200);
+            transform: translateX(-4px);
+        }
+    }
+}
+
+.logo-text {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}

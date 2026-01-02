@@ -1,74 +1,92 @@
-<div class="row ">
+<div class="rankings-container">
+  <!-- Line Rankings -->
+  <div class="ranking-section">
+    <div class="section-title">
+      <i class="fas fa-minus"></i>
+      Top Línea
+    </div>
 
+    <div class="ranking-grid">
+      <!-- First Place -->
+      <div class="rank-card gold">
+        <div class="rank-medal">
+          <i class="fas fa-trophy"></i>
+          <span class="rank-num"></span>
+        </div>
+        <div class="rank-content">
+          <div class="player-name">{{firstLineName}}</div>
+          <div class="player-score">{{firstLineSubtext}}</div>
+        </div>
+      </div>
 
+      <!-- Second Place -->
+      <div class="rank-card silver">
+        <div class="rank-medal">
+          <i class="fas fa-medal"></i>
+          <span class="rank-num"></span>
+        </div>
+        <div class="rank-content">
+          <div class="player-name">{{secondLineName}}</div>
+          <div class="player-score">{{secondLineSubtext}}</div>
+        </div>
+      </div>
 
-  <div class="col-12 col-sm-6 col-md-6">
-    <h5 style="text-align: center;">Top para línea</h5>
-  </div>
-
-  <div class="col-12 col-sm-6 col-md-6">
-    <h5 style="text-align: center;">Top para bingo</h5>
-  </div>
-</div>
-
-<div class="row ">
-  <div class="col-12 col-sm-6 col-md-6">
-    <div class="info-box mb-3">
-      <span class="info-box-icon bg-info elevation-1 first-position">1</span>
-      <div class="info-box-content">
-        <span class="info-box-text">{{firstLineName}}</span>
-        <span class="info-box-number">{{ firstLineSubtext }}</span>
+      <!-- Third Place -->
+      <div class="rank-card bronze">
+        <div class="rank-medal">
+          <i class="fas fa-medal"></i>
+          <span class="rank-num"></span>
+        </div>
+        <div class="rank-content">
+          <div class="player-name">{{thirdLineName}}</div>
+          <div class="player-score">{{thirdLineSubtext}}</div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="col-12 col-sm-6 col-md-6">
-    <div class="info-box mb-3 ">
-      <span class="info-box-icon bg-info elevation-1 first-position">1</span>
-      <div class="info-box-content">
-        <span class="info-box-text">{{firstBingoName}}</span>
-        <span class="info-box-number">{{firstBingoSubtext}}</span>
-      </div>
-    </div>
-  </div>
-</div>
 
-<div class="row ">
-  <div class="col-12 col-sm-6 col-md-6">
-    <div class="info-box mb-3 less-margin">
-      <span class="info-box-icon bg-info elevation-1 second-position">2</span>
-      <div class="info-box-content">
-        <span class="info-box-text">{{secondLineName}}</span>
-        <span class="info-box-number">{{secondLineSubtext}}</span>
-      </div>
+  <!-- Bingo Rankings -->
+  <div class="ranking-section">
+    <div class="section-title">
+      <i class="fas fa-th"></i>
+      Top Bingo
     </div>
-  </div>
-  <div class="col-12 col-sm-6 col-md-6">
-    <div class="info-box mb-3 less-margin">
-      <span class="info-box-icon bg-info elevation-1 second-position">2</span>
-      <div class="info-box-content">
-        <span class="info-box-text">{{secondBingoName}}</span>
-        <span class="info-box-number">{{secondBingoSubtext}}</span>
-      </div>
-    </div>
-  </div>
-</div>
 
-<div class="row ">
-  <div class="col-12 col-sm-6 col-md-6">
-    <div class="info-box mb-3 less-margin">
-      <span class="info-box-icon bg-info elevation-1 third-position">3</span>
-      <div class="info-box-content">
-        <span class="info-box-text">{{thirdLineName}}</span>
-        <span class="info-box-number">{{ thirdLineSubtext }}</span>
+    <div class="ranking-grid">
+      <!-- First Place -->
+      <div class="rank-card gold">
+        <div class="rank-medal">
+          <i class="fas fa-trophy"></i>
+          <span class="rank-num"></span>
+        </div>
+        <div class="rank-content">
+          <div class="player-name">{{firstBingoName}}</div>
+          <div class="player-score">{{firstBingoSubtext}}</div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="col-12 col-sm-6 col-md-6">
-    <div class="info-box mb-3 less-margin">
-      <span class="info-box-icon bg-info elevation-1 third-position">3</span>
-      <div class="info-box-content">
-        <span class="info-box-text">{{thirdBingoName}}</span>
-        <span class="info-box-number">{{thirdBingoSubtext}}</span>
+
+      <!-- Second Place -->
+      <div class="rank-card silver">
+        <div class="rank-medal">
+          <i class="fas fa-medal"></i>
+          <span class="rank-num"></span>
+        </div>
+        <div class="rank-content">
+          <div class="player-name">{{secondBingoName}}</div>
+          <div class="player-score">{{secondBingoSubtext}}</div>
+        </div>
+      </div>
+
+      <!-- Third Place -->
+      <div class="rank-card bronze">
+        <div class="rank-medal">
+          <i class="fas fa-medal"></i>
+          <span class="rank-num"></span>
+        </div>
+        <div class="rank-content">
+          <div class="player-name">{{thirdBingoName}}</div>
+          <div class="player-score">{{thirdBingoSubtext}}</div>
+        </div>
       </div>
     </div>
   </div>

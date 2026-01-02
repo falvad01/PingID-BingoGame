@@ -1,20 +1,24 @@
-import { NgFor } from '@angular/common';
+import { NgFor, CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { NumberService } from 'src/services/number/number.service';
 import { UserService } from 'src/services/user/user.service';
+import { SeasonService } from 'src/app/services/season.service';
 
 @Component({
   selector: 'app-clasification',
   standalone: true,
-  imports: [NgFor],
+  imports: [NgFor, CommonModule],
   templateUrl: './clasification.component.html',
   styleUrl: './clasification.component.scss'
 })
 export class ClasificationComponent {
   tableData: any[] = [];
+  activeSeasonId: number | null = null;
 
-  constructor(private userService: UserService) {
-
+  constructor(
+    private userService: UserService,
+    private seasonService: SeasonService
+  ) {
     this.getUsersQualy();
   }
 
@@ -22,12 +26,28 @@ export class ClasificationComponent {
    * Get the user clasification
    */
   private async getUsersQualy() {
-    console.log("Starting collectiong user data")
-    this.userService.getUserClasification().then(data => {
-      this.processData(data);
-    }).catch(error => {
-      console.error('Error retrieving user numbers:', error);
-    })
+    console.info("Starting collecting user data")
+
+    // Get active season first
+    this.seasonService.getActiveSeason().subscribe({
+      next: async (season) => {
+        this.activeSeasonId = season.id;
+        console.info('Active season:', season);
+
+        // Get classification for active season
+        this.userService.getUserClasification(this.activeSeasonId).then(data => {
+          console.info('Classification data received:', data);
+          console.info('Is array?', Array.isArray(data));
+          console.info('Data length:', Array.isArray(data) ? data.length : 'not an array');
+          this.processData(data);
+        }).catch(error => {
+          console.error('Error retrieving user numbers:', error);
+        });
+      },
+      error: (error) => {
+        console.error('Error loading active season:', error);
+      }
+    });
   }
 
   /**
@@ -43,6 +63,7 @@ export class ClasificationComponent {
         profile_image: this.getImageUrl(item.profile_image),
         daysSinceLastEntry: this.getLastDayText(item.daysSinceLastEntry)
       }));
+      console.info('tableData after processing:', this.tableData);
     } else {
       console.error('Response is not an array:', data);
     }

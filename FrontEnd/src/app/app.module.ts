@@ -9,12 +9,28 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoginPage } from './login/login.page';
 import { NewNumberComponent } from './user/new-number/new-number.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { AdminLoginComponent } from './admin/admin-login/admin-login.component';
+import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
+import { SeasonManagementComponent } from './admin/season-management/season-management.component';
+import { AdminHeaderComponent } from './admin/admin-header/admin-header.component';
+import { AdminSidebarComponent } from './admin/admin-sidebar/admin-sidebar.component';
+import { UserManagementComponent } from './admin/user-management/user-management.component';
+import { NumberManagementComponent } from './admin/number-management/number-management.component';
+import { ExtensionManagerComponent } from './admin/extension-manager/extension-manager.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginPage,
     NewNumberComponent,
+    AdminLoginComponent,
+    AdminDashboardComponent,
+    SeasonManagementComponent,
+    AdminHeaderComponent,
+    AdminSidebarComponent,
+    UserManagementComponent,
+    NumberManagementComponent,
+    ExtensionManagerComponent,
   ],
   imports: [
     BrowserModule,
@@ -22,6 +38,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     HttpClientModule,
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
   ],
   exports: [
     CommonModule,

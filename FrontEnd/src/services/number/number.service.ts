@@ -30,11 +30,11 @@ export class NumberService {
         'Authorization': this.token.getToken()
       });
 
-      console.log("Adding number %s", number)
+      console.info("Adding number %s", number)
 
       this.http.post(environment.API_PATH + 'number/add?number=' + number, null, { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct")
+          console.info("Peticion correct")
           resolve(true);
         },
         error: error => {
@@ -47,9 +47,10 @@ export class NumberService {
 
   /**
    * Get all the numbers for the logged user
+   * @param seasonId Optional season ID to filter numbers by season
    * @returns the numbers or an error
    */
-  retrieveAllUserNumbers() {
+  retrieveAllUserNumbers(seasonId?: number) {
 
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders({
@@ -57,11 +58,15 @@ export class NumberService {
         'Authorization': this.token.getToken()
       });
 
-      console.log("Getting all user numbers")
+      const endpoint = seasonId
+        ? `number/getUserNumbers/${seasonId}`
+        : 'number/getUserNumbers';
 
-      this.http.get(environment.API_PATH + 'number/getUserNumbers', { headers: headers }).subscribe({
+      console.info("Getting user numbers" + (seasonId ? ` for season ${seasonId}` : ""))
+
+      this.http.get(environment.API_PATH + endpoint, { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct")
+          console.info("Peticion correct")
           resolve(data);
         },
         error: error => {
@@ -74,9 +79,10 @@ export class NumberService {
 
   /**
   * Get all the numbers for the logged user
+  * @param seasonId Optional season ID to filter numbers by season
   * @returns the numbers or an error
   */
-  retrieveAllNumbers() {
+  retrieveAllNumbers(seasonId?: number) {
 
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders({
@@ -84,12 +90,28 @@ export class NumberService {
         'Authorization': this.token.getToken()
       });
 
-      console.log("Getting all user numbers")
+      console.info("Getting all user numbers" + (seasonId ? ` for season ${seasonId}` : ""))
 
-      this.http.get(environment.API_PATH + 'number/getAllNumbers', { headers: headers }).subscribe({
+      const endpoint = seasonId
+        ? `number/getAllNumbers/${seasonId}`
+        : 'number/getAllNumbers';
+
+      this.http.get(environment.API_PATH + endpoint, { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct")
-          resolve(data);
+          console.info("Peticion correct")
+          // Handle new response structure { numbers: [...], metadata: {...} }
+          // or old structure (just array)
+          if (data && data.numbers && Array.isArray(data.numbers)) {
+            // New structure - return the whole object so metadata is available
+            resolve(data);
+          } else if (Array.isArray(data)) {
+            // Old structure - just return the array
+            resolve(data);
+          } else {
+            // Unexpected format
+            console.error('Unexpected data format from getAllNumbers:', data);
+            resolve(data);
+          }
         },
         error: error => {
           this.ErrorMessage = error.error ? error.error.error : error.message;
@@ -101,10 +123,10 @@ export class NumberService {
 
   /**
    * Obtain the stadistics from the backend
-   * 
+   * @param seasonId Optional season ID to filter statistics by season
    * @returns 
    */
-  getStadistics() {
+  getStadistics(seasonId?: number) {
 
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders({
@@ -112,11 +134,15 @@ export class NumberService {
         'Authorization': this.token.getToken()
       });
 
-      console.log("Getting all user numbers")
+      const endpoint = seasonId
+        ? `number/getStadistics/${seasonId}`
+        : 'number/getStadistics';
 
-      this.http.get(environment.API_PATH + 'number/getStadistics', { headers: headers }).subscribe({
+      console.info("Getting statistics" + (seasonId ? ` for season ${seasonId}` : ""))
+
+      this.http.get(environment.API_PATH + endpoint, { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct")
+          console.info("Peticion correct")
           resolve(data);
         },
         error: error => {
@@ -128,11 +154,11 @@ export class NumberService {
   }
 
   /**
-   * Obtain tthe numbers introduced in the actual day
-   * 
+   * Obtain the numbers introduced in the actual day
+   * @param seasonId Optional season ID to filter today's numbers by season
    * @returns  
    */
-  getDayNumbers() {
+  getDayNumbers(seasonId?: number) {
 
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders({
@@ -140,11 +166,15 @@ export class NumberService {
         'Authorization': this.token.getToken()
       });
 
-      console.log("Getting day numbers")
+      const endpoint = seasonId
+        ? `number/getTodayNumbers/${seasonId}`
+        : 'number/getTodayNumbers';
 
-      this.http.get(environment.API_PATH + 'number/getTodayNumbers', { headers: headers }).subscribe({
+      console.info("Getting day numbers" + (seasonId ? ` for season ${seasonId}` : ""))
+
+      this.http.get(environment.API_PATH + endpoint, { headers: headers }).subscribe({
         next: (data: any) => {
-          console.log("Peticion correct")
+          console.info("Peticion correct")
           resolve(data);
         },
         error: error => {

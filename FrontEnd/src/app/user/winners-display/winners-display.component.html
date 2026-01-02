@@ -1,0 +1,96 @@
+<div class="winners-container">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando ganadores...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="!loading && error" class="error-state">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>{{ error }}</p>
+    </div>
+
+    <!-- Winners Display -->
+    <div *ngIf="!loading && !error" class="winners-grid">
+        <!-- Line Winner Card -->
+        <div class="winner-card line-winner">
+            <div class="card-header">
+                <div class="header-content">
+                    <i class="fas fa-trophy"></i>
+                    <h3>Ganador de Línea</h3>
+                </div>
+            </div>
+
+            <div class="card-body" *ngIf="winners.lineWinner; else noLineWinner">
+                <div class="winner-info">
+                    <div class="avatar-container">
+                        <img [src]="getImageUrl(winners.lineWinner.profile_image)" [alt]="winners.lineWinner.username"
+                            class="winner-avatar">
+                        <div class="winner-badge">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                    </div>
+                    <div class="winner-details">
+                        <h4 class="winner-name">{{ winners.lineWinner.name_surname }}</h4>
+                        <p class="winner-username">{{ '@' + winners.lineWinner.username }}</p>
+                        <div class="achievement-info">
+                            <span class="achievement-label">Decena completada:</span>
+                            <span class="achievement-value">{{ winners.lineWinner.completedDecade }}</span>
+                        </div>
+                        <div class="date-info">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>{{ formatDate(winners.lineWinner.achievedAt) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ng-template #noLineWinner>
+                <div class="no-winner">
+                    <i class="fas fa-hourglass-half"></i>
+                    <p>Aún no hay ganador</p>
+                    <span class="hint">¡Sé el primero en completar una linea!</span>
+                </div>
+            </ng-template>
+        </div>
+
+        <!-- Bingo Winner Card -->
+        <div class="winner-card bingo-winner">
+            <div class="card-header">
+                <div class="header-content">
+                    <i class="fas fa-trophy"></i>
+                    <h3>Ganador de Bingo</h3>
+                </div>
+            </div>
+
+            <div class="card-body" *ngIf="winners.bingoWinner; else noBingoWinner">
+                <div class="winner-info">
+                    <div class="avatar-container">
+                        <img [src]="getImageUrl(winners.bingoWinner.profile_image)" [alt]="winners.bingoWinner.username"
+                            class="winner-avatar">
+                        <div class="winner-badge bingo">
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="winner-details">
+                        <h4 class="winner-name">{{ winners.bingoWinner.name_surname }}</h4>
+                        <p class="winner-username">{{ '@' + winners.bingoWinner.username }}</p>
+                        <div class="date-info">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>{{ formatDate(winners.bingoWinner.achievedAt) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ng-template #noBingoWinner>
+                <div class="no-winner">
+                    <i class="fas fa-hourglass-half"></i>
+                    <p>Aún no hay ganador</p>
+                    <span class="hint">¡Sé el primero en completar todos los números!</span>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>

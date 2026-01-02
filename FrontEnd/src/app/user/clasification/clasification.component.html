@@ -1,29 +1,168 @@
-<div class="card">
-  <div class="card-header">
-    <h3 class="card-title">Clasificación</h3>
+<div class="classification-container">
+  <div class="classification-header">
+    <h1 class="title">
+      <i class="fas fa-trophy"></i>
+      Clasificación
+    </h1>
+    <p class="subtitle">Top jugadores ordenados por números únicos y repeticiones</p>
   </div>
-  <div class="card-body">
-    <table class="table ">
-      <thead>
-        <tr>
 
-          <th>Nombre</th>
-          <th>Números</th>
-          <th>Repetidos</th>
-          <th>Días último número</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let player of tableData">
+  <!-- Podium for Top 3 -->
+  <div class="podium-section" *ngIf="tableData.length > 0">
+    <div class="podium">
+      <!-- Second Place -->
+      <div class="podium-position second animate-fadeInUp" style="animation-delay: 0.2s">
+        <div class="podium-player" *ngIf="tableData.length > 1">
+          <div class="rank-badge silver">
+            <i class="fas fa-medal"></i>
+          </div>
+          <div class="player-avatar">
+            <img [src]="tableData[1]?.profile_image" alt="Avatar">
+            <div class="avatar-ring silver"></div>
+          </div>
+          <div class="player-info">
+            <div class="player-name">{{ tableData[1]?.userName }}</div>
+            <div class="player-stats">
+              <div class="stat">
+                <i class="fas fa-star"></i>
+                <span>{{ tableData[1]?.number_of_single_numbers }}</span>
+              </div>
+              <div class="stat">
+                <i class="fas fa-redo"></i>
+                <span>{{ tableData[1]?.number_of_repeated_numbers }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="podium-base silver">
+          <div class="base-number">2</div>
+        </div>
+      </div>
 
-          <td> <img [src]="player.profile_image" height=30 width=30> {{player.userName}}</td>
-          <td>{{player.number_of_single_numbers}}</td>
-          <td>{{player.number_of_repeated_numbers}}</td>
-          <td>{{player.daysSinceLastEntry}}</td>
+      <!-- First Place -->
+      <div class="podium-position first animate-fadeInUp" style="animation-delay: 0.1s">
+        <div class="podium-player">
+          <div class="crown">
+            <i class="fas fa-crown"></i>
+          </div>
+          <div class="rank-badge gold">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <div class="player-avatar large">
+            <img [src]="tableData[0]?.profile_image" alt="Avatar">
+            <div class="avatar-ring gold"></div>
+          </div>
+          <div class="player-info">
+            <div class="player-name">{{ tableData[0]?.userName }}</div>
+            <div class="player-stats">
+              <div class="stat">
+                <i class="fas fa-star"></i>
+                <span>{{ tableData[0]?.number_of_single_numbers }}</span>
+              </div>
+              <div class="stat">
+                <i class="fas fa-redo"></i>
+                <span>{{ tableData[0]?.number_of_repeated_numbers }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="podium-base gold">
+          <div class="base-number">1</div>
+        </div>
+      </div>
 
-        </tr>
-      </tbody>
+      <!-- Third Place -->
+      <div class="podium-position third animate-fadeInUp" style="animation-delay: 0.3s">
+        <div class="podium-player" *ngIf="tableData.length > 2">
+          <div class="rank-badge bronze">
+            <i class="fas fa-medal"></i>
+          </div>
+          <div class="player-avatar">
+            <img [src]="tableData[2]?.profile_image" alt="Avatar">
+            <div class="avatar-ring bronze"></div>
+          </div>
+          <div class="player-info">
+            <div class="player-name">{{ tableData[2]?.userName }}</div>
+            <div class="player-stats">
+              <div class="stat">
+                <i class="fas fa-star"></i>
+                <span>{{ tableData[2]?.number_of_single_numbers }}</span>
+              </div>
+              <div class="stat">
+                <i class="fas fa-redo"></i>
+                <span>{{ tableData[2]?.number_of_repeated_numbers }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="podium-base bronze">
+          <div class="base-number">3</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    </table>
+  <!-- Rest of Rankings -->
+  <div class="card rankings-card" *ngIf="tableData.length > 3">
+    <div class="card-header">
+      <h3 class="card-title">
+        <i class="fas fa-list-ol"></i>
+        Clasificación Completa
+      </h3>
+    </div>
+    <div class="card-body">
+      <div class="rankings-table-wrapper">
+        <table class="rankings-table">
+          <thead>
+            <tr>
+              <th class="rank-col">#</th>
+              <th>Jugador</th>
+              <th class="text-center">
+                <i class="fas fa-star" title="Números únicos"></i>
+                Únicos
+              </th>
+              <th class="text-center">
+                <i class="fas fa-redo" title="Números repetidos"></i>
+                Repetidos
+              </th>
+              <th class="text-center">
+                <i class="fas fa-clock" title="Última actividad"></i>
+                Última actividad
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let player of tableData.slice(3); let i = index" class="ranking-row animate-fadeInUp"
+              [style.animation-delay]="(i * 0.05) + 's'">
+              <td class="rank-col">
+                <div class="rank-number">{{ i + 4 }}</div>
+              </td>
+              <td>
+                <div class="player-cell">
+                  <img [src]="player.profile_image" class="player-thumb" alt="Avatar">
+                  <span class="player-name">{{ player.userName }}</span>
+                </div>
+              </td>
+              <td class="text-center">
+                <span class="stat-badge unique">{{ player.number_of_single_numbers }}</span>
+              </td>
+              <td class="text-center">
+                <span class="stat-badge repeated">{{ player.number_of_repeated_numbers }}</span>
+              </td>
+              <td class="text-center">
+                <span class="activity-text">{{ player.daysSinceLastEntry }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="tableData.length === 0">
+    <i class="fas fa-users-slash"></i>
+    <h3>No hay datos disponibles</h3>
+    <p>Aún no hay jugadores en la clasificación</p>
   </div>
 </div>

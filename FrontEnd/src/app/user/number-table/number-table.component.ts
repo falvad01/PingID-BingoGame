@@ -26,7 +26,18 @@ export class NumberTableComponent {
    */
   obtainAllNumbers() {
     this.numberService.retrieveAllNumbers().then((response: any) => {
-      this.processData(response);
+      // Handle new response structure { numbers: [...], metadata: {...} }
+      // or old structure (just array)
+      let data: any[];
+      if (response && response.numbers && Array.isArray(response.numbers)) {
+        data = response.numbers;
+      } else if (Array.isArray(response)) {
+        data = response;
+      } else {
+        console.error('Unexpected response format:', response);
+        data = [];
+      }
+      this.processData(data);
     }).catch((error: any) => {
       console.error('Error fetching data:', error);
     });
@@ -106,10 +117,16 @@ export class NumberTableComponent {
    * Includes a formatted string with all users and their counts associated with the number.
    * 
    * @param users - The users to get the tooltip message for.
+   * @param number - The number being displayed.
    * @returns The tooltip message including all users.
    */
-  getTooltipMessage(users: { username: string, count: number }[]): string {
-    const formattedUsers = users.map(user => `${user.username}: ${user.count}`).join('\n ');
-    return `${formattedUsers}`;
+  getTooltipMessage(users: { username: string, count: number }[], number?: number): string {
+    if (!users || users.length === 0) {
+      return 'Sin usuarios';
+    }
+    const totalCount = users.reduce((sum, user) => sum + user.count, 0);
+    const formattedUsers = users.map(user => `• ${user.username}: ${user.count} ${user.count === 1 ? 'vez' : 'veces'}`).join('\n');
+    const header = number ? `Número ${number}:` : 'Usuarios:';
+    return `${header}\n${formattedUsers}\n\nTotal: ${totalCount} ${totalCount === 1 ? 'aparición' : 'apariciones'}`;
   }
 }

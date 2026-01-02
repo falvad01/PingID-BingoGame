@@ -1,0 +1,146 @@
+<app-admin-header></app-admin-header>
+<div class="admin-layout">
+    <app-admin-sidebar></app-admin-sidebar>
+    <div class="admin-content">
+        <div class="extension-manager">
+            <!-- Header -->
+            <div class="page-header">
+                <h1><i class="fas fa-puzzle-piece"></i> Gestión de Extensión</h1>
+                <p>Administra las versiones de la extensión del navegador</p>
+            </div>
+
+            <!-- Alert Messages -->
+            <div class="alert alert-success" *ngIf="successMessage">
+                <i class="fas fa-check-circle"></i> {{ successMessage }}
+            </div>
+
+            <div class="alert alert-danger" *ngIf="errorMessage">
+                <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+            </div>
+
+            <!-- Upload Section -->
+            <div class="card upload-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-cloud-upload-alt"></i> Subir Nueva Versión</h2>
+                </div>
+                <div class="card-body">
+                    <!-- File Drop Zone -->
+                    <div class="file-drop-zone" [class.dragging]="isDragging" (dragover)="onDragOver($event)"
+                        (dragleave)="onDragLeave($event)" (drop)="onFileDrop($event)" (click)="fileInput.click()">
+
+                        <input #fileInput id="fileInput" type="file" accept=".zip" (change)="onFileSelected($event)"
+                            style="display: none;">
+
+                        <div class="drop-zone-content">
+                            <i class="fas fa-file-archive fa-3x"></i>
+                            <p *ngIf="!selectedFile">Arrastra un archivo ZIP aquí o haz clic para seleccionar</p>
+                            <p *ngIf="selectedFile" class="selected-file">
+                                <i class="fas fa-check-circle"></i> {{ selectedFile.name }}
+                                <span class="file-size">({{ formatFileSize(selectedFile.size) }})</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Version Input -->
+                    <div class="form-group">
+                        <label for="versionInput">
+                            <i class="fas fa-tag"></i> Número de Versión
+                        </label>
+                        <input type="text" id="versionInput" class="form-control" [(ngModel)]="newVersion"
+                            placeholder="Ej: 1.0, 1.1.0, 2.0.0-beta" [disabled]="isUploading">
+                        <small class="form-text">Formato: 1.0, 1.0.1, 1.0.0-beta</small>
+                    </div>
+
+                    <!-- Release Notes -->
+                    <div class="form-group">
+                        <label for="releaseNotes">
+                            <i class="fas fa-clipboard-list"></i> Notas de la Versión
+                        </label>
+                        <textarea id="releaseNotes" class="form-control" [(ngModel)]="releaseNotes" rows="4"
+                            placeholder="Describe los cambios en esta versión..." [disabled]="isUploading"></textarea>
+                    </div>
+
+                    <!-- Upload Button -->
+                    <div class="upload-actions">
+                        <button class="btn btn-primary btn-upload" (click)="uploadVersion()"
+                            [disabled]="isUploading || !selectedFile || !newVersion">
+                            <i class="fas" [class.fa-upload]="!isUploading" [class.fa-spinner]="isUploading"
+                                [class.fa-spin]="isUploading"></i>
+                            {{ isUploading ? 'Subiendo...' : 'Subir Versión' }}
+                        </button>
+                        <button class="btn btn-secondary" (click)="resetForm()" [disabled]="isUploading">
+                            <i class="fas fa-redo"></i> Limpiar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Versions List -->
+            <div class="card versions-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-list"></i> Versiones Disponibles</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Loading State -->
+                    <div *ngIf="isLoading" class="loading-state">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>Cargando versiones...</p>
+                    </div>
+
+                    <!-- Versions Table -->
+                    <div *ngIf="!isLoading && versions.length > 0" class="table-responsive">
+                        <table class="table versions-table">
+                            <thead>
+                                <tr>
+                                    <th>Versión</th>
+                                    <th>Archivo</th>
+                                    <th>Tamaño</th>
+                                    <th>Fecha</th>
+                                    <th>Subido por</th>
+                                    <th>Notas</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let version of versions" [class.latest]="version === versions[0]">
+                                    <td>
+                                        <span class="version-badge">
+                                            {{ version.version }}
+                                            <span class="badge-latest" *ngIf="version === versions[0]">Última</span>
+                                        </span>
+                                    </td>
+                                    <td>{{ version.filename }}</td>
+                                    <td>{{ formatFileSize(version.file_size) }}</td>
+                                    <td>{{ formatDate(version.created_at) }}</td>
+                                    <td>{{ version.uploaded_by_name || 'Sistema' }}</td>
+                                    <td>
+                                        <span class="release-notes" [title]="version.release_notes">
+                                            {{ version.release_notes || 'Sin notas' }}
+                                        </span>
+                                    </td>
+                                    <td class="actions">
+                                        <button class="btn btn-sm btn-download" (click)="downloadVersion(version)"
+                                            title="Descargar">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-delete" (click)="deleteVersion(version)"
+                                            title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div *ngIf="!isLoading && versions.length === 0" class="empty-state">
+                        <i class="fas fa-inbox fa-3x"></i>
+                        <p>No hay versiones disponibles</p>
+                        <small>Sube la primera versión usando el formulario superior</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,7 +1,9 @@
 <div class="fullscreen-bg">
+  <!-- Theme Toggle Button Removed -->
+
   <div class="login-panel">
     <div class="form-wrapper">
-      <!--The text and the icon aligniated-->
+      <!--The text and the icon aligned-->
       <div class="logo-container">
         <img src="../../assets/icons/Logo_HPSCDS_2025.svg" alt="Logo" class="logo" />
         <div class="logo-text">Bingo</div>
@@ -9,13 +11,15 @@
 
       <!-- Usuario -->
       <div class="input-group" [ngClass]="{'has-error': showErrorUser}">
-        <input type="text" class="form-control" placeholder="User" [(ngModel)]="user" [disabled]="loading" />
+        <input type="text" class="form-control" placeholder="User" [(ngModel)]="user" [disabled]="loading"
+          (keyup.enter)="login()" />
         <span class="input-icon"><i class="fas fa-user"></i></span>
       </div>
 
       <!-- Contraseña -->
       <div class="input-group" [ngClass]="{'has-error': showErrorPass}">
-        <input type="password" class="form-control" placeholder="Password" [(ngModel)]="pass" [disabled]="loading" />
+        <input type="password" class="form-control" placeholder="Password" [(ngModel)]="pass" [disabled]="loading"
+          (keyup.enter)="login()" />
         <span class="input-icon"><i class="fas fa-lock"></i></span>
       </div>
 

@@ -1,0 +1,173 @@
+<div class="historical-view-container">
+    <!-- Header with Season Selector -->
+    <div class="header">
+        <h1>Datos Históricos</h1>
+        <div class="season-selector">
+            <label>Temporada:</label>
+            <select [(ngModel)]="selectedSeasonId" (change)="onSeasonChange()" [disabled]="loading">
+                <option [value]="null" disabled>Selecciona una temporada</option>
+                <option *ngFor="let season of seasons" [value]="season.id">
+                    {{ season.name }}
+                    <span *ngIf="season.is_active">(Activa)</span>
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div class="loading" *ngIf="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        Cargando datos...
+    </div>
+
+    <!-- Historical Data Display -->
+    <div class="historical-data" *ngIf="!loading && selectedSeasonId">
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid" *ngIf="statistics">
+            <div class="stat-card">
+                <i class="fas fa-hashtag"></i>
+                <div class="stat-value">{{ statistics.mostFrequentNumber }}</div>
+                <div class="stat-label">Número más frecuente</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-list-ol"></i>
+                <div class="stat-value">{{ statistics.allNumbersIntroduced }}</div>
+                <div class="stat-label">Total números añadidos</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-check-double"></i>
+                <div class="stat-value">{{ statistics.totalNumbers }}</div>
+                <div class="stat-label">Números únicos</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-times"></i>
+                <div class="stat-value">{{ statistics.missingNumbers }}</div>
+                <div class="stat-label">Números faltantes</div>
+            </div>
+            <div class="stat-card">
+                <i class="fab fa-chrome"></i>
+                <div class="stat-value">{{ statistics.extensionCount || 0 }}</div>
+                <div class="stat-label">Desde extensión</div>
+            </div>
+        </div>
+
+        <!-- Winners Section -->
+        <div class="section">
+            <h2><i class="fas fa-trophy"></i> Ganadores</h2>
+            <app-winners-display [seasonId]="selectedSeasonId"></app-winners-display>
+        </div>
+
+        <!-- Classification Table -->
+        <div class="section">
+            <h2><i class="fas fa-trophy"></i> Clasificación</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Puesto</th>
+                            <th>Jugador</th>
+                            <th>Números únicos</th>
+                            <th>Repetidos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of usersQualify; let i = index">
+                            <td class="rank">{{ i + 1 }}</td>
+                            <td>{{ user.name_surname }}</td>
+                            <td class="highlight">{{ user.numberCount }}</td>
+                            <td>{{ user.repeatedCount }}</td>
+                        </tr>
+                        <tr *ngIf="usersQualify.length === 0">
+                            <td colspan="5" class="no-data">No hay datos disponibles para esta temporada</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Line Progress for All Players -->
+        <div class="section">
+            <h2><i class="fas fa-minus"></i> Progreso de Línea</h2>
+            <div class="winners-grid" *ngIf="bingoLine && bingoLine.length > 0">
+                <div class="winner-card" *ngFor="let player of bingoLine; let i = index"
+                    [class.completed]="player.fewestMissingLine?.missingCount === 0"
+                    [class.in-progress]="player.fewestMissingLine?.missingCount > 0">
+                    <div class="winner-rank">{{ i + 1 }}</div>
+                    <img [src]="getImageUrl(player.profile_image)" [alt]="player.username" class="winner-avatar">
+                    <div class="winner-info">
+                        <div class="winner-name">{{ player.name_surname }}</div>
+                        <div class="winner-username">{{ '@' + player.username }}</div>
+
+                        <!-- Completed Line -->
+                        <div class="winner-achievement" *ngIf="player.fewestMissingLine?.missingCount === 0">
+                            <i class="fas fa-star"></i>
+                            Línea {{ player.fewestMissingLine.line }} ¡Completada!
+                        </div>
+
+                        <!-- In Progress -->
+                        <div class="winner-achievement in-progress-text"
+                            *ngIf="player.fewestMissingLine?.missingCount > 0">
+                            <i class="fas fa-hourglass-half"></i>
+                            Línea {{ player.fewestMissingLine.line }} - Faltan {{ player.fewestMissingLine.missingCount
+                            }} números
+                        </div>
+
+                        <!-- Date (only for completed) -->
+                        <div class="winner-date"
+                            *ngIf="player.fewestMissingLine?.missingCount === 0 && player.fewestMissingLine?.completedAt">
+                            <i class="fas fa-calendar-check"></i>
+                            {{ formatDate(player.fewestMissingLine.completedAt) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="no-data" *ngIf="!bingoLine || bingoLine.length === 0">
+                <i class="fas fa-info-circle"></i>
+                <p>No hay datos de progreso de línea disponibles</p>
+            </div>
+        </div>
+
+        <!-- Bingo Progress for All Players -->
+        <div class="section">
+            <h2><i class="fas fa-th"></i> Progreso de Bingo</h2>
+            <div class="winners-grid" *ngIf="usersQualify && usersQualify.length > 0">
+                <div class="winner-card" *ngFor="let player of usersQualify; let i = index"
+                    [class.completed]="player.numberCount === 90" [class.in-progress]="player.numberCount < 90">
+                    <div class="winner-rank">{{ i + 1 }}</div>
+                    <img [src]="getImageUrl(player.profile_image)" [alt]="player.username" class="winner-avatar">
+                    <div class="winner-info">
+                        <div class="winner-name">{{ player.name_surname }}</div>
+                        <div class="winner-username">{{ '@' + player.username }}</div>
+
+                        <!-- Completed Bingo -->
+                        <div class="winner-achievement" *ngIf="player.numberCount === 90">
+                            <i class="fas fa-trophy"></i>
+                            ¡BINGO Completado!
+                        </div>
+
+                        <!-- In Progress -->
+                        <div class="winner-achievement in-progress-text" *ngIf="player.numberCount < 90">
+                            <i class="fas fa-hourglass-half"></i>
+                            {{ player.numberCount }}/90 números (Faltan {{ 90 - player.numberCount }})
+                        </div>
+
+                        <!-- Date would go here for completed bingo if we had it -->
+                    </div>
+                </div>
+            </div>
+            <div class="no-data" *ngIf="!usersQualify || usersQualify.length === 0">
+                <i class="fas fa-info-circle"></i>
+                <p>No hay datos de progreso de bingo disponibles</p>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- No Season Selected -->
+    <div class="no-selection" *ngIf="!loading && !selectedSeasonId">
+        <i class="fas fa-calendar-alt"></i>
+        <p>Por favor, selecciona una temporada para ver los datos históricos</p>
+    </div>
+</div>

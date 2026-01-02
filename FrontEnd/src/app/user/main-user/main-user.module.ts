@@ -19,7 +19,11 @@ import { NumbersTimeLineComponent } from "../numbers-time-line/numbers-time-line
 import { EditProfileComponent } from 'src/app/user/edit-profile/edit-profile.component';
 import { ClasificationComponent } from "../clasification/clasification.component";
 import { DataComponent } from '../data/data.component';
+import { HistoricalViewComponent } from '../historical-view/historical-view.component';
 import { CountdownModule } from 'ngx-countdown';
+import { WinnersDisplayComponent } from '../winners-display/winners-display.component';
+import { ExtensionDownloadComponent } from '../../extension-download/extension-download.component';
+
 
 
 
@@ -36,9 +40,10 @@ import { CountdownModule } from 'ngx-countdown';
     ClasificationComponent,
     DataComponent,
     CountdownModule,
-    NumberTableComponent
+    NumberTableComponent,
+    WinnersDisplayComponent
 
-],
+  ],
   declarations: [
     MainUserPage,
     MainMenuComponent,
@@ -48,6 +53,8 @@ import { CountdownModule } from 'ngx-countdown';
     MainFooterComponent,
     NumberStadisticsComponent,
     EditProfileComponent,
+    HistoricalViewComponent,
+    ExtensionDownloadComponent,
 
   ],
 
