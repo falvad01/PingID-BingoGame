@@ -29,7 +29,11 @@ const Number = sequelize.define(
         key: "id",
       },
     },
-
+    is_extension: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   },
   {
     tableName: "number",

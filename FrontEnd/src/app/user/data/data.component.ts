@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { NumbersTimeLineComponent } from "../numbers-time-line/numbers-time-line.component";
 import { ClasificationComponent } from "../clasification/clasification.component";
 import { NumberBarChartComponent } from '../number-bar-chart/number-bar-graph.component';
@@ -11,10 +12,19 @@ import { DistributionChartsComponent } from '../distribution-charts/distribution
 @Component({
   selector: 'app-data',
   standalone: true,
-  imports: [NumbersTimeLineComponent, ClasificationComponent, NumberBarChartComponent, ClasificationChartComponent, StackerBarChartComponent, NumberTableComponent, FunStatsCardsComponent, DistributionChartsComponent],
+  imports: [
+    CommonModule,
+    NumbersTimeLineComponent,
+    ClasificationComponent,
+    NumberBarChartComponent,
+    ClasificationChartComponent,
+    StackerBarChartComponent,
+    NumberTableComponent,
+    FunStatsCardsComponent,
+    DistributionChartsComponent
+  ],
   templateUrl: './data.component.html',
   styleUrl: './data.component.scss'
 })
 export class DataComponent {
-
 }

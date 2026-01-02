@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CountdownComponent, CountdownConfig } from 'ngx-countdown';
 import { TokenService } from 'src/services/token/token.service';
 import { UserService } from 'src/services/user/user.service';
@@ -12,7 +12,7 @@ import { ExtensionService } from 'src/services/extension/extension.service';
   templateUrl: './main-header.component.html',
   styleUrls: ['./main-header.component.scss']
 })
-export class MainHeaderComponent implements OnInit {
+export class MainHeaderComponent implements OnInit, OnDestroy {
 
   date: any;
   now: any;
@@ -38,6 +38,16 @@ export class MainHeaderComponent implements OnInit {
   userEmail: string = "";
   hasNewExtension: boolean = false;
 
+  // Season countdown properties
+  seasonCountdown = {
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  };
+  countdownStatus: 'safe' | 'warning' | 'danger' | 'critical' = 'safe';
+  private countdownInterval: any;
+
   constructor(
     private tokenService: TokenService,
     private userService: UserService,
@@ -59,6 +69,9 @@ export class MainHeaderComponent implements OnInit {
     this.seasonService.getActiveSeason().subscribe({
       next: (season) => {
         this.activeSeason = season;
+        if (season.end_date) {
+          this.startSeasonCountdown();
+        }
       },
       error: (error) => {
         console.error('Error loading active season:', error);
@@ -134,5 +147,63 @@ export class MainHeaderComponent implements OnInit {
     });
   }
 
+  private startSeasonCountdown() {
+    // Clear any existing interval
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
+
+    // Update immediately
+    this.updateSeasonCountdown();
+
+    // Update every second
+    this.countdownInterval = setInterval(() => {
+      this.updateSeasonCountdown();
+    }, 1000);
+  }
+
+  private updateSeasonCountdown() {
+    if (!this.activeSeason || !this.activeSeason.end_date) {
+      return;
+    }
+
+    const now = new Date().getTime();
+    const endDate = new Date(this.activeSeason.end_date).getTime();
+    const difference = endDate - now;
+
+    if (difference > 0) {
+      this.seasonCountdown.days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      this.seasonCountdown.hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      this.seasonCountdown.minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      this.seasonCountdown.seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      // Determine status based on remaining time
+      const totalHours = difference / (1000 * 60 * 60);
+      const totalDays = difference / (1000 * 60 * 60 * 24);
+
+      if (totalHours < 24) {
+        this.countdownStatus = 'critical'; // Less than 24 hours - fireworks!
+      } else if (totalDays < 30) {
+        this.countdownStatus = 'danger'; // Less than 1 month - red
+      } else if (totalDays <= 90) {
+        this.countdownStatus = 'warning'; // 3 months or less - yellow
+      } else {
+        this.countdownStatus = 'safe'; // More than 3 months - green
+      }
+    } else {
+      // Season has ended
+      this.seasonCountdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      this.countdownStatus = 'safe';
+      if (this.countdownInterval) {
+        clearInterval(this.countdownInterval);
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
+  }
 
 }

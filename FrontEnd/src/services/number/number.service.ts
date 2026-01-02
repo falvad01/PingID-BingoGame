@@ -79,9 +79,10 @@ export class NumberService {
 
   /**
   * Get all the numbers for the logged user
+  * @param seasonId Optional season ID to filter numbers by season
   * @returns the numbers or an error
   */
-  retrieveAllNumbers() {
+  retrieveAllNumbers(seasonId?: number) {
 
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders({
@@ -89,9 +90,13 @@ export class NumberService {
         'Authorization': this.token.getToken()
       });
 
-      console.info("Getting all user numbers")
+      console.info("Getting all user numbers" + (seasonId ? ` for season ${seasonId}` : ""))
 
-      this.http.get(environment.API_PATH + 'number/getAllNumbers', { headers: headers }).subscribe({
+      const endpoint = seasonId
+        ? `number/getAllNumbers/${seasonId}`
+        : 'number/getAllNumbers';
+
+      this.http.get(environment.API_PATH + endpoint, { headers: headers }).subscribe({
         next: (data: any) => {
           console.info("Peticion correct")
           // Handle new response structure { numbers: [...], metadata: {...} }

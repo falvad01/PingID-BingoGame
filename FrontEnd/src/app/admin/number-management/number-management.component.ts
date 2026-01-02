@@ -6,6 +6,7 @@ interface Number {
     id: number;
     number: number;
     created_at: string;
+    is_extension: boolean;
     User: {
         id: number;
         username: string;

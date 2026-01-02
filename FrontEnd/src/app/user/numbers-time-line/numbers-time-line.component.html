@@ -10,7 +10,10 @@
       <div class="timeline-user">
         <img [src]="td.User.profile_image || '../../../assets/user.png'" alt="{{td.User.username}}" class="user-avatar">
         <div class="user-info">
-          <span class="username">{{td.User.username}}</span>
+          <span class="username">
+            {{td.User.username}}
+            <i *ngIf="td.is_extension" class="fab fa-chrome extension-icon" title="Añadido desde la extensión"></i>
+          </span>
           <span class="time-text">{{td.text}}</span>
         </div>
       </div>

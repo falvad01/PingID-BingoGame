@@ -135,6 +135,7 @@
                         <th>ID</th>
                         <th>Usuario</th>
                         <th>Número</th>
+                        <th>Procedencia</th>
                         <th>Temporada</th>
                         <th>Fecha</th>
                         <th>Acciones</th>
@@ -148,6 +149,12 @@
                             <span *ngIf="editingId !== num.id" class="number-badge">{{ num.number }}</span>
                             <input *ngIf="editingId === num.id" type="number" [(ngModel)]="editForm.number" min="10"
                                 max="99" class="form-control-sm">
+                        </td>
+                        <td>
+                            <span class="source-icon" [title]="num.is_extension ? 'Extensión' : 'Manual'">
+                                <i
+                                    [ngClass]="num.is_extension ? 'fab fa-chrome extension' : 'fas fa-keyboard manual'"></i>
+                            </span>
                         </td>
                         <td>{{ num.Season.name }}</td>
                         <td>

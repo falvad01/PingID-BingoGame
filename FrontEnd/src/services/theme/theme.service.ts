@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-export type Theme = 'light' | 'dark';
+export type Theme = 'dark';
 
 @Injectable({
   providedIn: 'root'
@@ -12,49 +12,44 @@ export class ThemeService {
   public theme$: Observable<Theme>;
 
   constructor() {
-    // Get initial theme from localStorage or system preference
-    const savedTheme = this.getSavedTheme();
-    const initialTheme = savedTheme || this.getSystemPreference();
-    
+    const initialTheme: Theme = 'dark';
+
     this.themeSubject = new BehaviorSubject<Theme>(initialTheme);
     this.theme$ = this.themeSubject.asObservable();
-    
+
     // Apply initial theme
     this.applyTheme(initialTheme);
-    
-    // Listen for system theme changes
-    this.listenToSystemThemeChanges();
   }
 
   /**
    * Get current theme
    */
   getCurrentTheme(): Theme {
-    return this.themeSubject.value;
+    return 'dark';
   }
 
   /**
-   * Set theme and persist to localStorage
+   * Set theme (always dark)
    */
   setTheme(theme: Theme): void {
-    this.themeSubject.next(theme);
-    this.applyTheme(theme);
-    this.saveTheme(theme);
+    this.themeSubject.next('dark');
+    this.applyTheme('dark');
+    this.saveTheme('dark');
   }
 
   /**
-   * Toggle between light and dark theme
+   * Toggle theme (disabled)
    */
   toggleTheme(): void {
-    const newTheme: Theme = this.getCurrentTheme() === 'light' ? 'dark' : 'light';
-    this.setTheme(newTheme);
+    // Light mode removed
+    this.setTheme('dark');
   }
 
   /**
    * Check if current theme is dark
    */
   isDarkMode(): boolean {
-    return this.getCurrentTheme() === 'dark';
+    return true;
   }
 
   /**
@@ -63,75 +58,15 @@ export class ThemeService {
   private applyTheme(theme: Theme): void {
     const body = document.body;
     const html = document.documentElement;
-    
-    if (theme === 'dark') {
-      body.classList.add('dark-mode');
-      html.setAttribute('data-theme', 'dark');
-    } else {
-      body.classList.remove('dark-mode');
-      html.setAttribute('data-theme', 'light');
-    }
-  }
 
-  /**
-   * Get saved theme from localStorage
-   */
-  private getSavedTheme(): Theme | null {
-    const saved = localStorage.getItem(this.THEME_KEY);
-    return saved === 'light' || saved === 'dark' ? saved : null;
+    body.classList.add('dark-mode');
+    html.setAttribute('data-theme', 'dark');
   }
 
   /**
    * Save theme to localStorage
    */
   private saveTheme(theme: Theme): void {
-    localStorage.setItem(this.THEME_KEY, theme);
-  }
-
-  /**
-   * Get system color scheme preference
-   */
-  private getSystemPreference(): Theme {
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    return 'light';
-  }
-
-  /**
-   * Listen to system theme changes
-   */
-  private listenToSystemThemeChanges(): void {
-    if (window.matchMedia) {
-      const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      
-      // Modern approach
-      if (darkModeQuery.addEventListener) {
-        darkModeQuery.addEventListener('change', (e) => {
-          // Only update if user hasn't manually set a preference
-          if (!this.getSavedTheme()) {
-            const newTheme: Theme = e.matches ? 'dark' : 'light';
-            this.setTheme(newTheme);
-          }
-        });
-      } else if ((darkModeQuery as any).addListener) {
-        // Fallback for older browsers
-        (darkModeQuery as any).addListener((e: MediaQueryListEvent) => {
-          if (!this.getSavedTheme()) {
-            const newTheme: Theme = e.matches ? 'dark' : 'light';
-            this.setTheme(newTheme);
-          }
-        });
-      }
-    }
-  }
-
-  /**
-   * Reset theme to system preference
-   */
-  resetToSystemPreference(): void {
-    localStorage.removeItem(this.THEME_KEY);
-    const systemTheme = this.getSystemPreference();
-    this.setTheme(systemTheme);
+    localStorage.setItem(this.THEME_KEY, 'dark');
   }
 }

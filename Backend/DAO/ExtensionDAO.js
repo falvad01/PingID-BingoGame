@@ -134,6 +134,49 @@ class ExtensionDAO {
     }
 
     /**
+     * Get extension version by ID without is_active filter (for deletion)
+     */
+    async getVersionByIdForDeletion(id) {
+        try {
+            const version = await ExtensionVersion.findOne({
+                where: { id },
+                include: [{
+                    model: User,
+                    as: 'uploader',
+                    attributes: ['id', 'name_surname']
+                }]
+            });
+
+            if (!version) return null;
+
+            const versionData = version.toJSON();
+            return {
+                ...versionData,
+                uploaded_by_name: versionData.uploader ? versionData.uploader.name_surname : null
+            };
+        } catch (error) {
+            console.error('Error in ExtensionDAO.getVersionByIdForDeletion:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Hard delete an extension version (permanently removes from database)
+     */
+    async hardDeleteVersion(id) {
+        try {
+            const result = await ExtensionVersion.destroy({
+                where: { id }
+            });
+
+            return result > 0;
+        } catch (error) {
+            console.error('Error in ExtensionDAO.hardDeleteVersion:', error);
+            throw error;
+        }
+    }
+
+    /**
      * Check if version already exists
      */
     async versionExists(version) {

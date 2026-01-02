@@ -33,7 +33,6 @@ const userRoutes = require("./routes/user");
 const numberRoutes = require("./routes/number");
 const adminRoutes = require("./routes/admin");
 const extensionRoutes = require("./routes/extension");
-const { console } = require("inspector");
 
 // Usar las rutas
 app.use(express.json({ limit: "1gb" }));
@@ -86,7 +85,7 @@ function startServer() {
 
     // Iniciar el servidor HTTP
     http.createServer(app).listen(port, "0.0.0.0", () => {
-      console.info(`Padel BOOM client server listening on port ${port}`);
+      console.info(`BINGO client server listening on port ${port}`);
     });
 
     // Iniciar el servidor HTTPS (si está habilitado)

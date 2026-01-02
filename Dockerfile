@@ -20,10 +20,13 @@ RUN npm ci --only=production
 # Copy the production build from the previous stage
 COPY --from=build /app/FrontEnd/dist/frontend /app/dist/frontend
 
+# Create directories for persistent volumes
+RUN mkdir -p /app/Backend/uploads/extensions
+
 # Expose port 3009 for the application
 EXPOSE 443
 # Start the Node.js server
 ENTRYPOINT ["node", "/app/Backend/app.js"]
 
 #docker build -t djavic/bingoweb:0.4.0 -t djavic/bingoweb:latest .
-#docker build -t djavic/bingoweb:1.0.0 -t djavic/bingoweb:latest .
+#docker build -t djavic/bingoweb:1.0.5 -t djavic/bingoweb:latest .      

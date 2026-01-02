@@ -87,6 +87,14 @@
                         </div>
                     </div>
                     <div class="stat-footer">
+                        <span *ngIf="stats.todayNumber && stats.isTodayNumberNew !== undefined">
+                            <i class="fas" [ngClass]="stats.isTodayNumberNew ? 'fa-star' : 'fa-redo'"></i>
+                            <span
+                                [style.color]="stats.isTodayNumberNew ? 'var(--color-success)' : 'var(--color-warning)'">
+                                {{ stats.isTodayNumberNew ? 'Nuevo' : 'Repetido' }}
+                            </span>
+                            <span style="margin: 0 8px;">•</span>
+                        </span>
                         <i class="fas fa-clock"></i>
                         {{ stats.lastActivity }}
                     </div>

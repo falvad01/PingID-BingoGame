@@ -16,7 +16,7 @@ class NumberService {
      * @param {number} seasonId - Optional, uses active season if not provided
      * @returns {Promise<Object>}
      */
-    async addNumber(userId, numberValue, seasonId = null) {
+    async addNumber(userId, numberValue, seasonId = null, isExtension = false) {
         try {
             // Validate number range
             const parsedNumber = parseInt(numberValue, 10);
@@ -49,6 +49,7 @@ class NumberService {
                 },
                 {
                     number: parsedNumber,
+                    is_extension: isExtension,
                     created_at: new Date()
                 }
             );
@@ -97,7 +98,7 @@ class NumberService {
                 }
 
                 numberCounts[num]++;
-                numberDates[num].push(record.created_at);
+                numberDates[num].push(new Date(record.created_at));
             });
 
             // Convert to array format
@@ -127,14 +128,22 @@ class NumberService {
             const allDates = new Set();
 
             // Process numbers
+            let extensionCount = 0;
+            let manualCount = 0;
+
             data.forEach(record => {
                 const num = record.number;
                 const username = record.User.username;
-                const createdAt = record.created_at;
+                const createdAt = new Date(record.created_at);
 
                 // Track unique dates
-                const dateOnly = new Date(createdAt).toISOString().split('T')[0];
-                allDates.add(dateOnly);
+                allDates.add(createdAt.toDateString());
+
+                if (record.is_extension) {
+                    extensionCount++;
+                } else {
+                    manualCount++;
+                }
 
                 if (!numberData[num]) {
                     numberData[num] = {
@@ -169,7 +178,7 @@ class NumberService {
                 totalEntries: data.length
             };
 
-            return { numbers, metadata };
+            return { numbers, metadata, extensionCount, manualCount };
         } catch (error) {
             console.error("Error in NumberService.getAllNumbers:", error);
             throw error;
@@ -200,6 +209,17 @@ class NumberService {
             let moreThanOnceCount = 0;
             let maxCount = 0;
             let minCount = Infinity;
+
+            let extensionCount = 0;
+            let manualCount = 0;
+
+            data.forEach(entry => {
+                if (entry.is_extension) {
+                    extensionCount++;
+                } else {
+                    manualCount++;
+                }
+            });
 
             // Calculate statistics for range 10-99
             for (let i = 10; i <= 99; i++) {
@@ -237,7 +257,9 @@ class NumberService {
                 totalNumbers,
                 missingNumbers,
                 onceAppearedCount,
-                moreThanOnceCount
+                moreThanOnceCount,
+                extensionCount,
+                manualCount
             };
         } catch (error) {
             console.error("Error in NumberService.getStatistics:", error);

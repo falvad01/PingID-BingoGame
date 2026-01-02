@@ -101,10 +101,4 @@ export class LoginPage implements OnInit {
     }
   }
 
-  /**
-   * Toggle theme
-   */
-  toggleTheme() {
-    this.themeService.toggleTheme();
-  }
 }

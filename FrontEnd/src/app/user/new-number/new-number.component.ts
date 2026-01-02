@@ -57,8 +57,8 @@ export class NewNumberComponent implements OnInit {
     const newValue = currentValue + String(digit);
     const numValue = parseInt(newValue, 10);
 
-    // Only update if it results in a valid number (1-99)
-    if (numValue >= 1 && numValue <= 99) {
+    // Only update if it results in a valid number (0-99 for intermediate steps, but final must be 10-99)
+    if (numValue <= 99) {
       this.inputNumber = numValue;
     }
   }
@@ -76,7 +76,7 @@ export class NewNumberComponent implements OnInit {
   isValidNumber(): boolean {
     if (!this.inputNumber) return false;
     const num = parseInt(this.inputNumber, 10);
-    return num >= 1 && num <= 99;
+    return num >= 10 && num <= 99;
   }
 
   closeModal(): void {
@@ -111,10 +111,10 @@ export class NewNumberComponent implements OnInit {
         return;
       }
 
-      const regex = /^([1-9]|[1-9]\d)$/;
+      const regex = /^[1-9]\d$/;
 
       if (regex.test(this.inputNumber)) {
-        console.info('El número es un número natural entre 1 y 99');
+        console.info('El número es un número natural entre 10 y 99');
         this.sending = true; // Set flag to prevent multiple clicks
 
         this.numberService.requestSendNumber(this.inputNumber).then((response: any) => {
@@ -141,10 +141,10 @@ export class NewNumberComponent implements OnInit {
           }
         });
       } else {
-        console.info('El número no es un número natural entre 1 y 99');
+        console.info('El número no es un número natural entre 10 y 99');
         this.status = STATUS.ERROR
         this.header = 'A donde vas, espabilad@';
-        this.subheader = 'El número tiene que estar entre el 1 y el 99';
+        this.subheader = 'El número tiene que estar entre el 10 y el 99';
         this.message = 'Atent@ a las instrucciones';
       }
 

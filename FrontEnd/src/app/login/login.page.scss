@@ -33,47 +33,6 @@
   }
 }
 
-// ========================================
-// THEME TOGGLE BUTTON
-// ========================================
-.theme-toggle {
-  position: fixed;
-  top: var(--spacing-6);
-  left: var(--spacing-6);
-  width: 50px;
-  height: 50px;
-  border-radius: var(--border-radius-full);
-  background: var(--glass-bg-strong);
-  backdrop-filter: blur(var(--glass-blur-strong));
-  -webkit-backdrop-filter: blur(var(--glass-blur-strong));
-  border: 1px solid var(--glass-border);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 1000;
-  transition: all var(--transition-base) var(--ease-out);
-  box-shadow: var(--shadow-lg);
-
-  i {
-    font-size: var(--font-size-xl);
-    transition: transform var(--transition-base) var(--ease-out);
-  }
-
-  &:hover {
-    transform: scale(1.1) rotate(10deg);
-    box-shadow: var(--shadow-xl), var(--shadow-glow-primary);
-
-    i {
-      transform: rotate(20deg);
-    }
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-}
 
 // ========================================
 // LOGIN PANEL

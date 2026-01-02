@@ -11,6 +11,19 @@
       <div class="nav-link">
         <span class="season-label">Temporada:</span>
         <span class="season-name">{{ activeSeason.name }}</span>
+        <span class="season-countdown" [ngClass]="{
+                'status-safe': countdownStatus === 'safe',
+                'status-warning': countdownStatus === 'warning',
+                'status-danger': countdownStatus === 'danger',
+                'status-critical': countdownStatus === 'critical'
+              }" *ngIf="activeSeason.end_date">
+          <i class="fas fa-hourglass-half"></i>
+          <span class="countdown-value">{{ seasonCountdown.days }}d</span>
+          <span class="countdown-value">{{ seasonCountdown.hours }}h</span>
+          <span class="countdown-value">{{ seasonCountdown.minutes }}m</span>
+          <span class="countdown-value">{{ seasonCountdown.seconds }}s</span>
+
+        </span>
       </div>
     </li>
 

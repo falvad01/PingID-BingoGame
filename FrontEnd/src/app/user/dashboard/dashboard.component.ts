@@ -12,6 +12,7 @@ interface DashboardStats {
   bestStreak: number;
   rankingPosition: number;
   todayNumber?: number;
+  isTodayNumberNew?: boolean;
   lastActivity: string;
 }
 
@@ -69,7 +70,7 @@ export class DashboardComponent implements OnInit {
             console.info('User numbers (filtered):', userNumbers);
 
             // Calculate unique numbers (only numbers that the user has at least once)
-            this.stats.uniqueNumbers = userNumbers.length;
+            this.stats.uniqueNumbers = userNumbers.length + 1;
 
             // Calculate total number count (sum of all counts)
             this.stats.totalNumbers = userNumbers.reduce((sum: number, n: any) => sum + n.count, 0);
@@ -92,6 +93,8 @@ export class DashboardComponent implements OnInit {
                 });
                 if (foundToday) {
                   todayNumber = num.number;
+                  // Check if this is the first time (new) or repeated
+                  this.stats.isTodayNumberNew = num.count === 1;
                   break;
                 }
               }

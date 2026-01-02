@@ -143,13 +143,27 @@ router.get('/download/:id', async (req, res) => {
         const versionId = parseInt(req.params.id);
         const version = await ExtensionService.getVersionById(versionId);
 
+        // Extract filename from filepath (handles both absolute and relative paths)
+        // This supports old records with absolute paths (Linux/Windows) and new records with just filenames
+        let filename = version.filepath;
+
+        // If it's an absolute path (contains / or \), extract just the filename
+        if (filename.includes('/') || filename.includes('\\')) {
+            filename = path.basename(filename);
+        }
+
+        // Resolve to absolute path in the uploads/extensions directory
+        const absolutePath = path.join(__dirname, '../uploads/extensions/', filename);
+
         // Check if file exists
-        if (!fs.existsSync(version.filepath)) {
+        if (!fs.existsSync(absolutePath)) {
+            console.error('File not found:', absolutePath);
+            console.error('Original filepath from DB:', version.filepath);
             return res.status(404).json({ error: 'File not found' });
         }
 
         // Send file
-        res.download(version.filepath, version.filename, (err) => {
+        res.download(absolutePath, version.filename, (err) => {
             if (err) {
                 console.error('Error downloading file:', err);
                 if (!res.headersSent) {

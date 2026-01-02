@@ -146,6 +146,494 @@
       color: white;
       font-weight: 600;
     }
+
+    .season-countdown {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 8px;
+      padding-left: 12px;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+
+      i.fa-hourglass-half {
+        font-size: 0.85rem;
+        animation: hourglass-spin 2s ease-in-out infinite;
+      }
+
+      .countdown-value {
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 4px;
+        min-width: 30px;
+        text-align: center;
+        font-family: 'Courier New', monospace;
+        animation: pulse-subtle 2s ease-in-out infinite;
+      }
+
+      // Green state - More than 3 months remaining
+      &.status-safe {
+        i.fa-hourglass-half {
+          color: #10b981;
+        }
+
+        .countdown-value {
+          color: #10b981;
+          background: rgba(16, 185, 129, 0.15);
+        }
+      }
+
+      // Yellow state - 3 months or less remaining
+      &.status-warning {
+        i.fa-hourglass-half {
+          color: #fbbf24;
+        }
+
+        .countdown-value {
+          color: #fbbf24;
+          background: rgba(251, 191, 36, 0.15);
+        }
+      }
+
+      // Red state - Less than 1 month remaining
+      &.status-danger {
+        i.fa-hourglass-half {
+          color: #ef4444;
+        }
+
+        .countdown-value {
+          color: #ef4444;
+          background: rgba(239, 68, 68, 0.15);
+          animation: pulse-danger 1s ease-in-out infinite;
+        }
+      }
+
+      // Critical state - Less than 24 hours with fireworks!
+      &.status-critical {
+        i.fa-hourglass-half {
+          color: #dc2626;
+          animation: hourglass-spin-fast 1s ease-in-out infinite;
+        }
+
+        .countdown-value {
+          color: #dc2626;
+          background: rgba(220, 38, 38, 0.2);
+          animation: pulse-critical 0.5s ease-in-out infinite;
+          box-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+        }
+      }
+
+
+    }
+  }
+}
+
+@keyframes firework-burst {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+}
+
+// 8 directional explosion keyframes
+@keyframes explode-1 {
+
+  0%,
+  25% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50px, -30px) scale(0.3);
+  }
+}
+
+@keyframes explode-2 {
+
+  0%,
+  25% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-30px, -50px) scale(0.3);
+  }
+}
+
+@keyframes explode-3 {
+
+  0%,
+  25% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, -60px) scale(0.3);
+  }
+}
+
+@keyframes explode-4 {
+
+  0%,
+  25% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(30px, -50px) scale(0.3);
+  }
+}
+
+@keyframes explode-5 {
+
+  0%,
+  25% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(50px, -30px) scale(0.3);
+  }
+}
+
+@keyframes explode-6 {
+
+  0%,
+  25% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(55px, 10px) scale(0.3);
+  }
+}
+
+@keyframes explode-7 {
+
+  0%,
+  25% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(40px, 40px) scale(0.3);
+  }
+}
+
+@keyframes explode-8 {
+
+  0%,
+  25% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-40px, 40px) scale(0.3);
+  }
+}
+
+@keyframes rocket-fly {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  25% {
+    transform: translateY(-60px);
+    opacity: 1;
+  }
+
+  26% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes burst-appear {
+
+  0%,
+  24% {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  25% {
+    opacity: 1;
+    transform: scale(0.5);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes particle-fly {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+
+  25% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 15px currentColor;
+  }
+
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 20px currentColor;
+  }
+
+  100% {
+    opacity: 0;
+    box-shadow: 0 0 5px currentColor;
+  }
+}
+
+@keyframes firework-lifecycle {
+
+  0%,
+  19% {
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes rocket-launch {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  5% {
+    opacity: 1;
+  }
+
+  20% {
+    transform: translateY(-400px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(-400px);
+    opacity: 0;
+  }
+}
+
+@keyframes burst-fade {
+
+  0%,
+  19% {
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  40% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes hourglass-spin {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes hourglass-spin-fast {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes pulse-subtle {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes pulse-danger {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes pulse-critical {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes firework-explode {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 0;
+    background: #fbbf24;
+    box-shadow:
+      0 0 0 0 rgba(251, 191, 36, 1);
+  }
+
+  10% {
+    transform: translateY(-20px) scale(1);
+    opacity: 1;
+    background: #fbbf24;
+  }
+
+  25% {
+    transform: translateY(-40px) scale(1.5);
+    opacity: 1;
+  }
+
+  50% {
+    transform: translateY(-50px) scale(2);
+    opacity: 1;
+    box-shadow:
+      0 0 40px 20px rgba(251, 191, 36, 0.9),
+      25px 0 40px 20px rgba(239, 68, 68, 0.9),
+      -25px 0 40px 20px rgba(16, 185, 129, 0.9),
+      0 25px 40px 20px rgba(59, 130, 246, 0.9),
+      0 -25px 40px 20px rgba(168, 85, 247, 0.9),
+      20px 20px 40px 20px rgba(236, 72, 153, 0.9),
+      -20px 20px 40px 20px rgba(251, 146, 60, 0.9),
+      20px -20px 40px 20px rgba(34, 197, 94, 0.9),
+      -20px -20px 40px 20px rgba(249, 115, 22, 0.9);
+  }
+
+  100% {
+    transform: translateY(-60px) scale(2.5);
+    opacity: 0;
+    box-shadow:
+      0 0 100px 50px rgba(251, 191, 36, 0),
+      50px 0 100px 50px rgba(239, 68, 68, 0),
+      -50px 0 100px 50px rgba(16, 185, 129, 0),
+      0 50px 100px 50px rgba(59, 130, 246, 0),
+      0 -50px 100px 50px rgba(168, 85, 247, 0),
+      40px 40px 100px 50px rgba(236, 72, 153, 0),
+      -40px 40px 100px 50px rgba(251, 146, 60, 0),
+      40px -40px 100px 50px rgba(34, 197, 94, 0),
+      -40px -40px 100px 50px rgba(249, 115, 22, 0);
   }
 }
 

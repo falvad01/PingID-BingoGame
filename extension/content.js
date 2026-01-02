@@ -1,6 +1,9 @@
 // Content script for PingID page - detects and extracts the PingID number
 console.log('Ping ID Extension content script loaded for:', window.location.href);
 
+// Global flag to prevent sending the same number twice
+let numberAlreadySent = false;
+
 // Function to extract PingID number from the page
 function extractPingIDNumber() {
   const numberElement = document.querySelector('.numbermatching');
@@ -22,6 +25,28 @@ function extractPingIDNumber() {
   return null;
 }
 
+// Function to send number to background script
+function sendNumberToBackground(pingNumber) {
+  // Check if number was already sent
+  if (numberAlreadySent) {
+    console.log('Number already sent, skipping duplicate submission');
+    return;
+  }
+
+  console.log('Sending PingID number to background:', pingNumber);
+  numberAlreadySent = true;
+
+  chrome.runtime.sendMessage({
+    action: 'pingNumberDetected',
+    number: pingNumber,
+    timestamp: new Date().toISOString()
+  }, function (response) {
+    if (response && response.success) {
+      console.log('PingID number sent to background script successfully');
+    }
+  });
+}
+
 // Main page load handler
 function handlePageLoad() {
   console.log('Page loaded, searching for PingID number...');
@@ -32,17 +57,7 @@ function handlePageLoad() {
 
     if (pingNumber) {
       console.log('Found PingID number:', pingNumber);
-
-      // Send to background script for processing
-      chrome.runtime.sendMessage({
-        action: 'pingNumberDetected',
-        number: pingNumber,
-        timestamp: new Date().toISOString()
-      }, function (response) {
-        if (response && response.success) {
-          console.log('PingID number sent to background script successfully');
-        }
-      });
+      sendNumberToBackground(pingNumber);
     } else {
       console.log('No PingID number found on page');
     }
@@ -62,12 +77,7 @@ const observer = new MutationObserver((mutations) => {
   const pingNumber = extractPingIDNumber();
   if (pingNumber) {
     observer.disconnect(); // Stop observing once we find it
-
-    chrome.runtime.sendMessage({
-      action: 'pingNumberDetected',
-      number: pingNumber,
-      timestamp: new Date().toISOString()
-    });
+    sendNumberToBackground(pingNumber);
   }
 });
 

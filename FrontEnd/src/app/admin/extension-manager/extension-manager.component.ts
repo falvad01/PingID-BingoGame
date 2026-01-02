@@ -166,18 +166,30 @@ export class ExtensionManagerComponent implements OnInit {
      * Delete a version
      */
     deleteVersion(version: ExtensionVersion): void {
-        if (!confirm(`¿Eliminar la versión ${version.version}?`)) {
+        if (!confirm(`¿Eliminar permanentemente la versión ${version.version}?\n\nEsto borrará:\n- El archivo: ${version.filename}\n- El registro de la base de datos\n\nEsta acción no se puede deshacer.`)) {
             return;
         }
 
+        console.log(`[Frontend] Requesting deletion of version ${version.id}`);
         this.extensionService.deleteVersion(version.id).subscribe({
-            next: () => {
-                this.showSuccess('Versión eliminada exitosamente');
+            next: (response) => {
+                console.log('[Frontend] Deletion response:', response);
+
+                // Show detailed success message
+                let message = `Versión ${version.version} eliminada exitosamente.`;
+                if (response.fileDeleted && response.databaseDeleted) {
+                    message += ' (Archivo y base de datos eliminados)';
+                } else if (response.databaseDeleted && !response.fileDeleted) {
+                    message += ' (Base de datos eliminada. Archivo no encontrado)';
+                }
+
+                this.showSuccess(message);
                 this.loadVersions();
             },
             error: (error) => {
-                console.error('Error deleting version:', error);
-                this.showError('Error al eliminar la versión');
+                console.error('[Frontend] Error deleting version:', error);
+                const errorMsg = error.error?.error || 'Error al eliminar la versión';
+                this.showError(errorMsg);
             }
         });
     }

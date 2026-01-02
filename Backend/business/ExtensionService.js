@@ -29,10 +29,12 @@ class ExtensionService {
             }
 
             // Create version record
+            // Store only the filename (relative path) instead of absolute path
+            const filename = path.basename(file.path);
             const version = await ExtensionDAO.createVersion({
                 version: versionData.version,
                 filename: file.originalname,
-                filepath: file.path,
+                filepath: filename, // Store only filename, not full path
                 file_size: file.size,
                 release_notes: versionData.release_notes || '',
                 uploaded_by: versionData.uploaded_by
@@ -100,34 +102,70 @@ class ExtensionService {
     }
 
     /**
-     * Delete version
+     * Delete version (complete deletion: file + database record)
      */
     async deleteVersion(id) {
         try {
-            // Get version info first
-            const version = await ExtensionDAO.getVersionById(id);
+            console.log(`[ExtensionService] Starting deletion of version ID: ${id}`);
+
+            // Get version info first (use special method that doesn't filter by is_active)
+            const version = await ExtensionDAO.getVersionByIdForDeletion(id);
             if (!version) {
+                console.error(`[ExtensionService] Version not found: ${id}`);
                 throw new Error('Version not found');
             }
 
-            // Soft delete in database
-            const deleted = await ExtensionDAO.deleteVersion(id);
+            console.log(`[ExtensionService] Found version:`, {
+                id: version.id,
+                version: version.version,
+                filepath: version.filepath,
+                is_active: version.is_active
+            });
 
-            if (!deleted) {
-                throw new Error('Failed to delete version');
+            // Extract filename from filepath (handles both absolute and relative paths)
+            let filename = version.filepath;
+            if (filename.includes('/') || filename.includes('\\')) {
+                filename = path.basename(filename);
             }
 
-            // Optionally delete the file
-            // Uncomment if you want to delete files permanently:
-            // try {
-            //   await fs.unlink(version.filepath);
-            // } catch (fileError) {
-            //   console.error('Error deleting file:', fileError);
-            // }
+            // Resolve to absolute path in the uploads/extensions directory
+            const absolutePath = path.join(__dirname, '../uploads/extensions/', filename);
+            console.log(`[ExtensionService] Attempting to delete file:`, absolutePath);
 
-            return { message: 'Version deleted successfully' };
+            // Try to delete the physical file
+            let fileDeleted = false;
+            try {
+                if (await fs.access(absolutePath).then(() => true).catch(() => false)) {
+                    await fs.unlink(absolutePath);
+                    fileDeleted = true;
+                    console.log(`[ExtensionService] ✓ File deleted successfully: ${absolutePath}`);
+                } else {
+                    console.warn(`[ExtensionService] ⚠ File not found, skipping deletion: ${absolutePath}`);
+                }
+            } catch (fileError) {
+                console.error('[ExtensionService] ✗ Error deleting file:', fileError);
+                console.warn('[ExtensionService] Continuing with database deletion despite file error');
+            }
+
+            // Hard delete from database (permanent removal)
+            console.log(`[ExtensionService] Attempting to delete from database: ${id}`);
+            const deleted = await ExtensionDAO.hardDeleteVersion(id);
+
+            if (!deleted) {
+                console.error(`[ExtensionService] ✗ Failed to delete version from database: ${id}`);
+                throw new Error('Failed to delete version from database');
+            }
+
+            console.log(`[ExtensionService] ✓ Version deleted from database: ${id}`);
+            console.log(`[ExtensionService] ✓ Deletion complete for version ${version.version}`);
+
+            return {
+                message: 'Version deleted successfully',
+                fileDeleted,
+                databaseDeleted: true
+            };
         } catch (error) {
-            console.error('Error in ExtensionService.deleteVersion:', error);
+            console.error('[ExtensionService] Error in deleteVersion:', error);
             throw error;
         }
     }

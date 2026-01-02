@@ -1,14 +1,14 @@
 <div class="historical-view-container">
     <!-- Header with Season Selector -->
     <div class="header">
-        <h1>Historical Data</h1>
+        <h1>Datos Históricos</h1>
         <div class="season-selector">
             <label>Temporada:</label>
             <select [(ngModel)]="selectedSeasonId" (change)="onSeasonChange()" [disabled]="loading">
-                <option [value]="null" disabled>Select a season</option>
+                <option [value]="null" disabled>Selecciona una temporada</option>
                 <option *ngFor="let season of seasons" [value]="season.id">
                     {{ season.name }}
-                    <span *ngIf="season.is_active">(Active)</span>
+                    <span *ngIf="season.is_active">(Activa)</span>
                 </option>
             </select>
         </div>
@@ -17,7 +17,7 @@
     <!-- Loading Indicator -->
     <div class="loading" *ngIf="loading">
         <i class="fas fa-spinner fa-spin"></i>
-        Loading data...
+        Cargando datos...
     </div>
 
     <!-- Historical Data Display -->
@@ -28,22 +28,27 @@
             <div class="stat-card">
                 <i class="fas fa-hashtag"></i>
                 <div class="stat-value">{{ statistics.mostFrequentNumber }}</div>
-                <div class="stat-label">Most Frequent Number</div>
+                <div class="stat-label">Número más frecuente</div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-list-ol"></i>
                 <div class="stat-value">{{ statistics.allNumbersIntroduced }}</div>
-                <div class="stat-label">Total Numbers Added</div>
+                <div class="stat-label">Total números añadidos</div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-check-double"></i>
                 <div class="stat-value">{{ statistics.totalNumbers }}</div>
-                <div class="stat-label">Unique Numbers</div>
+                <div class="stat-label">Números únicos</div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-times"></i>
                 <div class="stat-value">{{ statistics.missingNumbers }}</div>
-                <div class="stat-label">Missing Numbers</div>
+                <div class="stat-label">Números faltantes</div>
+            </div>
+            <div class="stat-card">
+                <i class="fab fa-chrome"></i>
+                <div class="stat-value">{{ statistics.extensionCount || 0 }}</div>
+                <div class="stat-label">Desde extensión</div>
             </div>
         </div>
 
@@ -55,15 +60,15 @@
 
         <!-- Classification Table -->
         <div class="section">
-            <h2><i class="fas fa-trophy"></i> Classification</h2>
+            <h2><i class="fas fa-trophy"></i> Clasificación</h2>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th>Rank</th>
-                            <th>Player</th>
-                            <th>Unique Numbers</th>
-                            <th>Repeated</th>
+                            <th>Puesto</th>
+                            <th>Jugador</th>
+                            <th>Números únicos</th>
+                            <th>Repetidos</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -74,7 +79,7 @@
                             <td>{{ user.repeatedCount }}</td>
                         </tr>
                         <tr *ngIf="usersQualify.length === 0">
-                            <td colspan="5" class="no-data">No data available for this season</td>
+                            <td colspan="5" class="no-data">No hay datos disponibles para esta temporada</td>
                         </tr>
                     </tbody>
                 </table>
@@ -83,7 +88,7 @@
 
         <!-- Line Progress for All Players -->
         <div class="section">
-            <h2><i class="fas fa-minus"></i> Line Progress</h2>
+            <h2><i class="fas fa-minus"></i> Progreso de Línea</h2>
             <div class="winners-grid" *ngIf="bingoLine && bingoLine.length > 0">
                 <div class="winner-card" *ngFor="let player of bingoLine; let i = index"
                     [class.completed]="player.fewestMissingLine?.missingCount === 0"
@@ -119,13 +124,13 @@
             </div>
             <div class="no-data" *ngIf="!bingoLine || bingoLine.length === 0">
                 <i class="fas fa-info-circle"></i>
-                <p>No line progress data available</p>
+                <p>No hay datos de progreso de línea disponibles</p>
             </div>
         </div>
 
         <!-- Bingo Progress for All Players -->
         <div class="section">
-            <h2><i class="fas fa-th"></i> Bingo Progress</h2>
+            <h2><i class="fas fa-th"></i> Progreso de Bingo</h2>
             <div class="winners-grid" *ngIf="usersQualify && usersQualify.length > 0">
                 <div class="winner-card" *ngFor="let player of usersQualify; let i = index"
                     [class.completed]="player.numberCount === 90" [class.in-progress]="player.numberCount < 90">
@@ -138,7 +143,7 @@
                         <!-- Completed Bingo -->
                         <div class="winner-achievement" *ngIf="player.numberCount === 90">
                             <i class="fas fa-trophy"></i>
-                            BINGO Complete!
+                            ¡BINGO Completado!
                         </div>
 
                         <!-- In Progress -->
@@ -153,7 +158,7 @@
             </div>
             <div class="no-data" *ngIf="!usersQualify || usersQualify.length === 0">
                 <i class="fas fa-info-circle"></i>
-                <p>No bingo progress data available</p>
+                <p>No hay datos de progreso de bingo disponibles</p>
             </div>
         </div>
 
@@ -163,6 +168,6 @@
     <!-- No Season Selected -->
     <div class="no-selection" *ngIf="!loading && !selectedSeasonId">
         <i class="fas fa-calendar-alt"></i>
-        <p>Please select a season to view historical data</p>
+        <p>Por favor, selecciona una temporada para ver los datos históricos</p>
     </div>
 </div>

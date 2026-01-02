@@ -136,6 +136,16 @@
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
+
+    &.extension-stat {
+        i {
+            color: var(--color-primary-400);
+        }
+
+        .stat-value {
+            color: var(--color-primary-400);
+        }
+    }
 }
 
 // Section

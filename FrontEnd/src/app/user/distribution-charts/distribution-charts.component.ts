@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Chart, registerables } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { NumberService } from 'src/services/number/number.service';
+import { SeasonService } from 'src/app/services/season.service';
 
 Chart.register(...registerables, ChartDataLabels);
 
@@ -13,41 +14,147 @@ Chart.register(...registerables, ChartDataLabels);
   templateUrl: './distribution-charts.component.html',
   styleUrls: ['./distribution-charts.component.scss']
 })
-export class DistributionChartsComponent implements OnInit {
+export class DistributionChartsComponent implements OnInit, OnDestroy {
   private donutChart: any;
   private decadesChart: any;
   private polarChart: any;
+  private extensionChart: any;
+  private activeSeasonId: number | null = null;
 
-  constructor(private numberService: NumberService) { }
+  constructor(
+    private numberService: NumberService,
+    private seasonService: SeasonService
+  ) { }
 
   ngOnInit() {
-    this.loadChartsData();
+    this.loadActiveSeasonAndData();
+  }
+
+  ngOnDestroy() {
+    if (this.donutChart) {
+      this.donutChart.destroy();
+    }
+    if (this.decadesChart) {
+      this.decadesChart.destroy();
+    }
+    if (this.polarChart) {
+      this.polarChart.destroy();
+    }
+    if (this.extensionChart) {
+      this.extensionChart.destroy();
+    }
+  }
+
+  private loadActiveSeasonAndData() {
+    this.seasonService.getActiveSeason().subscribe({
+      next: (season) => {
+        this.activeSeasonId = season.id;
+        this.loadChartsData();
+      },
+      error: (error) => {
+        console.error('Error loading active season:', error);
+        // Fallback to load all numbers if no active season
+        this.loadChartsData();
+      }
+    });
   }
 
   private async loadChartsData() {
     try {
-      const response = await this.numberService.retrieveAllNumbers() as any;
+      const response = await this.numberService.retrieveAllNumbers(this.activeSeasonId || undefined) as any;
 
       // Extract numbers array
       let allNumbers: any[];
+      let extensionCount = 0;
+      let manualCount = 0;
+
       if (response && response.numbers && Array.isArray(response.numbers)) {
         allNumbers = response.numbers;
+        extensionCount = response.extensionCount || 0;
+        manualCount = response.manualCount || 0;
       } else if (Array.isArray(response)) {
         allNumbers = response;
       } else {
         allNumbers = [];
       }
 
-      // Filter valid range
+      // Filter valid range for other charts
       const validNumbers = allNumbers.filter((num: any) => num.number >= 10 && num.number <= 99);
 
       this.createDonutChart(validNumbers);
       this.createDecadesChart(validNumbers);
       this.createPolarChart(validNumbers);
+      this.createExtensionChart(extensionCount, manualCount);
 
     } catch (error) {
       console.error('Error loading charts data:', error);
     }
+  }
+
+  private createExtensionChart(extensionCount: number, manualCount: number) {
+    const ctx = (document.getElementById('extensionChart') as HTMLCanvasElement)?.getContext('2d');
+    if (!ctx) return;
+
+    if (this.extensionChart) {
+      this.extensionChart.destroy();
+    }
+
+    this.extensionChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Extensión', 'Manual'],
+        datasets: [{
+          data: [extensionCount, manualCount],
+          backgroundColor: [
+            'rgba(124, 58, 237, 0.8)', // Primary Purple
+            'rgba(236, 72, 153, 0.8)'  // Secondary Pink
+          ],
+          borderColor: [
+            'rgba(124, 58, 237, 1)',
+            'rgba(236, 72, 153, 1)'
+          ],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: '#ffffff',
+              font: {
+                size: 14,
+                weight: 'bold'
+              },
+              padding: 15
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                const total = extensionCount + manualCount;
+                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                return `${label}: ${value} (${percentage}%)`;
+              }
+            }
+          },
+          datalabels: {
+            color: '#ffffff',
+            font: {
+              size: 16,
+              weight: 'bold'
+            },
+            formatter: (value: any) => {
+              return value > 0 ? value : '';
+            }
+          }
+        }
+      }
+    });
   }
 
   private createDonutChart(numbers: any[]) {
@@ -342,11 +449,5 @@ export class DistributionChartsComponent implements OnInit {
         }
       }
     });
-  }
-
-  ngOnDestroy() {
-    if (this.donutChart) this.donutChart.destroy();
-    if (this.decadesChart) this.decadesChart.destroy();
-    if (this.polarChart) this.polarChart.destroy();
   }
 }

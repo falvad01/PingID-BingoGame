@@ -354,8 +354,11 @@
 
   // Modal Header
   .modal-header {
-    border: none;
-    padding: 0;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
     margin-bottom: var(--spacing-4);
 
     h2 {
@@ -387,8 +390,9 @@
 
   // Modal Footer
   .modal-footer {
-    border: none;
-    padding: 0;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
     display: flex;
     gap: var(--spacing-3);
     justify-content: center;

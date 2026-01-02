@@ -120,7 +120,7 @@ class NumberDAO {
     async getUserNumbers(userId, seasonId) {
         try {
             return await numberModel.findAll({
-                attributes: ["number", "created_at"],
+                attributes: ["number", "created_at", "is_extension"],
                 where: {
                     user_id: userId,
                     season_id: seasonId
@@ -238,7 +238,7 @@ class NumberDAO {
         try {
             const whereClause = seasonId ? { season_id: seasonId } : {};
             return await numberModel.findAll({
-                attributes: ["number", "created_at"],
+                attributes: ["number", "created_at", "is_extension"],
                 where: whereClause,
                 include: [
                     {
@@ -273,7 +273,7 @@ class NumberDAO {
             }
 
             return await numberModel.findAll({
-                attributes: ["number", "created_at"],
+                attributes: ["number", "created_at", "is_extension"],
                 where: whereClause,
                 include: [
                     {

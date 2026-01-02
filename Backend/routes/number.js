@@ -23,9 +23,9 @@ router.post("/add", tokenUtils.verifyToken, async (req, res) => {
     const decoded = tokenUtils.parseJwt(token);
 
     const numberValue = parseInt(req.query.number, 10);
-    console.info(`Adding number ${numberValue} for user ${decoded.userId}`);
+    console.info(`Adding number ${numberValue} for user ${decoded.userId}. Source extension: ${!!decoded.isExtension}`);
 
-    const result = await NumberService.addNumber(decoded.userId, numberValue);
+    const result = await NumberService.addNumber(decoded.userId, numberValue, null, !!decoded.isExtension);
 
     res.status(200).json({
       message: result.message,
